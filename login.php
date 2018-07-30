@@ -13,11 +13,11 @@ session_start();
 $username = mysqli_real_escape_string($con, $_POST['username']);
 $password = mysqli_real_escape_string($con, $_POST['password']);
 # $password = sha1($password); //this is the original line of code, just found sha1isn't any better than md5
-$password = password_hash($password, PASSWORD_BCRYPT);
+$passhash = password_hash($password, PASSWORD_BCRYPT, array("cost" => 15));
 if ($con->connect_errno > 0){
 	die ('Unable to connect to database [' . $db->connect_errno . ']');
 }
-$sqllogin = "SELECT * FROM users WHERE users.username = '$username' and passwd = '$password'";
+$sqllogin = "SELECT * FROM users WHERE users.username = '$username' and passwd = '$passhash'";
 if ($result = $con->query($sqllogin)){
 	$row_cnt = mysqli_num_rows($result);
 	if ($row_cnt > 0){
