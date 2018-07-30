@@ -8,6 +8,7 @@
 <CENTER>
 <?php
 include_once ('connection.php');
+require "lib/password.php";
 $con = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASS, DATABASE_NAME);
 session_start();
 $username = mysqli_real_escape_string($con, $_POST['username']);
