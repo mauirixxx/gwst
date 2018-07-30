@@ -6,7 +6,7 @@
 session_start();
 $uname = (isset($_SESSION['username']) ? $_SESSION['username'] : null);
 $userid = (isset($_SESSION['userid']) ? $_SESSION['userid'] : null);
-include_once ('connect.php');
+include_once ('connection.php');
 $con = @new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASS, DATABASE_NAME);
 if ($con->connect_errno){
 	die ('Unable to connect to database [' . $db->connect_errno . ']');
