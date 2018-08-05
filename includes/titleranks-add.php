@@ -12,9 +12,19 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 if (isset($_SESSION['tid'])) {
 	$_POST['tid'] = $_SESSION['tid'];
-} else {
-	echo 'The session data isn\'t set, using post data instead!<br />';
 }
+
+$stmtname = $con->prepare("SELECT titlename FROM gwtitles WHERE titlenameid = ?");
+$stmtname->bind_param("i", $_POST['tid']);
+$stmtname->execute();
+$stmtname->store_result();
+$stmtname->bind_result($gwtn);
+while ($stmtname->fetch()) {
+    echo 'Adding rank to title <b>' . $gwtn . '</b><br /><br />';
+}
+$stmtname->free_result();
+$stmtname->close();
+
 echo '<form action="titlemanager.php" method="post"><table border="1"><tr><th>Title Rank Name</th><th>Title Points</th><th>Rank Level</th></tr>';
 echo '<tr><td><input type="text" name="titlerankname" required autofocus></td><td><input type="number" name="titlepoints" required></td><td><input type="number" name="titlerank" min="1" max="15"</tr>';
 echo '</table><br /><input type="hidden" name="title" value="titleranksubmit"><input type="hidden" name="titlenameid" value="' . $_POST['tid'] . '"><input type="submit" value="Add title rank ..."></form>';
