@@ -15,5 +15,4 @@ if ($logout == "logout"){
 } else {
 	echo '<CENTER>Something went wrong, you haven\'t been logged out!<BR /><BR />Please click <A HREF="logout.php" CLASS="navlink">HERE</A> to try again</CENTER>';
 }
-include_once ('footer.php');
 ?>

@@ -10,9 +10,11 @@ a.navlink:link { color: #003366; font-weight: bold; text-decoration: none; }
 a.navlink:visited { color: #003366; font-weight: bold; text-decoration: none; }
 a.navlink:hover { color: #CCCCCC; font-weight: bold; text-decoration: none; }
 
-td {
+table td {
 	font-family: Tahoma; font-size: 13px;
+	display: table-cell;
 	vertical-align: center;
+	text-align: center;
 }
 
 .title {
