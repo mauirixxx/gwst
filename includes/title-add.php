@@ -1,5 +1,5 @@
 <?php
-echo '<form action="titlemanager.php" method="post"><table border="1"><tr><th>Title Name</th><th>Title Type</th><Max Rank</th></tr>';
+echo '<form action="titlemanager.php" method="post"><table border="1"><tr><th>Title Name</th><th>Title Type</th><th>Max Rank</th></tr>';
 echo '<tr><td><input type="text" name="titlename" placeholder="Friend of the Kurzicks" required autofocus></td><td style="text-align:left"><input type="radio" name="titletype" value="0" checked> Account<br /><input type="radio" name="titletype" value="1">Character</td>';
 echo '<td><input type="number" name="titlemaxrank" min="0" max="15"></td></tr>';
 echo '</table><br /><input type="hidden" name="title" value="titlesubmit"><input type="submit" value="Add new title ..."></form>';
