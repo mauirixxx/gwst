@@ -14,13 +14,13 @@ if (isset($_SESSION['tid'])) {
 	$_POST['tid'] = $_SESSION['tid'];
 }
 
-$stmtname = $con->prepare("SELECT titlename FROM gwtitles WHERE titlenameid = ?");
+$stmtname = $con->prepare("SELECT titlename, titlemaxrank FROM gwtitles WHERE titlenameid = ?");
 $stmtname->bind_param("i", $_POST['tid']);
 $stmtname->execute();
 $stmtname->store_result();
-$stmtname->bind_result($gwtn);
+$stmtname->bind_result($gwtn, $gwtmr);
 while ($stmtname->fetch()) {
-    echo 'Adding rank to title <b>' . $gwtn . '</b><br /><br />';
+    echo 'Adding rank to title <b>' . $gwtn . '</b><br />It\'s current maximum rank is ' . $gwtmr . '<br />';
 }
 $stmtname->free_result();
 $stmtname->close();
