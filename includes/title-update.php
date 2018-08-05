@@ -15,8 +15,8 @@ if (isset($_POST['deltitle'])) {
 	}
 } else {
 	// this section updates the title name
-	$stmtupd = $con->prepare("UPDATE gwtitles SET titlename = ?, titletype = ? WHERE titlenameid = ?");
-	$stmtupd->bind_param("sii", $_POST['titlename'], $_POST['titletype'], $_POST['titlenameid']);
+	$stmtupd = $con->prepare("UPDATE gwtitles SET titlename = ?, titletype = ?, titlemaxrank = ? WHERE titlenameid = ?");
+	$stmtupd->bind_param("siii", $_POST['titlename'], $_POST['titletype'], $_POST['titlemaxrank'], $_POST['titlenameid']);
 	$stmtupd->execute();
 	$stmtupd->close();
 	echo 'Title updated, redirecting!';
