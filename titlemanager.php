@@ -50,7 +50,8 @@ if ($_SESSION['admin'] == 1) {
 			$tid = $row['titlenameid'];
 			$tname = $row['titlename'];
 			$ttype = $row['titletype'];
-			echo '<tr><td>' . $tid . '</td><td>' . $tname . '</td><td>' . $ttype . '</td><td>';
+            $tmr = $row['titlemaxrank'];
+			echo '<tr><td>' . $tid . '</td><td>' . $tname . ' (' . $tmr . ')</td><td>' . $ttype . '</td><td>';
 			if ($ttype == "0") {
 				echo 'account';
 			} else if ($ttype == "1") {

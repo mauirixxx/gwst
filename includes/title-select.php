@@ -5,7 +5,8 @@ $result = $stmtview->get_result();
 while ($row = $result->fetch_assoc()) {
 	$tid = $row['titlenameid'];
 	$tname = $row['titlename'];
-	echo '<option value="' . $tid . '">' . $tname . '</option>';
+    $tnr = $row['titlemaxrank'];
+	echo '<option value="' . $tid . '">' . $tname . ' (' . $tnr . ')</option>';
 }
 $stmtview->close();
 ?>
