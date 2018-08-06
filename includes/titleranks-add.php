@@ -14,6 +14,12 @@ if (isset($_SESSION['tid'])) {
 	$_POST['tid'] = $_SESSION['tid'];
 }
 
+if (isset($_SESSION['tr'])) {
+    $_POST['titlerank'] = $_SESSION['tr'] + 1;
+} else {
+    $_POST['titlerank'] = 0;
+}
+
 $stmtname = $con->prepare("SELECT titlename, titlemaxrank FROM gwtitles WHERE titlenameid = ?");
 $stmtname->bind_param("i", $_POST['tid']);
 $stmtname->execute();
@@ -26,7 +32,7 @@ $stmtname->free_result();
 $stmtname->close();
 
 echo '<form action="titlemanager.php" method="post"><table border="1"><tr><th>Title Rank Name</th><th>Title Points</th><th>Rank Level</th></tr>';
-echo '<tr><td><input type="text" name="titlerankname" required autofocus></td><td><input type="number" name="titlepoints" required></td><td><input type="number" name="titlerank" min="1" max="15"</tr>';
+echo '<tr><td><input type="text" name="titlerankname" required autofocus></td><td><input type="number" name="titlepoints" required></td><td><input type="number" name="titlerank" min="1" max="15" value="' . $_POST['titlerank'] . '"></tr>';
 echo '</table><br /><input type="hidden" name="title" value="titleranksubmit"><input type="hidden" name="titlenameid" value="' . $_POST['tid'] . '"><input type="submit" value="Add title rank ..."></form>';
 
 echo 'Here are the currently associated title ranks, starting with rank 1:<br />';

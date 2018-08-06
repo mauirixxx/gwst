@@ -8,6 +8,7 @@ $stmtstins->execute();
 $stmtstins->close();
 $_SESSION['title'] = "repeat";
 $_SESSION['tid'] = $_POST['titlenameid'];
+$_SESSION['tr'] = $_POST['titlerank'];
 echo 'Title rank added, redirecting!';
 header ("Refresh:1; url=titlemanager.php");
 ?>
