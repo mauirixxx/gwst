@@ -35,12 +35,12 @@ if ($_SESSION['admin'] == 1) {
 	} else {
 		unset($_SESSION['tid']);
 		echo 'Add titles <form action="titlemanager.php" method="post"><input type="hidden" name="title" value="addtitle"><input type="submit" value="Add title"></form><br />';
-		echo 'Modify titles <form action="titlemanager.php" method="post"><input type="hidden" name="title" value="modtitle"><select name="tid">';
+		echo 'Modify titles <form action="titlemanager.php" method="post"><input type="hidden" name="title" value="modtitle"><select name="tid" onchange="this.form.submit()">';
 		include ('includes/title-select.php');
-		echo '</select><input type="submit" value="Modify Title"></form><br /><br />';
-		echo 'Add title ranks and points to <form action="titlemanager" method="post"><input type="hidden" name="title" value="addsubtitle"><select name="tid">';
+		echo '</select><noscript><input type="submit" value="Modify Title"></noscript></form><br /><br />';
+		echo 'Add title ranks and points to <form action="titlemanager" method="post"><input type="hidden" name="title" value="addsubtitle"><select name="tid" onchange="this.form.submit()">';
         include ('includes/title-select.php');
-        echo '</select><input type="submit" value="Add title rank"></form><br />';
+        echo '</select><noscript><input type="submit" value="Add title rank"></noscript></form><br />';
 		echo 'Edit / Delete subtitle & points (code goes here)<br /><br />';
 		// now to view the last 5 title entries in the database
 		echo 'Here is the last 5 titles entered into the database, newest entry is on top:<br />';
