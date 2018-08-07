@@ -9,8 +9,11 @@ if (isset($_POST['deltitle'])) {
 		$stmtdel = $con->prepare("DELETE FROM gwtitles WHERE titlenameid = ?");
 		$stmtdel->bind_param("i", $_POST['titlenameid']);
 		$stmtdel->execute();
+		$stmtdelst = $con->prepare("DELETE FROM gwsubtitles WHERE titlenameid = ?");
+		$stmtdelst->bind_param("i", $_POST['titlenameid']);
+		$stmtdelst->execute();
 		$stmtdel->close();
-		echo 'Title has been deleted, redirecting!';
+		echo 'The title and associated title ranks have been deleted, redirecting!';
 		header ("Refresh:1; url=titlemanager.php");
 	}
 } else {

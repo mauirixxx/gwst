@@ -41,6 +41,7 @@ if ($_SESSION['admin'] == 1) {
 		}
 	} else {
 		unset($_SESSION['tid']);
+		unset($_SESSION['tr']);
 		echo 'Add titles <form action="titlemanager.php" method="post"><input type="hidden" name="title" value="addtitle"><input type="submit" value="Add title"></form><br />';
 		echo 'Modify titles <form action="titlemanager.php" method="post"><input type="hidden" name="title" value="modtitle"><select name="tid" onchange="this.form.submit()"><option selected disabled>Select title</option>';
 		include ('includes/title-select.php');
