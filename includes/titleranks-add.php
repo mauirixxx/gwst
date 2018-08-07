@@ -63,6 +63,7 @@ while ($row = $result->fetch_assoc()) {
 	echo '<tr><td>' . $stnid . '<td>' . $tnid . '</td><td>' . $stname . '</td><td>' . number_format($stpoints) . '</td><td>' . $strank . '</td><td><input type="checkbox" name="editstitle[]" value="' . $stnid . '"></td></tr>';
 }
 $stmtview->close();
+$_SESSION['tid'] = $_POST['tid'];
 echo '</table><br /><input type="hidden" name="title" value="modsubtitle"><input type="submit" value="Edit selected titles"></form><br />If anything looks off, please fix it!<br /><br />';
 echo 'Return to <a href="titlemanager.php" class="navlink">title manager</a>';
 ?>
