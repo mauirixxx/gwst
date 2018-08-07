@@ -17,7 +17,19 @@ if (isset($_SESSION['tid'])) {
 if (isset($_SESSION['tr'])) {
     $tr = $_SESSION['tr'] + 1;
 } else {
-    $tr = 0;
+	$trank = $con->prepare("SELECT MAX(strank) FROM gwsubtitles WHERE titlenameid = ?");
+	$trank->bind_param("i", $_POST['tid']);
+	$trank->execute();
+	$trank->store_result();
+	$trank->bind_result($gwstmr);
+	while ($trank->fetch()) {
+		if (is_null($gwstmr)) {
+			$tr = 1;
+		} else {
+			$tr = $gwstmr;
+			echo 'variable tr is set to: ' . $tr . '<br />';
+		}
+	}
 }
 
 $stmtname = $con->prepare("SELECT titlename, titlemaxrank FROM gwtitles WHERE titlenameid = ?");

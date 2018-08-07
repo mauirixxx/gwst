@@ -35,10 +35,10 @@ if ($_SESSION['admin'] == 1) {
 	} else {
 		unset($_SESSION['tid']);
 		echo 'Add titles <form action="titlemanager.php" method="post"><input type="hidden" name="title" value="addtitle"><input type="submit" value="Add title"></form><br />';
-		echo 'Modify titles <form action="titlemanager.php" method="post"><input type="hidden" name="title" value="modtitle"><select name="tid" onchange="this.form.submit()">';
+		echo 'Modify titles <form action="titlemanager.php" method="post"><input type="hidden" name="title" value="modtitle"><select name="tid" onchange="this.form.submit()"><option selected disabled>Select title</option>';
 		include ('includes/title-select.php');
 		echo '</select><noscript><input type="submit" value="Modify Title"></noscript></form><br /><br />';
-		echo 'Add title ranks and points to <form action="titlemanager" method="post"><input type="hidden" name="title" value="addsubtitle"><select name="tid" onchange="this.form.submit()">';
+		echo 'Add title ranks and points to <form action="titlemanager" method="post"><input type="hidden" name="title" value="addsubtitle"><select name="tid" onchange="this.form.submit()"><option selected disabled>Select title</option>';
         include ('includes/title-select.php');
         echo '</select><noscript><input type="submit" value="Add title rank"></noscript></form><br />';
 		echo 'Edit / Delete subtitle & points (code goes here)<br /><br />';
