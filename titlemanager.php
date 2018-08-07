@@ -38,6 +38,9 @@ if ($_SESSION['admin'] == 1) {
 		} else if ($_POST['title'] == "modsubtitle") {
 			// included file contains all code to edit a title rank
 			include_once ('includes/titleranks-editor.php');
+		} else if ($_POST['title'] == "updatesubtitle") {
+			// this sectionupdates modified title ranks in the database, or deletes them
+			include_once ('includes/titleranks-update.php');
 		}
 	} else {
 		unset($_SESSION['tid']);
@@ -50,9 +53,9 @@ if ($_SESSION['admin'] == 1) {
         include ('includes/title-select.php');
         echo '</select><noscript><input type="submit" value="Add title rank"></noscript></form><br /><br />';
 		// now to view the last 5 title entries in the database
-		echo 'Here is the last 5 titles entered into the database, newest entry is on top:<br />';
+		echo 'Here is the last 15 titles entered into the database, newest entry is on top:<br />';
 		echo '<table border="1"><tr><th>titleid</th><th>titlename</th><th>titletype</th><th>titletype</th></tr>';
-		$stmtview = $con->prepare("SELECT * FROM gwtitles ORDER BY titlenameid DESC LIMIT 5");
+		$stmtview = $con->prepare("SELECT * FROM gwtitles ORDER BY titlenameid DESC LIMIT 15");
 		$stmtview->execute();
 		$result = $stmtview->get_result();
 		while ($row = $result->fetch_assoc()) {
