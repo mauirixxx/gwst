@@ -26,8 +26,7 @@ if (isset($_SESSION['tr'])) {
 		if (is_null($gwstmr)) {
 			$tr = 1;
 		} else {
-			$tr = $gwstmr;
-			echo 'variable tr is set to: ' . $tr . '<br />';
+			$tr = $gwstmr + 1;
 		}
 	}
 }
