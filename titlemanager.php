@@ -32,6 +32,9 @@ if ($_SESSION['admin'] == 1) {
     } else if ($_POST['title'] == "titleranksubmit") {
         // this section doesn't require human interaction
         include_once ('includes/titleranks-submit.php');
+	} else if ($_POST['title'] == "modsubtitle") {
+		// included file contains all code to edit a title rank
+		include_once ('includes/titleranks-editor.php');
 	} else {
 		unset($_SESSION['tid']);
 		echo 'Add titles <form action="titlemanager.php" method="post"><input type="hidden" name="title" value="addtitle"><input type="submit" value="Add title"></form><br />';
@@ -40,8 +43,7 @@ if ($_SESSION['admin'] == 1) {
 		echo '</select><noscript><input type="submit" value="Modify Title"></noscript></form><br /><br />';
 		echo 'Add title ranks and points to <form action="titlemanager" method="post"><input type="hidden" name="title" value="addsubtitle"><select name="tid" onchange="this.form.submit()"><option selected disabled>Add title rank(s)</option>';
         include ('includes/title-select.php');
-        echo '</select><noscript><input type="submit" value="Add title rank"></noscript></form><br />';
-		echo 'Edit / Delete subtitle & points (code goes here)<br /><br />';
+        echo '</select><noscript><input type="submit" value="Add title rank"></noscript></form><br /><br />';
 		// now to view the last 5 title entries in the database
 		echo 'Here is the last 5 titles entered into the database, newest entry is on top:<br />';
 		echo '<table border="1"><tr><th>titleid</th><th>titlename</th><th>titletype</th><th>titletype</th></tr>';

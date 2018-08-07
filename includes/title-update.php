@@ -22,5 +22,4 @@ if (isset($_POST['deltitle'])) {
 	echo 'Title updated, redirecting!';
 	header ("Refresh:1; url=titlemanager.php");
 }
-//echo 'Return to <a href="titlemanager.php" class="navlink">title manager</a>'; //this line needs to go away soon
 ?>
