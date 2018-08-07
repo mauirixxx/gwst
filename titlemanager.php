@@ -6,35 +6,39 @@ $con = mysqli_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS, DATABASE_NAME
 if ($con->connect_errno){
 	die ('Unable to connect to database [' . $db->connect_errno . ']');
 }
-if ($_SESSION['title'] == "repeat") {
-	$_POST['title'] = "addsubtitle";
-	unset($_SESSION['title']);
-} else {
-    unset($_SESSION['tr']);
+if (isset($_SESSION['title'])) {
+	if ($_SESSION['title'] == "repeat") {
+		$_POST['title'] = "addsubtitle";
+		unset($_SESSION['title']);
+	} else {
+		unset($_SESSION['tr']);
+	}
 }
 if ($_SESSION['admin'] == 1) {
 	echo '<br />';
-	if ($_POST['title'] == "addtitle") {
-		// included file contains all the code to add a new title
-		include_once ('includes/title-add.php');
-	} else if ($_POST['title'] == "titlesubmit") {
-		// included file contains all the code to submit a new title
-		include_once ('includes/title-submit.php');
-	} else if ($_POST['title'] == "modtitle") { 
-		// included file contains all the code to edit a title
-		include_once ('includes/title-editor.php');
-	} else if ($_POST['title'] == "updatetitle") {
-		// this section doesn't require human interaction
-		include_once ('includes/title-update.php');
-    } else if ($_POST['title'] == "addsubtitle") {
-        // included file contains all code to add the title ranks and points required
-        include_once ('includes/titleranks-add.php');
-    } else if ($_POST['title'] == "titleranksubmit") {
-        // this section doesn't require human interaction
-        include_once ('includes/titleranks-submit.php');
-	} else if ($_POST['title'] == "modsubtitle") {
-		// included file contains all code to edit a title rank
-		include_once ('includes/titleranks-editor.php');
+	if (isset($_POST['title'])) {
+		if ($_POST['title'] == "addtitle") {
+			// included file contains all the code to add a new title
+			include_once ('includes/title-add.php');
+		} else if ($_POST['title'] == "titlesubmit") {
+			// included file contains all the code to submit a new title
+			include_once ('includes/title-submit.php');
+		} else if ($_POST['title'] == "modtitle") { 
+			// included file contains all the code to edit a title
+			include_once ('includes/title-editor.php');
+		} else if ($_POST['title'] == "updatetitle") {
+			// this section doesn't require human interaction
+			include_once ('includes/title-update.php');
+		} else if ($_POST['title'] == "addsubtitle") {
+			// included file contains all code to add the title ranks and points required
+			include_once ('includes/titleranks-add.php');
+		} else if ($_POST['title'] == "titleranksubmit") {
+			// this section doesn't require human interaction
+			include_once ('includes/titleranks-submit.php');
+		} else if ($_POST['title'] == "modsubtitle") {
+			// included file contains all code to edit a title rank
+			include_once ('includes/titleranks-editor.php');
+		}
 	} else {
 		unset($_SESSION['tid']);
 		echo 'Add titles <form action="titlemanager.php" method="post"><input type="hidden" name="title" value="addtitle"><input type="submit" value="Add title"></form><br />';
