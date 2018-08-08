@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<HTML>
-<HEAD>
+<html>
+<head>
 <link rel="stylesheet" type="text/css" href="style.css">
 <?php
 if (session_status() == PHP_SESSION_NONE) {
@@ -14,8 +14,8 @@ if ($con->connect_errno){
 }
 if (!$userid){
 	echo '<title>Please login first</title></head><body><center>Aloha, and welcome to my Guild Wars stats tracker. Please login below.<hr>';
-	echo '<FORM ACTION="login.php" METHOD="POST"><TABLE BORDER="0"><TR><TD>Username:</TD><TD><INPUT TYPE="TEXT" NAME="username" SIZE="20"></TD></TR>';
-	echo '<tr><td>Password:</td><td><input type="password" name="password" SIZE="20"></td></tr></table>';
+	echo '<form action="login.php" method="post"><table border="0"><tr><td>Username:</td><td><input type="text" name="username" size="20" autofocus required></td></tr>';
+	echo '<tr><td>Password:</td><td><input type="password" name="password" size="20" required></td></tr></table>';
 	echo '<input type="submit" value="Login ..."></form><br /><br />';
 	echo 'If you haven\'t registered an account yet,<br />please click <a href="register.php" class="navlink">here</a> to create one.<br />';
 } else {
