@@ -40,13 +40,18 @@ $stmtname->store_result();
 $stmtname->bind_result($gwtn, $gwtmr);
 while ($stmtname->fetch()) {
     echo 'Adding rank to title <b>' . $gwtn . '</b><br />The maximum rank achievable in game is ' . $gwtmr . '<br />';
+    if ($tr > $gwtmr) {
+        echo '<br />No more ranks can be added!<br /><br />';
+    } else {
+        echo '<form action="titlemanager.php" method="post"><table border="1"><tr><th>Title Rank Name</th><th>Title Points</th><th>Rank Level</th></tr>';
+        echo '<tr><td><input type="text" name="titlerankname" required autofocus></td><td><input type="number" name="titlepoints" required></td><td><input type="number" readonly name="titlerank" min="1" max="15" value="' . $tr . '"></tr>';
+        echo '</table><br /><input type="hidden" name="title" value="titleranksubmit"><input type="hidden" name="titlenameid" value="' . $_POST['tid'] . '"><input type="submit" value="Add title rank ..."></form>';
+    }
 }
 $stmtname->free_result();
 $stmtname->close();
 
-echo '<form action="titlemanager.php" method="post"><table border="1"><tr><th>Title Rank Name</th><th>Title Points</th><th>Rank Level</th></tr>';
-echo '<tr><td><input type="text" name="titlerankname" required autofocus></td><td><input type="number" name="titlepoints" required></td><td><input type="number" readonly name="titlerank" min="1" max="15" value="' . $tr . '"></tr>';
-echo '</table><br /><input type="hidden" name="title" value="titleranksubmit"><input type="hidden" name="titlenameid" value="' . $_POST['tid'] . '"><input type="submit" value="Add title rank ..."></form>';
+
 
 echo 'Here are the currently associated title ranks, starting with rank 1:<br />';
 echo '<form action="titlemanager.php" method="post"><table border="1"><tr><th>stnameid</th><th>titlenameid</th><th>stname</th><th>stpoints</th><th>strank</th><th>Edit</th></tr>';
