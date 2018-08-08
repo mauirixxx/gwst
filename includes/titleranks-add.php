@@ -5,11 +5,6 @@ error_reporting(E_ALL);
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 # delete the above when shit finally works
 
-# use "$_POST['tid']" to show title ranks already associated with the selected title
-# and above that list put the input boxes for text and number_format
-# investigate if we can put multiple input boxes and loop through them to insert into the database
-# https://stackoverflow.com/questions/34469482/how-to-insert-multiple-inputs-into-the-database-using-the-power-of-php
-
 unset($_SESSION['title']);
 
 if (isset($_SESSION['tid'])) {
