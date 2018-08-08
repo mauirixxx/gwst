@@ -6,7 +6,7 @@ if (!empty($_POST['useremail'])) {
 	//this section contains code to update the users e-mail address, maybe via an include?
 	include_once ('includes/update-email.php');
 }
-echo '<h3>Change e-mail and / or password</h3>';
+echo '<h3>Change e-mail or password</h3>';
 
 // listing all session variables currently set for debugging purposes
 echo '<pre>';
