@@ -51,8 +51,6 @@ while ($stmtname->fetch()) {
 $stmtname->free_result();
 $stmtname->close();
 
-
-
 echo 'Here are the currently associated title ranks, starting with rank 1:<br />';
 echo '<form action="titlemanager.php" method="post"><table border="1"><tr><th>stnameid</th><th>titlenameid</th><th>stname</th><th>stpoints</th><th>strank</th><th>Edit</th></tr>';
 $stmtview = $con->prepare("SELECT * FROM gwsubtitles WHERE titlenameid = ? ORDER BY strank ASC");
