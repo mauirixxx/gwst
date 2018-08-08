@@ -45,7 +45,7 @@ while ($stmtname->fetch()) {
     } else {
         echo '<form action="titlemanager.php" method="post"><table border="1"><tr><th>Title Rank Name</th><th>Title Points</th><th>Rank Level</th></tr>';
         echo '<tr><td><input type="text" name="titlerankname" required autofocus></td><td><input type="number" name="titlepoints" required></td><td><input type="number" readonly name="titlerank" min="1" max="15" value="' . $tr . '"></tr>';
-        echo '</table><br /><input type="hidden" name="title" value="titleranksubmit"><input type="hidden" name="titlenameid" value="' . $_POST['tid'] . '"><input type="submit" value="Add title rank ..."></form>';
+        echo '</table><br /><input type="hidden" name="title" value="titleranksubmit"><input type="hidden" name="titlenameid" value="' . $_POST['tid'] . '"><input type="submit" value="Add title rank ..."></form><br />';
     }
 }
 $stmtname->free_result();
