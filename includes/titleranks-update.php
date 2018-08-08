@@ -7,11 +7,6 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 # delete the above when shit finally works
 
 if (isset($_POST['delsubtitle'])) {
-	echo 'the post delsubtitle might be an array??<br />';
-	echo '<pre>';
-	print_r($_POST['delsubtitle']);
-	print_r($_POST['stnameid']);
-	echo '</pre>';
 	if ($delst = $con->prepare("DELETE FROM gwsubtitles WHERE titlenameid = ? AND stnameid = ?")) {
 		$delst->bind_param("ii", $tnameid, $stnameid);
 		for ($i = 0; $i < count($_POST['delsubtitle']); $i++) {
@@ -22,7 +17,7 @@ if (isset($_POST['delsubtitle'])) {
 		$delst->close();
 	}
 	echo 'Title rank(s) have been deleted, redirecting!';
-	//header ("Refresh:1; url=titlemanager.php");
+	header ("Refresh:1; url=titlemanager.php");
 } else {
 	// this section updates the title name
 	if ($upd = $con->prepare("UPDATE gwsubtitles SET stname = ?, stpoints = ?, strank = ? WHERE titlenameid = ? AND stnameid = ?")) {
@@ -40,5 +35,4 @@ if (isset($_POST['delsubtitle'])) {
 	echo 'Title rank(s) updated, redirecting!';
 	header ("Refresh:1; url=titlemanager.php");
 }
-echo 'Return to <a href="titlemanager.php" class="navlink">title manager</a>';
 ?>
