@@ -30,19 +30,22 @@ function validateUsername($uname) {
 
 ####################
 # verifying the username doesn't already exist in the database
-$username = mysqli_real_escape_string($con, $_POST['username']);
-validateUsername($username);
+if (!empty($_POST['username'])) {
+	$username = mysqli_real_escape_string($con, $_POST['username']);
+	validateUsername($username);
+}
 
 ####################
 # verifying the e-mail address is in a valid format
-$verifyemail = validateEmail($_POST['useremail']);
-if (empty($verifyemail)) {
-	echo '<center>This address: ' . $_POST['useremail'] . ' is not a valid e-mail address!<br />Please verify and type it again.<br />';
-	include_once ('footer.php');
-	exit();
+if (!empty($_POST['useremail'])) {
+	$verifyemail = validateEmail($_POST['useremail']);
+	if (empty($verifyemail)) {
+		echo '<center>This address: ' . $_POST['useremail'] . ' is not a valid e-mail address!<br />Please verify and type it again.<br />';
+		include_once ('footer.php');
+		exit();
+	}
+	usedEmail($_POST['useremail']);
 }
-
-usedEmail($_POST['useremail']);
 
 ####################
 # verifying passwords match each other
