@@ -7,7 +7,6 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 include_once ('connect.php');
-//$newuser = $_POST['reguser'];
 $con = mysqli_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS, DATABASE_NAME);
 if ($con->connect_errno){
 	die ('Unable to connect to database [' . $db->connect_errno . ']');
