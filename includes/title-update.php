@@ -1,6 +1,6 @@
 <?php
 if (isset($_POST['deltitle'])) {
-	if ($_POST['deltitle'] =="yes") {
+	if ($_POST['deltitle'] == "yes") {
 		// this title makes you verify that you want to delete this title
 		echo '<form action="titlemanager.php" method="post">Please check the box to verify you want to delete: <b>' . $_POST['titlename'] . '</b> <input type="checkbox" name="deltitle" value="iamsure">';
 		echo '<input type="hidden" name="titlenameid" value="' . $_POST['titlenameid'] . '"><input type="hidden" name="title" value="updatetitle"><input type="submit" value="Delete title"></form><br /><br />';
