@@ -7,20 +7,22 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 # delete the above when shit finally works
 
 if (isset($_POST['delsubtitle'])) {
-	if ($_POST['delsubtitle'] =="yes") {
-		// this title makes you verify that you want to delete this title
-		echo '<form action="titlemanager.php" method="post">Please check the box to verify you want to delete: <b>' . $_POST['titlename'] . '</b> <input type="checkbox" name="delsubtitle" value="iamsure">';
-		echo '<input type="hidden" name="titlenameid" value="' . $_POST['titlenameid'] . '"><input type="hidden" name="title" value="updatesubtitle"><input type="submit" value="Delete title rank(s)"></form><br /><br />';
-	} else if ($_POST['delsubtitle'] == "iamsure") {
-		// this section actually deletes the title rank(s)
-		# need to deal with array data eventually
-		$stmtdel = $con->prepare("DELETE FROM gwsubtitles WHERE titlenameid = ?");
-		$stmtdel->bind_param("i", $_POST['titlenameid']);
-		$stmtdel->execute();
-		$stmtdel->close();
-		echo 'Title rank(s) have been deleted, redirecting!';
-		header ("Refresh:1; url=titlemanager.php");
+	echo 'the post delsubtitle might be an array??<br />';
+	echo '<pre>';
+	print_r($_POST['delsubtitle']);
+	print_r($_POST['stnameid']);
+	echo '</pre>';
+	if ($delst = $con->prepare("DELETE FROM gwsubtitles WHERE titlenameid = ? AND stnameid = ?")) {
+		$delst->bind_param("ii", $tnameid, $stnameid);
+		for ($i = 0; $i < count($_POST['delsubtitle']); $i++) {
+			$tnameid = $_POST['titlenameid'][$i];
+			$stnameid = $_POST['delsubtitle'][$i];
+			$delst->execute();
+		}
+		$delst->close();
 	}
+	echo 'Title rank(s) have been deleted, redirecting!';
+	//header ("Refresh:1; url=titlemanager.php");
 } else {
 	// this section updates the title name
 	if ($upd = $con->prepare("UPDATE gwsubtitles SET stname = ?, stpoints = ?, strank = ? WHERE titlenameid = ? AND stnameid = ?")) {
