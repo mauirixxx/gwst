@@ -7,7 +7,8 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 # delete the above when shit finally works
 
 if (isset($_POST['editstitle'])) {
-	echo '<form action="titlemanager.php" method="post"><table border="1"><tr><th>stnameid</th><th>titlenameid</th><th>stname</th><th>stpoints</th><th>strank</th><th>Delete?</th></tr>';
+	echo '<form action="titlemanager.php" method="post"><table border="1"><caption>Deleting takes precedence over edits - edits will have to be remade after submission</caption>';
+	echo '<tr><th>stnameid</th><th>titlenameid</th><th>stname</th><th>stpoints</th><th>strank</th><th>Delete?</th></tr>';
 	$ph = implode(",", $_POST['editstitle']);
 	$sredit = $con->prepare("SELECT * FROM gwsubtitles WHERE titlenameid = ? AND stnameid IN ($ph)");
 	$sredit->bind_param("i", $_SESSION['tid']);
