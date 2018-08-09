@@ -21,7 +21,7 @@ echo '<h3>Change e-mail or password</h3>';
 // select which GW account you want to default to
 echo '<form action="preferences.php" method="post"><table border="1"><caption style="white-space: nowrap; overflow: hidden;">Current preferred account: <b>' .$_SESSION['prefaccname'] . '</b></caption>';
 echo '<tr><td><select name="prefaccid">';
-echo '<option value="nopref">Prefer no deafult</option>';
+echo '<option value="nopref">Prefer no default</option>';
 $prefacc = $con->prepare("SELECT accid, accemail FROM gwaccounts WHERE userid = ?");
 $prefacc->bind_param("i", $_SESSION['userid']);
 $prefacc->execute();
