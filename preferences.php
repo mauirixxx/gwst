@@ -48,7 +48,7 @@ echo <<<UPDPASS
         return true;
     }
 </script>
-<input type="submit" name="submission" value="Update password" onclick="return Validate()" id="btnSubmit">
+<input type="submit" name="submission" value="Update password" onclick="return Validate()" id="btnSubmit"></form>
 UPDPASS;
 include_once ('footer.php');
 ?>
