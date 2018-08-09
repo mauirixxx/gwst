@@ -19,6 +19,7 @@ if (isset($_POST['editstitle'])) {
 		echo '<td><input type="text" name="stname[]" value="' . $row['stname'] . '"></td><td><input type="number" min="1" name="stpoints[]" value="' . $row['stpoints'] . '"></td>';
 		echo '<td><input type="number" size="4" min="1" max="15" name="strank[]" value="' . $row['strank'] . '"></td><td><input type="checkbox" name="delsubtitle[]" value="' . $row['stnameid'] . '"></td></tr>';
 	}
+	$sredit->close();
 	echo '</table><br /><input type="hidden" name="title" value="updatesubtitle"><input type="submit" value="Modify title rank(s)"></form>';
 	echo '<br /><br />';
 	echo 'Return to <a href="titlemanager.php" class="navlink">title manager</a>';
