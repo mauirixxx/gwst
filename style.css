@@ -51,3 +51,7 @@ img.resize {
 	width:220px;
     height:300px;
 }
+
+input {
+	text-align: center;
+}
