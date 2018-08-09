@@ -14,6 +14,12 @@ if (!empty($_POST['oldpass'])) {
 
 echo '<h3>Change e-mail or password</h3>';
 
+// select which GW account you want to default to
+# needed code: select accid from table gwaccounts, store it in prefacc in table userinfo
+
+// select which character from your GW account you want to default to
+# needed code: select charrid from table gwchars selected by accid
+
 // update e-mail address form
 echo '<form action="preferences.php" method="post"><table border="1">';
 echo '<caption>Update e-mail address</caption>';
