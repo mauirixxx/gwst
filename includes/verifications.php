@@ -51,7 +51,7 @@ if (!empty($_POST['useremail'])) {
 # verifying passwords match each other
 if (!empty($_POST['userpass1'] && $_POST['userpass2'])) {
 	if (($_POST['userpass1']) != ($_POST['userpass2'])) {
-		echo '<center>The passwords don\'t match!<br /><a href="register.php">Please try again!</a>';
+		echo '<center>The passwords don\'t match!<br />Please try again!';
 		include_once ('footer.php');
 		exit();
 	}
