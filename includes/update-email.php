@@ -4,6 +4,5 @@ $updmail = $con->prepare("UPDATE userinfo SET usermail = ? WHERE userid = ?");
 $updmail->bind_param("si", $_POST['useremail'], $_SESSION['userid']);
 $updmail->execute();
 $_SESSION['usermail'] = $_POST['useremail'];
-echo 'E-mail address updated, redirecting.';
-header ("Refresh:2; url=preferences.php");
+echo 'E-mail address updated.<br />';
 ?>
