@@ -27,6 +27,10 @@ if ($verifypass) {
     $_SESSION['username'] = $row[1];
 	$_SESSION['usermail'] = $row[3];
 	$_SESSION['admin'] = $row[4];
+	$_SESSION['prefaccid'] = $row[5];
+	$_SESSION['prefaccname'] = $row[6];
+	$_SESSION['prefcharid'] = $row[7];
+	$_SESSION['prefcharname'] = $row[8];
     include_once ('header.php');
     header("refresh:1;url=index.php");
     echo '<center>You have successfully logged in!<br />';

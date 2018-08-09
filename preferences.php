@@ -22,7 +22,8 @@ echo '<h3>Change e-mail or password</h3>';
 // select which GW account you want to default to
 # needed code: select accid from table gwaccounts, store it in prefacc in table userinfo
 echo '<form action="preferences.php" method="post"><table><caption>Preferred GW account</caption>';
-echo '<tr><td><select name="prefacc">';
+echo '<tr><td><select name="prefacc"><option value="' . $_SESSION['prefaccid'] . '">' . $_SESSION['prefaccname'] . ' (current selection)</option>';
+echo '<option value="0">No default selected</option>';
 $prefacc = $con->prepare("SELECT accid, accemail FROM gwaccounts WHERE userid = ?");
 $prefacc->bind_param("i", $_SESSION['userid']);
 $prefacc->execute();
@@ -30,7 +31,7 @@ $resacc = $prefacc->get_result();
 while ($row = $resacc->fetch_assoc()) {
     echo '<option value=' . $row['accid'] . '">' . $row['accemail'] . '</option>';
 }
-echo '</td><td><input type="submit" value="Set account"></td></tr></select></table></form>';
+echo '</td><td><input type="submit" value="Set account"></td></tr></select></table></form><br />';
 
 // select which character from your GW account you want to default to
 # needed code: select charrid from table gwchars selected by accid
