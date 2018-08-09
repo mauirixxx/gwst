@@ -3,24 +3,16 @@ $pagetitle = "Account options";
 include_once ('header.php');
 
 if (!empty($_POST['useremail'])) {
-	//this section contains code to update the users e-mail address, maybe via an include?
+	//this section contains code to update the users e-mail address
 	include_once ('includes/update-email.php');
 }
 
 if (!empty($_POST['oldpass'])) {
-	echo 'if the oldpass is set, execute code here (this line will go away from preferences.php!)<br />';
+	// this section contains code to update the users password after verifying the old password first
 	include_once ('includes/update-password.php');
-} else {
-	echo 'if post oldpass is NOT set, then this else statement can go away.<br />';
 }
 
 echo '<h3>Change e-mail or password</h3>';
-
-// listing all session variables currently set for debugging purposes
-echo '<pre>';
-var_dump($_SESSION);
-echo '</pre><br />';
-// delete the above 3 lines when done
 
 // update e-mail address form
 echo '<form action="preferences.php" method="post"><table border="1">';
