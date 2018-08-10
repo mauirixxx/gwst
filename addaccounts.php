@@ -20,14 +20,41 @@ echo '</table><input type="submit" value="Add account"></form><br /><br />';
 echo '<table border="1"><caption style="white-space: nowrap; overflow: hidden;">Current Guild Wars accounts</caption>';
 echo '<tr><th>Account name</th></tr>';
 // grab account name from database and loop it in here as a read only bit
-$acclist = $con->prepare("SELECT accemail FROM gwaccounts WHERE userid = ?");
+$acclist = $con->prepare("SELECT accid, accemail FROM gwaccounts WHERE userid = ?");
 $acclist->bind_param("i", $_SESSION['userid']);
 $acclist->execute();
 $result = $acclist->get_result();
 while ($row = $result->fetch_assoc()) {
-    echo '<tr><td>' . $row['accemail'] . '</td></tr>';
+    echo '<tr><td>';
+	if ($row['accid'] == $_SESSION['prefaccid']) {
+		echo '<b>' . $row['accemail'] . '</b>';
+	} else {
+		echo $row['accemail'];
+	}
+	echo '</td></tr>';
 }
 $acclist->close();
+echo '</table><br />';
+echo '<table border ="1"><caption style="white-space: nowrap; overflow: hidden;">Available characters</caption>';
+$lc = $con->prepare("SELECT charid, charname FROM gwchars WHERE accid = ?");
+$lc->bind_param("i", $_SESSION['prefaccid']);
+$lc->execute();
+$res2 = $lc->get_result();
+
+while ($row2 = $res2->fetch_assoc()) {
+	echo '<tr><td>';
+	if ($row2['charid'] == $_SESSION['prefcharid']) {
+		echo '<b>' . $row2['charname'] . '</b>';
+	} else {
+		echo $row2['charname'];
+	}
+	echo '</td></tr>';
+}
+
+/*} else {
+	echo '<tr><td>' . count($row2) . ' results!</td></tr>';
+	echo '<tr><td>No characters found!</td></tr>';
+}*/
 
 echo '</table>';
 echo '<br />Return to your <a href="index.php" class="navlink">user</a> page';
