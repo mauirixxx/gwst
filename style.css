@@ -28,7 +28,7 @@ ul, li{
 	padding:0 0 0 15px;
 }
 
-.column{
+.column {
 	float: left;
 	margin: 0 20px 0 0;
 }
@@ -54,4 +54,10 @@ img.resize {
 
 input {
 	text-align: center;
+}
+
+input[type=submit] {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
 }

@@ -2,6 +2,12 @@
 $pagetitle = "Add a Guild Wars account to track";
 include_once ('header.php');
 
+# delete this block when shit finally works.
+ini_set('display_errors', 'on');
+error_reporting(E_ALL);
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+# delete the above when shit finally works
+
 if (!empty($_POST['accemail'])) {
 	$addacc = $con->prepare("INSERT INTO gwaccounts (userid, accemail) VALUES (?, ?)");
 	$addacc->bind_param("is", $_SESSION['userid'], $_POST['accemail']);
@@ -14,13 +20,22 @@ if (!empty($_POST['accemail'])) {
 
 if (!empty($_POST['delchar'])) {
     echo 'removing selected character(s) from selected account<br />';
-    $delchar = $con->prepare("DELETE FROM gwchars WHERE charid = ? AND accid = ? AND userid = ?");
-    $delchar->bind_param("iii", $_POST['charid'], $_POST['accid'], $_SESSION['userid']);
-    $delchar->execute();
-    $delchar->close();
-    echo 'Need to figure out code to delete stats related to this character still!<br />';
-    //header ("Refresh:1; url=addacounts.php");
-    //exit();
+    if ($delchar = $con->prepare("DELETE FROM gwchars WHERE charid = ? AND accid = ? AND userid = ?")) {
+        $delchar->bind_param("iii", $delcharid, $delaccid, $_SESSION['userid']);
+        for ($i = 0; $i < count($_POST['delchar']); $i++) {
+            $delcharid = $_POST['charid'][$i];
+            $delaccid = $_POST['accid'][$i];
+            $delchar->execute();
+        }
+        $delchar->close();
+    }
+    $nap = $con->prepare("UPDATE userinfo SET prefcharid = 0, prefcharname = 'No default selected' WHERE userid = ?");
+	$nap->bind_param("i", $_SESSION['userid']);
+	$nap->execute();
+	$nap->close();
+	$_SESSION['prefcharid'] = "0";
+	$_SESSION['prefcharname'] = "No default selected";
+	echo 'Character deleted - no preferred character selected.<br /><br />';
 }
 
 echo '<form action="addaccounts.php" method="post"><table>';
@@ -47,22 +62,23 @@ while ($row = $result->fetch_assoc()) {
 $acclist->close();
 echo '</table><br />';
 
-echo '<form action="addaccount.php" method="post"><table border="1"><caption style="white-space: nowrap; overflow: hidden;">Available characters</caption>';
-echo '<tr><td>charid</td><td>charname</td><td>Delete?</td></tr>';
-$lc = $con->prepare("SELECT charid, charname FROM gwchars WHERE accid = ?");
+echo '<form action="addaccounts.php" method="post"><table border="1"><caption style="white-space: nowrap; overflow: hidden;">Available characters</caption>';
+echo '<tr><td>charid</td><td>accid</td><td>charname</td><td>Delete?</td></tr>';
+$lc = $con->prepare("SELECT charid, accid, charname FROM gwchars WHERE accid = ?");
 $lc->bind_param("i", $_SESSION['prefaccid']);
 $lc->execute();
 $res2 = $lc->get_result();
 while ($row2 = $res2->fetch_assoc()) {
-	echo '<tr><td>' . $row2['charid'] . '</td><td>';
+	echo '<tr><td><input type="text" readonly size="4" name="charid[]" value="' . $row2['charid'] . '"></td>';
+    echo '<td><input type="text" readonly size="4" name=accid[]" value="' . $row2['accid'] . '"</td><td>';
 	if ($row2['charid'] == $_SESSION['prefcharid']) {
 		echo '<b>' . $row2['charname'] . '</b>';
 	} else {
 		echo $row2['charname'];
 	}
-	echo '</td><td><input type="checkbox" name="delchar" value="yes"></td></tr>';
+	echo '</td><td><input type="checkbox" name="delchar[]" value="' . $row2['charid'] . '"></td></tr>';
 }
-echo '</table>';
+echo '</table><input type="submit" value="Delete selected characters"></form><br />';
 echo '<br />Return to your <a href="index.php" class="navlink">user</a> page';
 include_once ('footer.php');
 ?>
