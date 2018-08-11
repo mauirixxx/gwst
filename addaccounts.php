@@ -1,7 +1,8 @@
 <?php
 $pagetitle = "Add a Guild Wars account to track";
 include_once ('header.php');
-
+if (isset($_SESSION['userid'])){
+	
 # delete this block when shit finally works.
 ini_set('display_errors', 'on');
 error_reporting(E_ALL);
@@ -99,5 +100,6 @@ while ($row2 = $res2->fetch_assoc()) {
 }
 echo '</table><input type="submit" value="Delete selected characters"></form><br />';
 echo '<br />Return to your <a href="index.php" class="navlink">user</a> page';
+}
 include_once ('footer.php');
 ?>

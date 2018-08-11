@@ -1,7 +1,8 @@
 <?php
 $pagetitle = "Account options";
 include_once ('header.php');
-
+if (isset($_SESSION['userid'])){
+	
 if (!empty($_POST['useremail'])) {
 	//this section contains code to update the users e-mail address
 	include_once ('includes/update-email.php');
@@ -16,6 +17,12 @@ if (!empty($_POST['setacc'])) {
     //this section contains code to set the users preferred game account
     include_once ('includes/set-prefacc.php');
 }
+
+if (!empty($_POST['setchar'])) {
+	//this section contains code to the users preferred character
+	include_once ('includes/set-prefchar.php');
+}
+
 echo '<h3>Change e-mail or password</h3>';
 
 // select which GW account you want to default to
@@ -32,6 +39,19 @@ while ($row = $resacc->fetch_assoc()) {
 echo '</td><td><input type="submit" value="Set account"></td></tr></select></table><input type="hidden" name="setacc" value="update"></form><br />';
 
 // select which character from your GW account you want to default to
+echo 'the session prefaccid is: ' . $_SESSION['prefaccid'] . '<br/>';
+echo 'the session userid is: ' .$_SESSION['userid'] . '<br/>';
+echo '<form action="preferences.php" method="post"><table border="1"><caption style="white-space: nowrap; overflow: hidden;">Current preferred character: <b>' .$_SESSION['prefcharname'] . '</b></caption>';
+echo '<tr><td><select name="prefcharid">';
+echo '<option value="nopref">Prefer no default</option>';
+$prefchar = $con->prepare("SELECT charid, charname FROM gwchars WHERE accid = ? AND userid = ?");
+$prefchar->bind_param("ii", $_SESSION['prefaccid'], $_SESSION['userid']);
+$prefchar->execute();
+$reschar = $prefchar->get_result();
+while ($row2 = $reschar->fetch_assoc()) {
+	echo '<option value="' . $row2['charid'] . '">' . $row2['charname'] . '</option>';
+}
+echo '</td><td><input type="submit" value="Set character"></td></tr></select></table><input type="hidden" name="setchar" value="updatechar"></form><br />';
 # needed code: select charrid from table gwchars selected by accid
 
 // update e-mail address form
@@ -62,5 +82,6 @@ echo <<<UPDPASS
 </script>
 <input type="submit" name="submission" value="Update password" onclick="return Validate()" id="btnSubmit"></form>
 UPDPASS;
+}
 include_once ('footer.php');
 ?>
