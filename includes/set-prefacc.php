@@ -21,6 +21,12 @@ if (isset($_SESSION['userid'])) {
 			$_SESSION['prefaccid'] = $row['accid'];
 			$_SESSION['prefaccname'] = $row['accemail'];
 		}
+        $ncp = $con->prepare("UPDATE userinfo SET prefcharid = 0, prefcharname = 'No default selected' WHERE userid = ?");
+		$ncp->bind_param("i", $_SESSION['userid']);
+		$ncp->execute();
+		$ncp->close();
+		$_SESSION['prefcharid'] = "0";
+		$_SESSION['prefcharname'] = "No default selected";
 		echo 'Guild Wars preferred account updated! <br />';
 	}
 }

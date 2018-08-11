@@ -3,12 +3,6 @@ $pagetitle = "Add a Guild Wars account to track";
 include_once ('header.php');
 if (isset($_SESSION['userid'])){
 	
-# delete this block when shit finally works.
-ini_set('display_errors', 'on');
-error_reporting(E_ALL);
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-# delete the above when shit finally works
-
 if (!empty($_POST['accemail'])) {
 	$addacc = $con->prepare("INSERT INTO gwaccounts (userid, accemail) VALUES (?, ?)");
 	$addacc->bind_param("is", $_SESSION['userid'], $_POST['accemail']);
@@ -50,7 +44,6 @@ echo '</table></form><br />';
 
 echo '<table border="1"><caption style="white-space: nowrap; overflow: hidden;">Current Guild Wars accounts</caption>';
 echo '<tr><th>Account name</th></tr>';
-// grab account name from database and loop it in here as a read only bit
 $acclist = $con->prepare("SELECT accid, accemail FROM gwaccounts WHERE userid = ?");
 $acclist->bind_param("i", $_SESSION['userid']);
 $acclist->execute();

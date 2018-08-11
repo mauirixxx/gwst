@@ -23,7 +23,7 @@ if (!empty($_POST['setchar'])) {
 	include_once ('includes/set-prefchar.php');
 }
 
-echo '<h3>Change e-mail or password</h3>';
+echo '<h3>Set preferred account & character, or change e-mail or password</h3>';
 
 // select which GW account you want to default to
 echo '<form action="preferences.php" method="post"><table border="1"><caption style="white-space: nowrap; overflow: hidden;">Current preferred account: <b>' .$_SESSION['prefaccname'] . '</b></caption>';
@@ -52,7 +52,6 @@ while ($row2 = $reschar->fetch_assoc()) {
 	echo '<option value="' . $row2['charid'] . '">' . $row2['charname'] . '</option>';
 }
 echo '</td><td><input type="submit" value="Set character"></td></tr></select></table><input type="hidden" name="setchar" value="updatechar"></form><br />';
-# needed code: select charrid from table gwchars selected by accid
 
 // update e-mail address form
 echo '<form action="preferences.php" method="post"><table border="1">';
