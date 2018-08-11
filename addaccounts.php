@@ -38,6 +38,10 @@ if (!empty($_POST['delchar'])) {
 	echo 'Character deleted - no preferred character selected.<br /><br />';
 }
 
+if (!empty($_POST['newcharname'])) {
+	include_once ('includes/addcharacters-submit.php');
+}
+
 echo '<form action="addaccounts.php" method="post"><table>';
 echo '<caption>Add a new Guild Wars account e-mail or alias</caption>';
 echo '<tr><td><input type="text" name="accemail" size="35" required></td><td><input type="submit" value="Add account"></td></tr>';
@@ -61,6 +65,21 @@ while ($row = $result->fetch_assoc()) {
 }
 $acclist->close();
 echo '</table><br />';
+
+// add characters here
+echo '<form action="addaccounts.php" method="post"><table>';
+echo '<caption style="white-space: nowrap; overflow: hidden;">Add character to account: ' . $_SESSION['prefaccname'] . '</caption>';
+echo '<tr><th>Character name</th><th>Birthdate</th><th>Profession</th></tr>';
+echo '<tr><td><input type="text" name="newcharname" size="19" required autofocus></td><td><input type="date" name="bdate" placeholder="2005-04-28"></td><td><select name="profid" required>';
+// $gp = Get Profession
+$gp = $con->prepare("SELECT profid, profession FROM gwprofessions");
+$gp->execute();
+$result = $gp->get_result();
+while ($row = $result->fetch_assoc()) {
+	echo '<option value=' . $row['profid'] . '>' . $row['profession'] . '</option>';
+}
+echo '</td></tr>';
+echo '<tr><td colspan="3"><input type="submit" value="Add character"></td></tr></table></form><br />';
 
 echo '<form action="addaccounts.php" method="post"><table border="1"><caption style="white-space: nowrap; overflow: hidden;">Available characters</caption>';
 echo '<tr><td>charid</td><td>accid</td><td>charname</td><td>Delete?</td></tr>';
