@@ -56,8 +56,14 @@ input {
 	text-align: center;
 }
 
-input[type=submit] {
-    background-color: #4CAF50;
+.submitLink {
+    background-color: transparent;
+    text-decoration: underline;
     border: none;
-    color: white;
+    color: #003366;
+    cursor: pointer;
+}
+submitLink:focus {
+    outline: none;
+}
 }

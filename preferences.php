@@ -39,8 +39,6 @@ while ($row = $resacc->fetch_assoc()) {
 echo '</td><td><input type="submit" value="Set account"></td></tr></select></table><input type="hidden" name="setacc" value="update"></form><br />';
 
 // select which character from your GW account you want to default to
-echo 'the session prefaccid is: ' . $_SESSION['prefaccid'] . '<br/>';
-echo 'the session userid is: ' .$_SESSION['userid'] . '<br/>';
 echo '<form action="preferences.php" method="post"><table border="1"><caption style="white-space: nowrap; overflow: hidden;">Current preferred character: <b>' .$_SESSION['prefcharname'] . '</b></caption>';
 echo '<tr><td><select name="prefcharid">';
 echo '<option value="nopref">Prefer no default</option>';
