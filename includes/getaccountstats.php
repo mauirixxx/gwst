@@ -1,23 +1,43 @@
 <?php
-echo '<table border="1"><caption>Account wide stats</caption>';
-echo '<tr><th>Title Name</th><th>Title Points</th><th>Current Rank</th><th>Points Remaining</th><th>Next Rank</th></tr>';
-// $gas = GetAccountStats
-$gas = $con->prepare("SELECT * FROM gwaccstats WHERE userid = ? AND accid = ?;");
-$gas->bind_param("ii", $_SESSION['prefaccid'], $_SESSION['userid']);
-$gas->execute();
-$result = $gas->get_result();
-while ($row = $result->fetch_assoc()) {
-    echo '<tr><td>' . $row['currentstrankname'] . '</td><td>' . $row['titlepoints'] . '</td><td>' . $row['currentstrank'] . '</td>';
-    echo '<td>';
-    $pr = ($row['nextstrankpoints'] - $row['titlepoints']);
-    if ($pr < 0) {
-        echo 'Maximum rank achieved!';
-    } else {
-        echo $pr;
+//include_once ('includes/session-debug.php');
+//include_once ('includes/session-dump.php');
+// remove the above 2 lines
+if (isset($_SESSION['userid'])) {
+    echo '<table border="1"><caption>Account wide stats</caption>';
+    echo '<tr><th>Title</th><th>Title Rank</th><th>Title Points</th><th>Current Rank</th><th>Points Remaining</th><th>Next Rank</th></tr>';
+    // $gas = GetAccountStats
+    $gas = $con->prepare("SELECT * FROM gwaccstats WHERE userid = ? AND accid = ?");
+    $gas->bind_param("ii", $_SESSION['userid'], $_SESSION['prefaccid']);
+    $gas->execute();
+    $result = $gas->get_result();
+    while ($row = $result->fetch_assoc()) {
+        // $gnr = Get Next Rank
+        $gnr = $con->prepare("SELECT stpoints, stname FROM gwsubtitles WHERE titlenameid = ? AND stpoints >= ? ORDER BY stpoints ASC LIMIT 1");
+        $gnr->bind_param("ii", $row['titlenameid'], $row['titlepoints']);
+        $gnr->execute();
+        $gnr->bind_result($stpoints, $stname);
+        $gnr->fetch();
+        $gnr->close();
+        // $gt = Get Title
+        $gt = $con->prepare("SELECT titlename FROM gwtitles WHERE titlenameid = ?");
+        $gt->bind_param("i", $row['titlenameid']);
+        $gt->execute();
+        $gt->bind_result($titlename);
+        $gt->fetch();
+        $gt->close();
+        $pr = number_format(($stpoints - $row['titlepoints']));
+        if ($pr < 0) {
+            $pr = "Highest rank achieved!";
+            $stname = "Highest rank achieved!";
+        }
+        if ($row['currentstrankname'] === NULL) {
+            $row['currentstrankname'] = "No title earned yet!";
+            $row['currentstrank'] = "0";
+        }
+        echo '<tr><td>' . $titlename . '</td><td>' . $row['currentstrankname'] . '</td><td>' . number_format($row['titlepoints']) . '</td><td>' . $row['currentstrank'] . '</td>';
+        echo '<td>' . $pr . '</td><td>' . $stname . '</td></tr>';
     }
-    echo '</td>';
-    echo '<td>' . $row['nextstrank'] . '</td></tr>';
+    $gas->close();
+    echo '</table><br />';
 }
-$gas->close();
-echo '</table>';
 ?>
