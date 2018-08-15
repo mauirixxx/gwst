@@ -4,9 +4,9 @@
 // remove the above 2 lines
 if (isset($_SESSION['userid'])) {
     echo '<table border="1"><caption>Account wide stats</caption>';
-    echo '<tr><th>Title</th><th>Title Rank</th><th>Title Points</th><th>Current Rank</th><th>Points Remaining</th><th>Next Rank</th></tr>';
+    echo '<tr><th>Title</th><th>Title Rank</th><th>Title Points</th><th>Current Rank</th><th>Points Remaining</th><th>Max Title %</th><th>Next Rank</th></tr>';
     // $gas = GetAccountStats
-    $gas = $con->prepare("SELECT * FROM gwaccstats WHERE userid = ? AND accid = ?");
+    $gas = $con->prepare("SELECT * FROM gwaccstats WHERE userid = ? AND accid = ? ORDER BY currentstrank DESC, percent ASC");
     $gas->bind_param("ii", $_SESSION['userid'], $_SESSION['prefaccid']);
     $gas->execute();
     $result = $gas->get_result();
@@ -34,8 +34,15 @@ if (isset($_SESSION['userid'])) {
             $row['currentstrankname'] = "No title earned yet!";
             $row['currentstrank'] = "0";
         }
-        echo '<tr><td>' . $titlename . '</td><td>' . $row['currentstrankname'] . '</td><td>' . number_format($row['titlepoints']) . '</td><td>' . $row['currentstrank'] . '</td>';
-        echo '<td>' . $pr . '</td><td>' . $stname . '</td></tr>';
+		if ($row['percent'] > 100) {
+			$ohp = 100;
+		} else {
+			$ohp = $row['percent'];
+		}
+        echo '<tr><td style="width:150px;">' . $titlename . '</td><td style="width:200px;">' . $row['currentstrankname'] . '</td><td style="width:100px;">' . number_format($row['titlepoints']) . '</td><td style="width:70px;">' . $row['currentstrank'] . '</td>';
+        echo '<td style="width:100px;">' . $pr . '</td><td><div class="percentbar" style="width:100px;"><div style="width:' . $ohp . 'px;"></div></div>';
+		echo $ohp;
+		echo '% completed</td><td>' . $stname . '</td></tr>';
     }
     $gas->close();
     echo '</table><br />';

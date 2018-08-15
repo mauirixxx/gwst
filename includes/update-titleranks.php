@@ -15,17 +15,25 @@ if (isset($_SESSION['userid'])) {
     $gcr->bind_result($stnameid, $stname, $strank);
     $gcr->fetch();
     $gcr->close();
+	// $gpc = Get Percentage Completed
+    $gpc = $con->prepare("SELECT stpoints FROM gwsubtitles WHERE titlenameid = ? ORDER BY stnameid DESC LIMIT 1");
+    $gpc->bind_param("i", $_POST['titlenameid']);
+    $gpc->execute();
+    $gpc->bind_result($pmr); //$pmr = Percentage Max Rank
+    $gpc->fetch();
+    $gpc->close();
+	$progress = ceil(($_POST['titlepoints'] / $pmr) * 100);
     if ($r1 > 0) {
         // $urs = Update Rank Stats
-        $urs = $con->prepare("UPDATE gwaccstats SET stnameid = ?, titlepoints = ?, currentstrankname = ?, currentstrank = ? WHERE titlenameid = ? AND accid = ? AND userid = ?");
-        $urs->bind_param("iisiiii", $stnameid, $_POST['titlepoints'], $stname, $strank, $_POST['titlenameid'], $_SESSION['prefaccid'], $_SESSION['userid']);
+        $urs = $con->prepare("UPDATE gwaccstats SET stnameid = ?, titlepoints = ?, currentstrankname = ?, currentstrank = ?, percent = ? WHERE titlenameid = ? AND accid = ? AND userid = ?");
+        $urs->bind_param("iisiiiii", $stnameid, $_POST['titlepoints'], $stname, $strank, $progress, $_POST['titlenameid'], $_SESSION['prefaccid'], $_SESSION['userid']);
         $urs->execute();
         $urs->close();
         echo 'Title has been updated!<br /><br />';
     } else {
         // $irs = Insert Rank Stats
-        $irs = $con->prepare("INSERT INTO gwaccstats (titlenameid, stnameid, titlepoints, currentstrankname, currentstrank, accid, userid) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $irs->bind_param("iiisiii", $_POST['titlenameid'], $stnameid, $_POST['titlepoints'], $stname, $strank, $_SESSION['prefaccid'], $_SESSION['userid']);
+        $irs = $con->prepare("INSERT INTO gwaccstats (titlenameid, stnameid, titlepoints, currentstrankname, currentstrank, percent, accid, userid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $irs->bind_param("iiisiiii", $_POST['titlenameid'], $stnameid, $_POST['titlepoints'], $stname, $strank, $progress, $_SESSION['prefaccid'], $_SESSION['userid']);
         $irs->execute();
         $irs->close();
         echo 'Title entered!<br /></br />';
