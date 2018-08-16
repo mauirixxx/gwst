@@ -19,6 +19,11 @@ if (isset($_SESSION['userid'])) {
         // this section contains the code to add a new game account to track
         include_once ('includes/addaccount-submit.php');
     }
+    
+    if (!empty($_POST['delaccid'])) {
+        // this section containts the code to delete an account
+        include_once ('includes/del-account.php');
+    }
 
     if (!empty($_POST['delcharid'])) {
         // this section contains code to delete the selected characters
@@ -35,8 +40,8 @@ if (isset($_SESSION['userid'])) {
     echo '<tr><td><input type="text" name="accemail" size="35" required></td><td><input type="submit" value="Add account"></td></tr>';
     echo '</table></form><br />';
 
-    echo '<table border="1"><caption style="white-space: nowrap; overflow: hidden;">Current Guild Wars accounts</caption>';
-    echo '<tr><th>Account name</th><th>Preferred?</th></tr>';
+    echo '<form action="addaccounts.php" method="post"><table border="1"><caption style="white-space: nowrap; overflow: hidden;">Current Guild Wars accounts</caption>';
+    echo '<tr><th>Account name</th><th>Preferred?</th><th>Delete ?</th></tr>';
     $acclist = $con->prepare("SELECT accid, accemail FROM gwaccounts WHERE userid = ?");
     $acclist->bind_param("i", $_SESSION['userid']);
     $acclist->execute();
@@ -47,10 +52,11 @@ if (isset($_SESSION['userid'])) {
         if ($row['accid'] == $_SESSION['prefaccid']) {
             echo ' checked';
         }
-        echo '></div></td></tr>';
+		//delete account array in delaccid[]
+        echo '></div></td><td><input type="checkbox" name="delaccid[]" value="' . $row['accid'] . '"></td></tr>';
     }
     $acclist->close();
-    echo '</form></table><br />';
+    echo '</form></table><input type="submit" value="Modify selected accounts"></form><br />';
 
     // add characters here
     echo '<form action="addaccounts.php" method="post"><table>';
