@@ -69,3 +69,15 @@ submitLink:focus {
 
 .percentbar { background:#CCCCCC; border:1px solid #666666; height:10px; }
 .percentbar div { background: #28B8C0; height: 10px; }
+
+select *.profession-0 { background-color: #FFF; }
+select *.profession-1 {	background-color: #FF8; }
+select *.profession-2 {	background-color: #CF9; }
+select *.profession-3 { background-color: #ACF; }
+select *.profession-4 { background-color: #9FC; }
+select *.profession-5 { background-color: #DAF; }
+select *.profession-6 { background-color: #FBB; }
+select *.profession-7 { background-color: #FCE; }
+select *.profession-8 { background-color: #BFF; }
+select *.profession-9 { background-color: #FC9; }
+select *.profession-10 { background-color: #DDF; }

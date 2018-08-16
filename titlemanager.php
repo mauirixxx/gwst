@@ -4,13 +4,13 @@ include_once ('header.php');
 if (isset($_SESSION['userid'])){
 	if (isset($_SESSION['title'])) {
 		if ($_SESSION['title'] == "repeat") {
-				$_POST['title'] = "addsubtitle";
-				unset($_SESSION['title']);
-			} else {
-				unset($_SESSION['tr']);
-			}
+			$_POST['title'] = "addsubtitle";
+			unset($_SESSION['title']);
+		} else {
+			unset($_SESSION['tr']);
 		}
-		if ($_SESSION['admin'] == 1) {
+	}
+	if ($_SESSION['admin'] == 1) {
 		echo '<br />';
 		if (isset($_POST['title'])) {
 			if ($_POST['title'] == "addtitle") {

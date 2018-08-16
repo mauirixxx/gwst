@@ -1,7 +1,4 @@
 <?php
-//include_once ('includes/session-debug.php');
-//include_once ('includes/session-dump.php');
-// remove the above 2 lines
 if (isset($_SESSION['userid'])) {
     echo '<table border="1"><caption>Account wide stats</caption>';
     echo '<tr><th>Title</th><th>Title Rank</th><th>Title Points</th><th>Current Rank</th><th>Points Remaining</th><th>Max Title %</th><th>Next Rank</th></tr>';

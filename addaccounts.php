@@ -1,45 +1,35 @@
 <?php
 $pagetitle = "Add a Guild Wars account to track";
 include_once ('header.php');
-if (isset($_SESSION['userid'])) {
-    //include_once ('includes/session-debug.php');
-    //include_once ('includes/session-dump.php');
-    
+if (isset($_SESSION['userid'])) {    
     if (!empty($_POST['prefcharid'])) {
         //this section contains code to the users preferred character
         include_once ('includes/set-prefchar.php');
     }
-
     if (!empty($_POST['prefaccid'])) {
         //this section contains code to set the users preferred game account
         include_once ('includes/set-prefacc.php');
     }
-	
     if (!empty($_POST['accemail'])) {
         // this section contains the code to add a new game account to track
         include_once ('includes/addaccount-submit.php');
     }
-    
     if (!empty($_POST['delaccid'])) {
         // this section containts the code to delete an account
         include_once ('includes/del-account.php');
     }
-
     if (!empty($_POST['delcharid'])) {
         // this section contains code to delete the selected characters
         include_once ('includes/del-character.php');
     }
-
     if (!empty($_POST['newcharname'])) {
         // this section contains code to insert a new character into the database
         include_once ('includes/addcharacters-submit.php');
     }
-
     echo '<form action="addaccounts.php" method="post"><table>';
     echo '<caption>Add a new Guild Wars account e-mail or alias</caption>';
     echo '<tr><td><input type="text" name="accemail" size="35" required></td><td><input type="submit" value="Add account"></td></tr>';
     echo '</table></form><br />';
-
     echo '<form action="addaccounts.php" method="post"><table border="1"><caption style="white-space: nowrap; overflow: hidden;">Current Guild Wars accounts</caption>';
     echo '<tr><th>Account name</th><th>Preferred?</th><th>Delete ?</th></tr>';
     $acclist = $con->prepare("SELECT accid, accemail FROM gwaccounts WHERE userid = ?");
@@ -57,7 +47,6 @@ if (isset($_SESSION['userid'])) {
     }
     $acclist->close();
     echo '</form></table><input type="submit" value="Modify selected accounts"></form><br />';
-
     // add characters here
     echo '<form action="addaccounts.php" method="post"><table>';
     echo '<caption style="white-space: nowrap; overflow: hidden;">Add character to account: ' . $_SESSION['prefaccname'] . '</caption>';
@@ -72,7 +61,6 @@ if (isset($_SESSION['userid'])) {
     }
     echo '</td></tr>';
     echo '<tr><td colspan="3"><input type="submit" value="Add character"></td></tr></table></form><br />';
-
     echo '<form action="addaccounts.php" method="post"><table border="1"><caption style="white-space: nowrap; overflow: hidden;">Available characters</caption>';
     echo '<tr><td>charid</td><td>accid</td><td>charname</td><td>Preferred</td><td>Delete?</td></tr>';
     $lc = $con->prepare("SELECT charid, accid, charname, profid, profcolor FROM gwchars WHERE accid = ?");

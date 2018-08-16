@@ -1,6 +1,7 @@
 <?php
 if (isset($_SESSION['userid'])) {
 	if ($_POST['prefaccid'] == "nopref") {
+		// $nap = No AccountID Preferrence
 		$nap = $con->prepare("UPDATE userinfo SET prefaccid = 0, prefaccname = 'No default selected' WHERE userid = ?");
 		$nap->bind_param("i", $_SESSION['userid']);
 		$nap->execute();
@@ -9,6 +10,7 @@ if (isset($_SESSION['userid'])) {
 		$_SESSION['prefaccname'] = "No default selected";
 		echo 'Account preference update - no preferred account selected.<br />';
 	} else {
+		// $sap = Select AccountID Preferrence
 		$sap = $con->prepare("SELECT accid, accemail FROM gwaccounts WHERE accid = ? AND userid = ?");
 		$sap->bind_param("ii", $_POST['prefaccid'], $_SESSION['userid']);
 		$sap->execute();
@@ -21,13 +23,15 @@ if (isset($_SESSION['userid'])) {
 			$_SESSION['prefaccid'] = $row['accid'];
 			$_SESSION['prefaccname'] = $row['accemail'];
 		}
-        $ncp = $con->prepare("UPDATE userinfo SET prefcharid = 0, prefcharname = 'No default selected' WHERE userid = ?");
-		$ncp->bind_param("i", $_SESSION['userid']);
-		$ncp->execute();
-		$ncp->close();
-		$_SESSION['prefcharid'] = "0";
-		$_SESSION['prefcharname'] = "No default selected";
-		echo 'Guild Wars preferred account updated! <br />';
+		$sap->close();
 	}
+	$ncp = $con->prepare("UPDATE userinfo SET prefcharid = 0, prefcharname = 'No default selected' WHERE userid = ?");
+	$ncp->bind_param("i", $_SESSION['userid']);
+	$ncp->execute();
+	$ncp->close();
+	$_SESSION['prefcharid'] = "0";
+	$_SESSION['prefcharname'] = "No default selected";
+	$_SESSION['charprofid'] = "0";
+	echo 'Guild Wars preferred account updated! <br />';
 }
 ?>
