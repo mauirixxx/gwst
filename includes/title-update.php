@@ -18,9 +18,12 @@ if (isset($_SESSION['userid'])) {
 			header ("Refresh:1; url=titlemanager.php");
 		}
 	} else {
+		if (!isset($_POST['autofill'])) {
+			$_POST['autofill'] = "0";
+		}
 		// this section updates the title name
-		$stmtupd = $con->prepare("UPDATE gwtitles SET titlename = ?, titletype = ?, titlemaxrank = ? WHERE titlenameid = ?");
-		$stmtupd->bind_param("siii", $_POST['titlename'], $_POST['titletype'], $_POST['titlemaxrank'], $_POST['titlenameid']);
+		$stmtupd = $con->prepare("UPDATE gwtitles SET titlename = ?, titletype = ?, titlemaxrank = ?, autofilled = ? WHERE titlenameid = ?");
+		$stmtupd->bind_param("siiii", $_POST['titlename'], $_POST['titletype'], $_POST['titlemaxrank'], $_POST['autofill'], $_POST['titlenameid']);
 		$stmtupd->execute();
 		$stmtupd->close();
 		echo 'Title updated, redirecting!';

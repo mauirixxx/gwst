@@ -1,7 +1,10 @@
 <?php
 if (isset($_SESSION['userid'])) {
-	$stmtins = $con->prepare("INSERT INTO gwtitles (titlename, titletype, titlemaxrank) VALUES (?, ?, ?)");
-	$stmtins->bind_param("sii", $_POST['titlename'], $_POST['titletype'], $_POST['titlemaxrank']);
+	if (!isset($_POST['autofill'])) {
+		$_POST['autofill'] = "0";
+	}
+	$stmtins = $con->prepare("INSERT INTO gwtitles (titlename, titletype, titlemaxrank, autofilled) VALUES (?, ?, ?, ?)");
+	$stmtins->bind_param("siii", $_POST['titlename'], $_POST['titletype'], $_POST['titlemaxrank'], $_POST['autofill']);
 	$stmtins->execute();
 	$stmtins->close();
 	echo 'New title added!<br /><br />';
@@ -12,9 +15,10 @@ if (isset($_SESSION['userid'])) {
 		$tid = $row['titlenameid'];
 		$tname = $row['titlename'];
 		$ttype = $row['titletype'];
-	    $tmr = $row['titlemaxrank'];
-		echo '<table border="1"><tr><th>titleid</th><th>titlename</th><th>titletype</th><th>titlemaxrank</th></tr>';
-		echo '<tr><td>' . $tid . '</td><td>' . $tname . '</td><td>' . $ttype . '</td><td>' . $tmr . '</td></tr></table><br />';
+		$tmr = $row['titlemaxrank'];
+		$taf = $row['autofilled'];
+		echo '<table border="1"><tr><th>titleid</th><th>titlename</th><th>titletype</th><th>titlemaxrank</th><th>autofilled</th></tr>';
+		echo '<tr><td>' . $tid . '</td><td>' . $tname . '</td><td>' . $ttype . '</td><td>' . $tmr . '</td><td>' . $taf . '</tr></table><br />';
 	}
 	$stmtview->close();
 	echo 'Return to <a href="titlemanager.php" class="navlink">title manager</a>';

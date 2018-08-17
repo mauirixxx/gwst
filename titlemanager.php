@@ -50,7 +50,7 @@ if (isset($_SESSION['userid'])){
 			echo '</select><noscript><input type="submit" value="Add title rank"></noscript></form><br /><br />';
 			// now to view the last 5 title entries in the database
 			echo 'Here is the last 15 titles entered into the database, newest entry is on top:<br />';
-			echo '<table border="1"><tr><th>titleid</th><th>titlename</th><th>titletype</th><th>titletype</th></tr>';
+			echo '<table border="1"><tr><th>titleid</th><th>titlename</th><th>titletype</th><th>titletype</th><th>autofilled</th><th>autofilled</th></tr>';
 			$stmtview = $con->prepare("SELECT * FROM gwtitles ORDER BY titlenameid DESC LIMIT 15");
 			$stmtview->execute();
 			$result = $stmtview->get_result();
@@ -59,11 +59,22 @@ if (isset($_SESSION['userid'])){
 				$tname = $row['titlename'];
 				$ttype = $row['titletype'];
 				$tmr = $row['titlemaxrank'];
+				$taf = $row['autofilled'];
 				echo '<tr><td>' . $tid . '</td><td>' . $tname . ' (' . $tmr . ')</td><td>' . $ttype . '</td><td>';
 				if ($ttype == "0") {
 					echo 'account';
 				} else if ($ttype == "1") {
 					echo 'character';
+				} else {
+					echo 'Anything other than a 0 or 1 means something broke!';
+					include_once ('footer.php');
+					exit();
+				}
+				echo '</td><td>' . $taf . '</td><td>';
+				if ($taf == "0") {
+					echo 'no';
+				} else if ($taf == "1") {
+					echo 'yes';
 				} else {
 					echo 'Anything other than a 0 or 1 means something broke!';
 					include_once ('footer.php');
