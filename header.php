@@ -26,6 +26,10 @@ if (!$userid){
 		echo 'GWST';
 	}
 	echo '</title></head><body><center>';
+	if (!empty($_POST['prefaccid'])) {
+		//this section contains code to set the users preferred game account
+		include_once ('includes/set-prefacc.php');
+	}
 	if (!empty($_POST['prefcharid'])) {
         //this section contains code to the users preferred character
         include_once ('includes/set-prefchar.php');
@@ -35,10 +39,15 @@ if (!$userid){
 	if ($_SESSION['admin'] == 1){
 		echo'(<a href="adminlanding.php" class="navlink">Administration</a>) ';
 	}
-	echo '(<a href="logout.php?action=logout" class="navlink">Logout ' . $_SESSION['username'] . '</a>) (<select name="prefcharid" onchange="this.form.submit()">';
-	echo '<option class="profession-' . $_SESSION['charprofid'] . '" value="' . $_SESSION['prefcharid'] . '">' . $_SESSION['prefcharname'] . '</option>';
+	echo '(<select name="prefaccid" onchange="this.form.submit()">';
+	echo '<option class="header" value="' . $_SESSION['prefaccid'] . '">' . $_SESSION['prefaccname'] . '</option>';
+	echo '<option value="nopref">No default selected</option>';
+	include_once ('header-list-accounts.php');
+	echo '</select>)<noscript><input type="submit" value="Preferrence"></noscript> ';
+	echo '(<select name="prefcharid" onchange="this.form.submit()">';
+	echo '<option "class="header" value="' . $_SESSION['prefcharid'] . '">' . $_SESSION['prefcharname'] . '</option>';
 	echo '<option value="nopref">No default selected</option>';
 	include_once ('header-list-chars.php');
-	echo '</select>)<noscript><input type="submit" value="Select Character"></noscript></form><hr><br / >';
+	echo '</select>)<noscript><input type="submit" value="Preferrence"></noscript> (<a href="logout.php?action=logout" class="navlink">Logout ' . $_SESSION['username'] . '</a>)</form><hr><br / >';
 }
 ?>
