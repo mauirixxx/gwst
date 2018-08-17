@@ -15,7 +15,7 @@ if (isset($_SESSION['userid'])) {
         echo '<form action="updateaccountstats.php" method="post">';
         echo 'Select account title to update: <select name="acctitle">';
         // $ats = Account Title Select
-        $ats = $con->prepare("SELECT titlenameid, titlename FROM gwtitles WHERE titletype = 0");
+        $ats = $con->prepare("SELECT titlenameid, titlename FROM gwtitles WHERE titletype = 0 ORDER BY titlename");
         $ats->execute();
         $result = $ats->get_result();
         while ($row = $result->fetch_assoc()) {

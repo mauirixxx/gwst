@@ -36,9 +36,6 @@ if (!$userid){
     }
 	echo '<form action="' . $_SERVER['REQUEST_URI'] . '" method="post">';
 	echo '(<a href="index.php" class="navlink">Home</a>) (<a href="preferences.php" class="navlink">Options</a>) ';
-	if ($_SESSION['admin'] == 1){
-		echo'(<a href="adminlanding.php" class="navlink">Administration</a>) ';
-	}
 	echo '(<select name="prefaccid" onchange="this.form.submit()">';
 	echo '<option class="header" value="' . $_SESSION['prefaccid'] . '">' . $_SESSION['prefaccname'] . '</option>';
 	echo '<option value="nopref">No default selected</option>';
@@ -48,6 +45,10 @@ if (!$userid){
 	echo '<option "class="header" value="' . $_SESSION['prefcharid'] . '">' . $_SESSION['prefcharname'] . '</option>';
 	echo '<option value="nopref">No default selected</option>';
 	include_once ('header-list-chars.php');
-	echo '</select>)<noscript><input type="submit" value="Preferrence"></noscript> (<a href="logout.php?action=logout" class="navlink">Logout ' . $_SESSION['username'] . '</a>)</form><hr><br / >';
+	echo '</select>)<noscript><input type="submit" value="Preferrence"></noscript> ';
+	if ($_SESSION['admin'] == 1){
+		echo'(<a href="adminlanding.php" class="navlink">Administration</a>) ';
+	}
+	echo '(<a href="logout.php?action=logout" class="navlink">Logout ' . $_SESSION['username'] . '</a>)</form><hr><br / >';
 }
 ?>

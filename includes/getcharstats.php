@@ -1,12 +1,12 @@
 <?php
 if (isset($_SESSION['userid'])) {
-    echo '<table border="1"><caption>Account wide stats</caption>';
+    echo '<table border="1"><caption>Character stats</caption>';
     echo '<tr><th>Title</th><th>Title Rank</th><th>Title Points</th><th>Current Rank</th><th>Points Remaining</th><th>Max Title %</th><th>Next Rank</th></tr>';
-    // $gas = GetAccountStats
-    $gas = $con->prepare("SELECT * FROM gwaccstats WHERE userid = ? AND accid = ? ORDER BY currentstrank DESC, percent ASC");
-    $gas->bind_param("ii", $_SESSION['userid'], $_SESSION['prefaccid']);
-    $gas->execute();
-    $result = $gas->get_result();
+    // $gcs = Get Character Stats
+    $gcs = $con->prepare("SELECT * FROM gwcharstats WHERE charid = ? AND accid = ? AND userid = ? ORDER BY currentstrank DESC, percent ASC");
+    $gcs->bind_param("iii", $_SESSION['prefcharid'], $_SESSION['prefaccid'], $_SESSION['userid']);
+    $gcs->execute();
+    $result = $gcs->get_result();
     while ($row = $result->fetch_assoc()) {
         // $gnr = Get Next Rank
         $gnr = $con->prepare("SELECT stpoints, stname FROM gwsubtitles WHERE titlenameid = ? AND stpoints >= ? ORDER BY stpoints ASC LIMIT 1");
@@ -36,12 +36,12 @@ if (isset($_SESSION['userid'])) {
 		} else {
 			$ohp = $row['percent'];
 		}
-        echo '<tr><td style="width:150px;">' . $titlename . '</td><td style="width:200px;">' . $row['currentstrankname'] . '</td><td style="width:100px;">' . number_format($row['titlepoints']) . '</td><td style="width:70px;">' . $row['currentstrank'] . '</td>';
+        echo '<tr><td style="width:175px;">' . $titlename . '</td><td style="width:210px;">' . $row['currentstrankname'] . '</td><td style="width:100px;">' . number_format($row['titlepoints']) . '</td><td style="width:70px;">' . $row['currentstrank'] . '</td>';
         echo '<td style="width:100px;">' . $pr . '</td><td><div class="percentbar" style="width:100px;"><div style="width:' . $ohp . 'px;"></div></div>';
 		echo $ohp;
 		echo '% completed</td><td>' . $stname . '</td></tr>';
     }
-    $gas->close();
+    $gcs->close();
     echo '</table><br />';
 }
 ?>
