@@ -69,8 +69,7 @@ if (isset($_SESSION['userid'])){
         }
     </script>
     <input type="submit" name="submission" value="Update password" onclick="return Validate()" id="btnSubmit"></form>
-    UPDPASS;
-    }
+UPDPASS;
 }
 include_once ('footer.php');
 ?>

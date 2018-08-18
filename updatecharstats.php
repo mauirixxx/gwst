@@ -5,7 +5,11 @@ if (isset($_SESSION['userid'])) {
     if (!isset($_POST['chartitle'])) {
         $_POST['chartitle'] = "notselected";
     }
-    
+    if ($_SESSION['prefcharid'] == "0") {
+        echo 'Please select a character from the menu above to add stats to before continuing';
+        include_once ('footer.php');
+        exit();
+    }
     if (isset($_POST['titlepoints'])) {
         // include file just updates the database
         include_once ('includes/update-chartitleranks.php');
@@ -15,7 +19,7 @@ if (isset($_SESSION['userid'])) {
         echo '<form action="updatecharstats.php" method="post">';
         echo 'Select character title to update: <select name="chartitle" onchange="this.form.submit()">';
         // $cts = Character Title Select
-        $cts = $con->prepare("SELECT titlenameid, titlename FROM gwtitles WHERE titletype = 1 ORDER BY titlename");
+        $cts = $con->prepare("SELECT titlenameid, titlename FROM gwtitles WHERE titletype = 1 AND autofilled = 0 ORDER BY titlename");
         $cts->execute();
         $result = $cts->get_result();
         while ($row = $result->fetch_assoc()) {

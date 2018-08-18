@@ -16,12 +16,12 @@ if (isset($_SESSION['userid'])) {
 		$dac = $con->prepare("DELETE FROM gwaccstats WHERE accid = ? AND userid = ?");
 		$dac->bind_param("ii", $gcirow['accid'], $_SESSION['userid']);
         $dac->execute();
-		$dac->close();/*
+		$dac->close();
         // $dcs = Delete Character Stats
         $dcs = $con->prepare("DELETE FROM gwcharstats WHERE charid = ? AND accid = ? AND userid = ?");
         $dcs->bind_param("iii", $gcirow['charid'], $gcirow['accid'], $_SESSION['userid']);
         $dcs->execute();
-        $dcs->close(); */
+        $dcs->close();
     }
     $gci->close();
 	//this should be the last SQL query to run!

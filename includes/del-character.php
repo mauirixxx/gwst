@@ -9,7 +9,13 @@ if (isset($_SESSION['userid'])) {
         }
         $delchar->close();
     }
-    // need to delete associate character stats as well. TODO
+    // $dcs = Delete Character Stats
+    $gcharid = implode(", ", $_POST['delcharid']);
+    $dcs = $con->prepare("DELETE FROM gwcharstats WHERE charid IN ($gcharid) AND accid = ? AND userid = ?");
+    $dcs->bind_param("ii", $_SESSION['prefaccid'], $_SESSION['userid']);
+    $dcs->execute();
+    $dcs->close();
+    // set preferred character to none
     $nap = $con->prepare("UPDATE userinfo SET prefcharid = 0, prefcharname = 'No default selected' WHERE userid = ?");
     $nap->bind_param("i", $_SESSION['userid']);
     $nap->execute();
