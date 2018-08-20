@@ -49,6 +49,8 @@ if (!$userid){
 	if ($_SESSION['admin'] == 1){
 		echo'(<a href="adminlanding.php" class="navlink">Administration</a>) ';
 	}
-	echo '(<a href="logout.php?action=logout" class="navlink">Logout ' . $_SESSION['username'] . '</a>)</form><hr><br / >';
+	echo '(<a href="logout.php?action=logout" class="navlink">Logout ' . $_SESSION['username'] . '</a>)</form><hr>';
+	echo '(<a href="updatecharstats.php" class="navlink">Update character titles</a>) (<a href="updateaccountstats.php" class="navlink">Update account titles</a>) ';
+	echo '(<a href="addaccounts.php" class="navlink">Manage accounts & characters</a>)<br /><br />';
 }
 ?>

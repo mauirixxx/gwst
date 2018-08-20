@@ -3,7 +3,7 @@ if (isset($_SESSION['userid'])) {
     echo '<table border="1"><caption>Account wide stats</caption>';
     echo '<tr><th>Title</th><th>Title Rank</th><th>Title Points</th><th>Current Rank</th><th>Points Remaining</th><th>Max Title %</th><th>Next Rank</th></tr>';
     // $gas = GetAccountStats
-    $gas = $con->prepare("SELECT * FROM gwaccstats WHERE userid = ? AND accid = ? ORDER BY currentstrank DESC, percent ASC");
+    $gas = $con->prepare("SELECT * FROM gwstats WHERE charid = 0 AND userid = ? AND accid = ? ORDER BY percent DESC, currentstrank DESC, percent ASC");
     $gas->bind_param("ii", $_SESSION['userid'], $_SESSION['prefaccid']);
     $gas->execute();
     $result = $gas->get_result();

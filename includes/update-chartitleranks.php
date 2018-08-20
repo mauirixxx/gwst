@@ -2,7 +2,7 @@
 if (isset($_SESSION['userid'])) {
     // check to see if we're going to INSERT or UPDATE a row
     // $cfr = Check For Results
-    $cfr = $con->prepare("SELECT COUNT(*) FROM gwcharstats WHERE charid = ? AND titlenameid = ? AND accid = ? AND userid = ?");
+    $cfr = $con->prepare("SELECT COUNT(*) FROM gwstats WHERE charid = ? AND titlenameid = ? AND accid = ? AND userid = ?");
     $cfr->bind_param("iiii", $_SESSION['prefcharid'], $_POST['titlenameid'], $_SESSION['prefaccid'], $_SESSION['userid']);
     $cfr->execute();
     $cfr->bind_result($r1);
@@ -25,14 +25,14 @@ if (isset($_SESSION['userid'])) {
 	$progress = ceil(($_POST['titlepoints'] / $pmr) * 100);
     if ($r1 > 0) {
         // $urs = Update Rank Stats
-        $urs = $con->prepare("UPDATE gwcharstats SET stnameid = ?, titlepoints = ?, currentstrankname = ?, currentstrank = ?, percent = ? WHERE charid = ? AND titlenameid = ? AND accid = ? AND userid = ?");
+        $urs = $con->prepare("UPDATE gwstats SET stnameid = ?, titlepoints = ?, currentstrankname = ?, currentstrank = ?, percent = ? WHERE charid = ? AND titlenameid = ? AND accid = ? AND userid = ?");
         $urs->bind_param("iisiiiiii", $stnameid, $_POST['titlepoints'], $stname, $strank, $progress, $_SESSION['prefcharid'], $_POST['titlenameid'], $_SESSION['prefaccid'], $_SESSION['userid']);
         $urs->execute();
         $urs->close();
         echo 'Title has been updated!<br /><br />';
     } else {
         // $irs = Insert Rank Stats
-        $irs = $con->prepare("INSERT INTO gwcharstats (titlenameid, stnameid, titlepoints, currentstrankname, currentstrank, percent, charid, accid, userid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $irs = $con->prepare("INSERT INTO gwstats (titlenameid, stnameid, titlepoints, currentstrankname, currentstrank, percent, charid, accid, userid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $irs->bind_param("iiisiiiii", $_POST['titlenameid'], $stnameid, $_POST['titlepoints'], $stname, $strank, $progress, $_SESSION['prefcharid'], $_SESSION['prefaccid'], $_SESSION['userid']);
         $irs->execute();
         $irs->close();

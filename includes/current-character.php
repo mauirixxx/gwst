@@ -1,13 +1,19 @@
 <?php
-if (isset($_SESSION['userid'])) {
-    echo '<table border="1"><caption>Character stats</caption>';
+if (isset($_SESSION['userid'])){
+	echo '<table border="1"><caption>Titles progress</caption>';
     echo '<tr><th>Title</th><th>Title Rank</th><th>Title Points</th><th>Current Rank</th><th>Points Remaining</th><th>Max Title %</th><th>Next Rank</th></tr>';
-    // $gcs = Get Character Stats
-    $gcs = $con->prepare("SELECT * FROM gwstats WHERE charid = ? AND accid = ? AND userid = ? ORDER BY percent DESC, currentstrank DESC, percent ASC");
-    $gcs->bind_param("iii", $_SESSION['prefcharid'], $_SESSION['prefaccid'], $_SESSION['userid']);
-    $gcs->execute();
-    $result = $gcs->get_result();
-    while ($row = $result->fetch_assoc()) {
+	if ($_SESSION['prefcharid'] == "0") {
+		// $gcc = Get Current Character stats
+		$gcc = $con->prepare("SELECT * FROM gwstats WHERE charid = 0 AND accid = ? AND userid = ? ORDER BY percent DESC, currentstrank DESC, percent ASC");
+		$gcc->bind_param("ii", $_SESSION['prefaccid'], $_SESSION['userid']);
+	} else {
+		// $gcc = Get Current Character stats
+		$gcc = $con->prepare("SELECT * FROM gwstats WHERE charid = 0 AND accid = ? AND userid = ? UNION ALL SELECT * FROM gwstats WHERE charid = ? AND accid = ? AND userid = ? ORDER BY percent DESC, currentstrank DESC, percent ASC");
+		$gcc->bind_param("iiiii", $_SESSION['prefaccid'], $_SESSION['userid'], $_SESSION['prefcharid'], $_SESSION['prefaccid'], $_SESSION['userid']);
+	}
+	$gcc->execute();
+	$gccres = $gcc->get_result();
+	while ($row = $gccres->fetch_assoc()) {
         // $gnr = Get Next Rank
         $gnr = $con->prepare("SELECT stpoints, stname FROM gwsubtitles WHERE titlenameid = ? AND stpoints >= ? ORDER BY stpoints ASC LIMIT 1");
         $gnr->bind_param("ii", $row['titlenameid'], $row['titlepoints']);
@@ -41,7 +47,7 @@ if (isset($_SESSION['userid'])) {
 		echo $ohp;
 		echo '% completed</td><td>' . $stname . '</td></tr>';
     }
-    $gcs->close();
-    echo '</table><br />';
+	$gccres->close();
+	echo '</table><br />';
 }
 ?>

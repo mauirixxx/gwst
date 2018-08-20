@@ -13,7 +13,7 @@ if (isset($_SESSION['userid'])) {
     
     if ($_POST['acctitle'] == "notselected") {
         echo '<form action="updateaccountstats.php" method="post">';
-        echo 'Select account title to update: <select name="acctitle">';
+        echo 'Select account title to update: <select name="acctitle" onchange="this.form.submit()">';
         // $ats = Account Title Select
         $ats = $con->prepare("SELECT titlenameid, titlename FROM gwtitles WHERE titletype = 0 ORDER BY titlename");
         $ats->execute();

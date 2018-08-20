@@ -2,7 +2,7 @@
 if (isset($_SESSION['userid'])) {
     // check to see if we're going to INSERT or UPDATE a row
     // $cfr = Check For Results
-    $cfr = $con->prepare("SELECT COUNT(*) FROM gwaccstats WHERE titlenameid = ? AND accid = ? AND userid = ?");
+    $cfr = $con->prepare("SELECT COUNT(*) FROM gwstats WHERE titlenameid = ? AND accid = ? AND userid = ?");
     $cfr->bind_param("iii", $_POST['titlenameid'], $_SESSION['prefaccid'], $_SESSION['userid']);
     $cfr->execute();
     $cfr->bind_result($r1);
@@ -25,14 +25,14 @@ if (isset($_SESSION['userid'])) {
 	$progress = ceil(($_POST['titlepoints'] / $pmr) * 100);
     if ($r1 > 0) {
         // $urs = Update Rank Stats
-        $urs = $con->prepare("UPDATE gwaccstats SET stnameid = ?, titlepoints = ?, currentstrankname = ?, currentstrank = ?, percent = ? WHERE titlenameid = ? AND accid = ? AND userid = ?");
+        $urs = $con->prepare("UPDATE gwstats SET stnameid = ?, titlepoints = ?, currentstrankname = ?, currentstrank = ?, percent = ? WHERE titlenameid = ? AND charid = 0 AND accid = ? AND userid = ?");
         $urs->bind_param("iisiiiii", $stnameid, $_POST['titlepoints'], $stname, $strank, $progress, $_POST['titlenameid'], $_SESSION['prefaccid'], $_SESSION['userid']);
         $urs->execute();
         $urs->close();
         echo 'Title has been updated!<br /><br />';
     } else {
         // $irs = Insert Rank Stats
-        $irs = $con->prepare("INSERT INTO gwaccstats (titlenameid, stnameid, titlepoints, currentstrankname, currentstrank, percent, accid, userid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $irs = $con->prepare("INSERT INTO gwstats (titlenameid, stnameid, titlepoints, currentstrankname, currentstrank, percent, accid, userid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         $irs->bind_param("iiisiiii", $_POST['titlenameid'], $stnameid, $_POST['titlepoints'], $stname, $strank, $progress, $_SESSION['prefaccid'], $_SESSION['userid']);
         $irs->execute();
         $irs->close();
