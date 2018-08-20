@@ -13,12 +13,13 @@ if (isset($_SESSION['userid'])) {
         $delchar->execute();
 		$delchar->close();
 		// $dac = Delete Account Stats
-		$dac = $con->prepare("DELETE FROM gwaccstats WHERE accid = ? AND userid = ?");
+		echo 'the error from $gcirow-accid is: <b>' . $gcirow['accid'] . '</b><br>';
+		$dac = $con->prepare("DELETE FROM gwstats WHERE charid = 0 AND accid = ? AND userid = ?");
 		$dac->bind_param("ii", $gcirow['accid'], $_SESSION['userid']);
         $dac->execute();
 		$dac->close();
         // $dcs = Delete Character Stats
-        $dcs = $con->prepare("DELETE FROM gwcharstats WHERE charid = ? AND accid = ? AND userid = ?");
+        $dcs = $con->prepare("DELETE FROM gwstats WHERE charid = ? AND accid = ? AND userid = ?");
         $dcs->bind_param("iii", $gcirow['charid'], $gcirow['accid'], $_SESSION['userid']);
         $dcs->execute();
         $dcs->close();
@@ -35,7 +36,7 @@ if (isset($_SESSION['userid'])) {
     $nap->execute();
     $nap->close();
     $_SESSION['prefaccid'] = "0";
-    $_SESSION['preaccname'] = "No default selected";
+    $_SESSION['prefaccname'] = "No default selected";
     echo 'Account(s) deleted - no preferred account selected.<br /><br />';
 	// $ncp = No Character Preference
 	$ncp = $con->prepare("UPDATE userinfo SET prefcharid = 0, prefcharname = 'No default selected' WHERE userid = ?");
@@ -44,6 +45,7 @@ if (isset($_SESSION['userid'])) {
     $ncp->close();
     $_SESSION['prefcharid'] = "0";
     $_SESSION['prefcharname'] = "No default selected";
+	$_SESSION['charprofid'] = "0";
     echo 'All characters related to the account have been deleted - no preferred character selected.<br /><br />';
 }
 ?>
