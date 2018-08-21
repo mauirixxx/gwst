@@ -38,5 +38,6 @@ if (isset($_SESSION['userid'])) {
         $irs->close();
         echo 'Title entered!<br /></br />';
     }
+    include_once ('update-gwamm.php');
 }
 ?>

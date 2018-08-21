@@ -4,12 +4,12 @@ if (isset($_SESSION['userid'])){
     echo '<tr><th>Title</th><th>Title Rank</th><th>Title Points</th><th>Current Rank</th><th>Points Remaining</th><th>Max Title %</th><th>Next Rank</th></tr>';
 	if ($_SESSION['prefcharid'] == "0") {
 		// $gcc = Get Current Character stats
-		$gcc = $con->prepare("SELECT * FROM gwstats WHERE charid = 0 AND accid = ? AND userid = ? ORDER BY percent DESC, currentstrank DESC, percent ASC");
+		$gcc = $con->prepare("SELECT * FROM gwstats WHERE charid = 0 AND accid = ? AND userid = ? ORDER BY currentstrank DESC, percent DESC");
 		$gcc->bind_param("ii", $_SESSION['prefaccid'], $_SESSION['userid']);
 	} else {
 		// $gcc = Get Current Character stats
-		$gcc = $con->prepare("SELECT * FROM gwstats WHERE charid = 0 AND accid = ? AND userid = ? UNION ALL SELECT * FROM gwstats WHERE charid = ? AND accid = ? AND userid = ? ORDER BY percent DESC, currentstrank DESC, percent ASC");
-		$gcc->bind_param("iiiii", $_SESSION['prefaccid'], $_SESSION['userid'], $_SESSION['prefcharid'], $_SESSION['prefaccid'], $_SESSION['userid']);
+		$gcc = $con->prepare("SELECT * FROM gwstats WHERE charid IN (0, ?) AND accid = ? AND userid = ? ORDER BY currentstrank DESC, percent DESC");
+		$gcc->bind_param("iii", $_SESSION['prefcharid'], $_SESSION['prefaccid'], $_SESSION['userid']);
 	}
 	$gcc->execute();
 	$gccres = $gcc->get_result();
