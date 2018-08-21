@@ -5,7 +5,11 @@ if (isset($_SESSION['userid'])) {
     if (!isset($_POST['acctitle'])) {
         $_POST['acctitle'] = "notselected";
     }
-    
+    if ($_SESSION['prefaccid'] == "0") {
+        echo 'Please select an account from the menu above to add stats to before continuing';
+        include_once ('footer.php');
+        exit();
+    }    
     if (isset($_POST['titlepoints'])) {
         // include file just updates the database
         include_once ('includes/update-titleranks.php');
