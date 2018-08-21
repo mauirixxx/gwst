@@ -19,11 +19,26 @@ if (isset($_SESSION['userid'])) {
 		}
 	} else {
 		if (!isset($_POST['autofill'])) {
-			$_POST['autofill'] = "0";
+			$_POST['autofill'] == 0;
+		}
+		if (!isset($_POST['gwamm'])) {
+			$_POST['gwamm'] == 0;
+		} else {
+			// $ggid = Get Gwamm ID from current GWAMM holder
+			$ggid = $con->prepare("SELECT titlenameid FROM gwtitles WHERE gwamm = 1");
+			$ggid->execute();
+			$ggid->bind_result($gwammid);
+			$ggid->fetch();
+			$ggid->close();
+			// $rg = Remove GWAMM
+			$rg = $con->prepare("UPDATE gwtitles SET gwamm = 0 WHERE titlenameid = ?");
+			$rg->bind_param("i", $gwammid);
+			$rg->execute();
+			$rg->close();
 		}
 		// this section updates the title name
-		$stmtupd = $con->prepare("UPDATE gwtitles SET titlename = ?, titletype = ?, titlemaxrank = ?, autofilled = ? WHERE titlenameid = ?");
-		$stmtupd->bind_param("siiii", $_POST['titlename'], $_POST['titletype'], $_POST['titlemaxrank'], $_POST['autofill'], $_POST['titlenameid']);
+		$stmtupd = $con->prepare("UPDATE gwtitles SET titlename = ?, titletype = ?, titlemaxrank = ?, autofilled = ?, gwamm = ? WHERE titlenameid = ?");
+		$stmtupd->bind_param("siiiii", $_POST['titlename'], $_POST['titletype'], $_POST['titlemaxrank'], $_POST['autofill'], $_POST['gwamm'], $_POST['titlenameid']);
 		$stmtupd->execute();
 		$stmtupd->close();
 		echo 'Title updated, redirecting!';

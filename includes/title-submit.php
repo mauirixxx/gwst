@@ -1,10 +1,25 @@
 <?php
 if (isset($_SESSION['userid'])) {
 	if (!isset($_POST['autofill'])) {
-		$_POST['autofill'] = "0";
+		$_POST['autofill'] == 0;
 	}
-	$stmtins = $con->prepare("INSERT INTO gwtitles (titlename, titletype, titlemaxrank, autofilled) VALUES (?, ?, ?, ?)");
-	$stmtins->bind_param("siii", $_POST['titlename'], $_POST['titletype'], $_POST['titlemaxrank'], $_POST['autofill']);
+	if (!isset($_POST['gwamm'])) {
+			$_POST['gwamm'] == 0;
+	} else {
+		// $ggid = Get Gwamm ID
+		$ggid = $con->prepare("SELECT titlenameid FROM gwtitles WHERE gwamm = 1");
+		$ggid->execute();
+		$ggid->bind_result($gwammid);
+		$ggid->fetch();
+		$ggid->close();
+		// $rg = Remove GWAMM
+		$rg = $con->prepare("UPDATE gwtitles SET gwamm = 0 WHERE titlenameid = ?");
+		$rg->bind_param("i", $gwammid);
+		$rg->execute();
+		$rg->close();
+	}
+	$stmtins = $con->prepare("INSERT INTO gwtitles (titlename, titletype, titlemaxrank, autofilled, gwamm) VALUES (?, ?, ?, ?, ?)");
+	$stmtins->bind_param("siiii", $_POST['titlename'], $_POST['titletype'], $_POST['titlemaxrank'], $_POST['autofill'], $_POST['gwamm']);
 	$stmtins->execute();
 	$stmtins->close();
 	echo 'New title added!<br /><br />';
