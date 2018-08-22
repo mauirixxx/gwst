@@ -31,13 +31,13 @@ if (isset($_SESSION['userid'])) {
     echo '<tr><td><input type="text" name="accemail" size="35" required></td><td><input type="submit" value="Add account"></td></tr>';
     echo '</table></form><br />';
     echo '<form action="addaccounts.php" method="post"><table border="1"><caption style="white-space: nowrap; overflow: hidden;">Current Guild Wars accounts</caption>';
-    echo '<tr><th>Account name</th><th>Preferred?</th><th>Delete ?</th></tr>';
+    echo '<tr><th>accid</th><th>Account name</th><th>Preferred?</th><th>Delete ?</th></tr>';
     $acclist = $con->prepare("SELECT accid, accemail FROM gwaccounts WHERE userid = ?");
     $acclist->bind_param("i", $_SESSION['userid']);
     $acclist->execute();
     $result = $acclist->get_result();
     while ($row = $result->fetch_assoc()) {
-        echo '<tr><td><form action="addaccounts.php" method="post"><input type="submit" class="submitLink" value="' . $row['accemail'] . '">';
+        echo '<tr><td><input type="text" readonly size="4" value="' . $row['accid'] . '"></td><td><form action="addaccounts.php" method="post"><input type="submit" class="submitLink" value="' . $row['accemail'] . '">';
         echo '</td><td><div class="radio"><input type="radio" name="prefaccid" value="'. $row['accid'] . '"';
         if ($row['accid'] == $_SESSION['prefaccid']) {
             echo ' checked';

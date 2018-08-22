@@ -13,7 +13,6 @@ if (isset($_SESSION['userid'])) {
         $delchar->execute();
 		$delchar->close();
 		// $dac = Delete Account Stats
-		echo 'the error from $gcirow-accid is: <b>' . $gcirow['accid'] . '</b><br>';
 		$dac = $con->prepare("DELETE FROM gwstats WHERE charid = 0 AND accid = ? AND userid = ?");
 		$dac->bind_param("ii", $gcirow['accid'], $_SESSION['userid']);
         $dac->execute();
