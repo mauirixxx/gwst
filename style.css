@@ -10,9 +10,11 @@ a.navlink:link { color: #003366; font-weight: bold; text-decoration: none; }
 a.navlink:visited { color: #003366; font-weight: bold; text-decoration: none; }
 a.navlink:hover { color: #CCCCCC; font-weight: bold; text-decoration: none; }
 
-td {
+table td {
 	font-family: Tahoma; font-size: 13px;
+	display: table-cell;
 	vertical-align: center;
+	text-align: center;
 }
 
 .title {
@@ -26,7 +28,7 @@ ul, li{
 	padding:0 0 0 15px;
 }
 
-.column{
+.column {
 	float: left;
 	margin: 0 20px 0 0;
 }
@@ -49,3 +51,39 @@ img.resize {
 	width:220px;
     height:300px;
 }
+
+input {
+	text-align: center;
+}
+
+.submitLink {
+    background-color: transparent;
+    text-decoration: underline;
+    border: none;
+    color: #003366;
+    cursor: pointer;
+}
+submitLink:focus {
+    outline: none;
+}
+
+.percentbar { background:#CCCCCC; border:1px solid #666666; height:10px; }
+.percentbar div { background: #28B8C0; height: 10px; }
+
+select.header  { 
+	/*background: rgb(255, 255, 255);
+	background: rgba(255, 255, 255, 0.2);*/
+	color: red;
+}
+
+select *.profession-0 { background-color: #FFF; }
+select *.profession-1 {	background-color: #FF8; }
+select *.profession-2 {	background-color: #CF9; }
+select *.profession-3 { background-color: #ACF; }
+select *.profession-4 { background-color: #9FC; }
+select *.profession-5 { background-color: #DAF; }
+select *.profession-6 { background-color: #FBB; }
+select *.profession-7 { background-color: #FCE; }
+select *.profession-8 { background-color: #BFF; }
+select *.profession-9 { background-color: #FC9; }
+select *.profession-10 { background-color: #DDF; }
