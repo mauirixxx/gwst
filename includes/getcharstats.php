@@ -9,12 +9,19 @@ if (isset($_SESSION['userid'])) {
     $result = $gcs->get_result();
     while ($row = $result->fetch_assoc()) {
         // $gnr = Get Next Rank
-        $gnr = $con->prepare("SELECT stpoints, stname FROM gwsubtitles WHERE titlenameid = ? AND stpoints >= ? ORDER BY stpoints ASC LIMIT 1");
+        $gnr = $con->prepare("SELECT stpoints, stname, strank FROM gwsubtitles WHERE titlenameid = ? AND stpoints >= ? ORDER BY stpoints ASC LIMIT 1");
         $gnr->bind_param("ii", $row['titlenameid'], $row['titlepoints']);
         $gnr->execute();
-        $gnr->bind_result($stpoints, $stname);
+        $gnr->bind_result($stpoints, $stname, $strank);
         $gnr->fetch();
         $gnr->close();
+        // $gmr = Get Maximum Rank available for selected title
+        $gmr = $con->prepare("SELECT MAX(strank), MAX(stpoints) FROM gwsubtitles WHERE titlenameid = ?");
+        $gmr->bind_param("i", $row['titlenameid']);
+        $gmr->execute();
+        $gmr->bind_result($mra, $mpa); // $mra = max rank available, $mpa = max points available
+        $gmr->fetch();
+        $gmr->close();
         // $gt = Get Title
         $gt = $con->prepare("SELECT titlename FROM gwtitles WHERE titlenameid = ?");
         $gt->bind_param("i", $row['titlenameid']);
@@ -22,8 +29,8 @@ if (isset($_SESSION['userid'])) {
         $gt->bind_result($titlename);
         $gt->fetch();
         $gt->close();
-        $pr = number_format(($stpoints - $row['titlepoints']));
-        if ($pr <= 0) {
+        $pr = number_format(($mpa - $row['titlepoints']));
+        if ($row['currentstrank'] === $mra) {
             $pr = "Highest rank achieved!";
             $stname = "Highest rank achieved!";
         }
