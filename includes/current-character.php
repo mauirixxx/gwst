@@ -21,6 +21,13 @@ if (isset($_SESSION['userid'])){
         $gnr->bind_result($stpoints, $stname);
         $gnr->fetch();
         $gnr->close();
+        // $gmr = Get Maximum Rank available for selected title
+        $gmr = $con->prepare("SELECT MAX(strank), MAX(stpoints) FROM gwsubtitles WHERE titlenameid = ?");
+        $gmr->bind_param("i", $row['titlenameid']);
+        $gmr->execute();
+        $gmr->bind_result($mra, $mpa); // $mra = max rank available, $mpa = max points available
+        $gmr->fetch();
+        $gmr->close();
         // $gt = Get Title
         $gt = $con->prepare("SELECT titlename FROM gwtitles WHERE titlenameid = ?");
         $gt->bind_param("i", $row['titlenameid']);
@@ -28,8 +35,8 @@ if (isset($_SESSION['userid'])){
         $gt->bind_result($titlename);
         $gt->fetch();
         $gt->close();
-        $pr = number_format(($stpoints - $row['titlepoints']));
-        if ($pr <= 0) {
+        $pr = number_format(($mpa - $row['titlepoints']));
+        if ($row['currentstrank'] === $mra) {
             $pr = "Highest rank achieved!";
             $stname = "Highest rank achieved!";
         }
