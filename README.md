@@ -1,4 +1,4 @@
-# gwst - Guld Wars Stats Tracking
+# gwst - Guild Wars Stats Tracking
 
 Guild Wars stat tracking
 The idea behind this is to track multiple characters individual stats as well as account stats. Hopefully this will be easier then dealing with multiple spreadsheats per character, or editing a public wiki.
