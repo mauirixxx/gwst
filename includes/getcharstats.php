@@ -1,7 +1,7 @@
 <?php
 if (isset($_SESSION['userid'])) {
-    echo '<table border="1"><caption>Character stats</caption>';
-    echo '<tr><th class=\"title-name\">Title</th><th class=\"title-rank\">Title Rank</th><th class=\"title-points\">Title Points</th><th class=\"current-rank\">Current Rank</th><th class=\"points-remaining\">Points Remaining</th><th class=\"title-progress\">Max Title %</th><th class=\"next-rank\">Next Rank</th></tr>';
+    echo '<div class="stats-card"><div class="stats-table-wrap"><table class="stats-table"><caption>Character stats</caption>';
+    echo '<thead><tr><th class="title-name">Title</th><th class="title-rank">Title Rank</th><th class="title-points">Title Points</th><th class="current-rank">Current Rank</th><th class="points-remaining">Points Remaining</th><th class="title-progress">Progress</th><th class="next-rank">Next Rank</th></tr></thead><tbody>';
     // $gcs = Get Character Stats
     $gcs = $con->prepare("SELECT * FROM gwstats WHERE charid = ? AND accid = ? AND userid = ? ORDER BY percent DESC, currentstrank DESC, percent ASC");
     $gcs->bind_param("iii", $_SESSION['prefcharid'], $_SESSION['prefaccid'], $_SESSION['userid']);
@@ -43,12 +43,10 @@ if (isset($_SESSION['userid'])) {
 		} else {
 			$ohp = $row['percent'];
 		}
-        echo '<tr><td style="width:175px;">' . h($titlename) . '</td><td style="width:210px;">' . h($row['currentstrankname']) . '</td><td style="width:100px;">' . number_format($row['titlepoints']) . '</td><td style="width:70px;">' . $row['currentstrank'] . '</td>';
-        echo '<td style="width:100px;">' . $pr . '</td><td><div class="percentbar" style="width:100px;"><div style="width:' . $ohp . 'px;"></div></div>';
-		echo $ohp;
-		echo '% completed</td><td>' . h($stname) . '</td></tr>';
+        echo '<tr><td class="title-name">' . h($titlename) . '</td><td class="title-rank">' . h($row['currentstrankname']) . '</td><td class="title-points">' . number_format($row['titlepoints']) . '</td><td class="current-rank">' . h($row['currentstrank']) . '</td>';
+        echo '<td class="points-remaining">' . h($pr) . '</td><td class="title-progress"><div class="progress-meter" role="progressbar" aria-valuenow="' . (int)$ohp . '" aria-valuemin="0" aria-valuemax="100"><div class="progress-fill" style="width:' . (int)$ohp . '%;"></div><span>' . (int)$ohp . '%</span></div></td><td class="next-rank">' . h($stname) . '</td></tr>';
     }
     $gcs->close();
-    echo '</table><br />';
+    echo '</tbody></table></div></div>';
 }
 ?>
