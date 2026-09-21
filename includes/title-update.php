@@ -6,15 +6,31 @@ if (isset($_SESSION['userid']) && isset($_SESSION['admin']) && $_SESSION['admin'
 			echo '<form action="titlemanager.php" method="post">Please check the box to verify you want to delete: <b>' . $_POST['titlename'] . '</b> <input type="checkbox" name="deltitle" value="iamsure">';
 			echo '<input type="hidden" name="titlenameid" value="' . $_POST['titlenameid'] . '"><input type="hidden" name="title" value="updatetitle"><input type="submit" value="Delete title"></form><br /><br />';
 		} else if ($_POST['deltitle'] == "iamsure") {
-			// this section actually deletes the title
-			$stmtdel = $con->prepare("DELETE FROM gwtitles WHERE titlenameid = ?");
-			$stmtdel->bind_param("i", $_POST['titlenameid']);
-			$stmtdel->execute();
-			$stmtdelst = $con->prepare("DELETE FROM gwsubtitles WHERE titlenameid = ?");
-			$stmtdelst->bind_param("i", $_POST['titlenameid']);
-			$stmtdelst->execute();
-			$stmtdel->close();
-			echo 'The title and associated title ranks have been deleted, redirecting!';
+			// Delete the title and all dependent stats/ranks atomically.
+			$titlenameid = (int)$_POST['titlenameid'];
+			$con->begin_transaction();
+			try {
+				$stmtdelstats = $con->prepare("DELETE FROM gwstats WHERE titlenameid = ?");
+				$stmtdelstats->bind_param("i", $titlenameid);
+				$stmtdelstats->execute();
+				$stmtdelstats->close();
+
+				$stmtdelst = $con->prepare("DELETE FROM gwsubtitles WHERE titlenameid = ?");
+				$stmtdelst->bind_param("i", $titlenameid);
+				$stmtdelst->execute();
+				$stmtdelst->close();
+
+				$stmtdel = $con->prepare("DELETE FROM gwtitles WHERE titlenameid = ?");
+				$stmtdel->bind_param("i", $titlenameid);
+				$stmtdel->execute();
+				$stmtdel->close();
+
+				$con->commit();
+			} catch (Throwable $e) {
+				$con->rollback();
+				throw $e;
+			}
+			echo 'The title, associated title ranks, and assigned title stats have been deleted, redirecting!';
 			header ("Refresh:1; url=titlemanager.php");
 		}
 	} else {
