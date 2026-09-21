@@ -1,6 +1,6 @@
 <?php
 if (isset($_SESSION['userid'])){
-	echo '<table border="1"><caption>Titles progress for <b>' . $_SESSION['prefcharname'] . '</b></caption>';
+	echo '<table border="1"><caption>Titles progress for <b>' . h($_SESSION['prefcharname']) . '</b></caption>';
     echo '<tr><th>Title</th><th>Title Rank</th><th>Title Points</th><th>Current Rank</th><th>Points Remaining</th><th>Max Title %</th><th>Next Rank</th></tr>';
 	if ($_SESSION['prefcharid'] == "0") {
 		// $gcc = Get Current Character stats
@@ -49,10 +49,10 @@ if (isset($_SESSION['userid'])){
 		} else {
 			$ohp = $row['percent'];
 		}
-        echo '<tr><td style="width:175px;">' . $titlename . '</td><td style="width:210px;">' . $row['currentstrankname'] . '</td><td style="width:100px;">' . number_format($row['titlepoints']) . '</td><td style="width:70px;">' . $row['currentstrank'] . '</td>';
+        echo '<tr><td style="width:175px;">' . h($titlename) . '</td><td style="width:210px;">' . h($row['currentstrankname']) . '</td><td style="width:100px;">' . number_format($row['titlepoints']) . '</td><td style="width:70px;">' . $row['currentstrank'] . '</td>';
         echo '<td style="width:100px;">' . $pr . '</td><td><div class="percentbar" style="width:100px;"><div style="width:' . $ohp . 'px;"></div></div>';
 		echo $ohp;
-		echo '% completed</td><td>' . $stname . '</td></tr>';
+		echo '% completed</td><td>' . h($stname) . '</td></tr>';
     }
 	$gccres->close();
 	echo '</table><br />';
