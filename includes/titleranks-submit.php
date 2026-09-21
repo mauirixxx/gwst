@@ -1,5 +1,5 @@
 <?php
-if (isset($_SESSION['userid'])) {
+if (isset($_SESSION['userid']) && isset($_SESSION['admin']) && $_SESSION['admin'] == 1) {
     $stmtstins = $con->prepare("INSERT INTO gwsubtitles (titlenameid, stname, stpoints, strank) VALUES (?, ?, ?, ?)");
     $stmtstins->bind_param("isii", $_POST['titlenameid'], $_POST['titlerankname'], $_POST['titlepoints'], $_POST['titlerank']);
     $stmtstins->execute();
