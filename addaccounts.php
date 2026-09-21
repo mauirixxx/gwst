@@ -88,8 +88,8 @@ if (isset($_SESSION['userid'])) {
     echo '<tr><td colspan="3"><input type="submit" value="Add character"></td></tr></table></form><br />';
     }
     echo '<form action="addaccounts.php" method="post"><table border="1"><caption style="white-space: nowrap; overflow: hidden;">Available characters</caption>';
-    echo '<tr><td>charid</td><td>accid</td><td>charname</td><td>Preferred</td><td>Delete?</td></tr>';
-    $lc = $con->prepare("SELECT charid, accid, charname, profid, profcolor FROM gwchars WHERE accid = ? AND userid = ?");
+    echo '<tr><td>charid</td><td>accid</td><td>charname</td><td>Birthdate</td><td>Preferred</td><td>Delete?</td></tr>';
+    $lc = $con->prepare("SELECT charid, accid, charname, birthdate, profid, profcolor FROM gwchars WHERE accid = ? AND userid = ?");
     $lc->bind_param("ii", $_SESSION['prefaccid'], $_SESSION['userid']);
     $lc->execute();
     $res2 = $lc->get_result();
@@ -97,6 +97,7 @@ if (isset($_SESSION['userid'])) {
         echo '<tr><td><input type="text" readonly size="4" name="charid[]" value="' . $row2['charid'] . '"></td>';
         echo '<td><input type="text" readonly size="4" name="accid[]" value="' . $row2['accid'] . '"></td>';
         echo '<td style="background-color:' . h($row2['profcolor']) . '"><a class="submitLink" href="editcharacter.php?charid=' . (int)$row2['charid'] . '">' . h($row2['charname']) . '</a></td>';
+        echo '<td style="background-color:' . h($row2['profcolor']) . '">' . h($row2['birthdate'] ?: 'Not set') . '</td>';
         echo '<td><div class="radio"><input type="radio" name="prefcharid" value="' . $row2['charid'] . '"';
         if ($row2['charid'] == $_SESSION['prefcharid']) {
             echo ' checked';
