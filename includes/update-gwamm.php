@@ -19,6 +19,12 @@ if (isset($_SESSION['userid'])){
         $ggr->fetch();
         $ggr->close();
         // $gcr = Get Current Rank
+        // Reset rank values before fetching. If the player has GWAMM progress
+        // but has not earned the first rank yet, the query returns no row and
+        // must not reuse values left over from the previously updated title.
+        $stnameid = null;
+        $stname = null;
+        $strank = 0;
         $gcr = $con->prepare("SELECT stnameid, stname, strank FROM gwsubtitles WHERE titlenameid = ? AND stpoints <= ? ORDER BY stpoints DESC LIMIT 1");
         $gcr->bind_param("ii", $gwammid, $gwamm);
         $gcr->execute();
