@@ -23,11 +23,20 @@ if (isset($_SESSION['userid'])) {
         $cts->execute();
         $result = $cts->get_result();
         while ($row = $result->fetch_assoc()) {
-            echo '<option value="' . $row['titlenameid'] . '">' . $row['titlename'] . '</option>';
+            echo '<option value="' . (int)$row['titlenameid'] . '">' . h($row['titlename']) . '</option>';
         }
         echo '</select><input type="submit" value="Select title"></form><br />';
         $cts->close();
     } else {
+        $selected_title = $con->prepare("SELECT titlename FROM gwtitles WHERE titlenameid = ? AND titletype = 1 AND autofilled = 0");
+        $selected_title->bind_param("i", $_POST['chartitle']);
+        $selected_title->execute();
+        $selected_title->bind_result($selected_title_name);
+        if (!$selected_title->fetch()) {
+            $selected_title_name = 'Unknown title';
+        }
+        $selected_title->close();
+        echo 'Updating character title: <b>' . h($selected_title_name) . '</b><br />';
         echo '<form action="updatecharstats.php" method="post"><input type="hidden" name="titlenameid" value="' . $_POST['chartitle'] .'">';
         echo '<input type="number" step="0.1" name="titlepoints" required autofocus><noscript><input type="submit" value="Update points"></noscript></form>';  
     }
