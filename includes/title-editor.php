@@ -1,5 +1,5 @@
 <?php
-if (isset($_SESSION['userid'])) {
+if (isset($_SESSION['userid']) && isset($_SESSION['admin']) && $_SESSION['admin'] == 1) {
 	echo '<form action="titlemanager.php" method="post">';
 	echo '<table border="1"><tr><th>titlenameid</th><th>titlename</th><th>titletype</th><th>titlemaxrank</th><th>autofilled</th><th>gwamm</th></tr>';
 	$stmtview = $con->prepare("SELECT * FROM gwtitles WHERE titlenameid = ?");
@@ -13,7 +13,7 @@ if (isset($_SESSION['userid'])) {
 		$tmr = $row['titlemaxrank'];
 		$taf = $row['autofilled'];
 		$tg = $row['gwamm']; // $tg = Title GWAMM tracking
-		echo '<tr><td><input readonly size="3" name="titlenameid" value="' . $tid . '"></td><td><input size="40" type="text" name="titlename" value="' . $tname . '"></td><td style="text-align:left">';
+		echo '<tr><td><input readonly size="3" name="titlenameid" value="' . $tid . '"></td><td><input size="40" type="text" name="titlename" value="' . h($tname) . '"></td><td style="text-align:left">';
 		echo '<input type="radio" name="titletype" ';
 		if ($ttype == 0) {
 			echo 'checked ';
@@ -42,7 +42,7 @@ if (isset($_SESSION['userid'])) {
 	$ggt->bind_result($gwamm);
 	$ggt->fetch();
 	$ggt->close();
-	echo $gwamm . '</b></td></tr>';
+	echo h($gwamm) . '</b></td></tr>';
 	echo '<tr><th>Delete title?</th></tr><tr><td><input type="checkbox" name="deltitle" value="yes"></td></tr></table><br /><br />';
 	echo '<input type="hidden" name="title" value="updatetitle"><input type="submit" value="Modify title ..."></form><br />';
 	echo 'Return to <a href="titlemanager.php" class="navlink">title manager</a>';
