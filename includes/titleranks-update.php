@@ -1,5 +1,5 @@
 <?php
-if (isset($_SESSION['userid'])) {
+if (isset($_SESSION['userid']) && isset($_SESSION['admin']) && $_SESSION['admin'] == 1) {
     if (isset($_POST['delsubtitle'])) {
         if ($delst = $con->prepare("DELETE FROM gwsubtitles WHERE titlenameid = ? AND stnameid = ?")) {
             $delst->bind_param("ii", $tnameid, $stnameid);
