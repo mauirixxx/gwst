@@ -17,7 +17,7 @@ Currently, you can:
 7. Deleting a Guild Wars account deletes ALL account wide titles and ALL characters and there respective titles.
 
 Immediate to do:
-1. Auto track all of the "Legendary" character titles
+1. ~~Auto track all of the "Legendary" character titles~~
 2. Figure out how to reset a forgotten password
 3. E-mail birthday reminders
 4. ~~Create a default admin user~~
