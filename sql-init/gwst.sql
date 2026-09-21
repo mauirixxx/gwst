@@ -4,86 +4,111 @@
 
 SET NAMES utf8mb4;
 
-CREATE TABLE `gwaccounts` (
-  `accid` int(11) NOT NULL AUTO_INCREMENT COMMENT 'this key will be bound by charid in table gwchars',
-  `userid` int(11) DEFAULT NULL,
-  `accemail` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`accid`)
+CREATE TABLE `userinfo` (
+  `userid` INT NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(30) NOT NULL,
+  `userpass` VARCHAR(255) NOT NULL,
+  `usermail` VARCHAR(50) NOT NULL,
+  `admin` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0 = normal user, 1 = administrator',
+  `prefaccid` INT NOT NULL DEFAULT 0 COMMENT 'preferred Guild Wars account; 0 = none selected',
+  `prefaccname` VARCHAR(50) NOT NULL DEFAULT 'No default selected',
+  `prefcharid` INT NOT NULL DEFAULT 0 COMMENT 'preferred character; 0 = none selected',
+  `prefcharname` VARCHAR(19) NOT NULL DEFAULT 'No default selected',
+  PRIMARY KEY (`userid`),
+  UNIQUE KEY `uq_userinfo_username` (`username`),
+  UNIQUE KEY `uq_userinfo_usermail` (`usermail`),
+  CONSTRAINT `chk_userinfo_admin` CHECK (`admin` IN (0,1))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-/*Table structure for table `gwchars` */
-
-CREATE TABLE `gwchars` (
-  `charid` int(11) NOT NULL AUTO_INCREMENT,
-  `accid` int(11) DEFAULT NULL,
-  `userid` int(11) DEFAULT NULL,
-  `charname` varchar(19) DEFAULT NULL,
-  `birthdate` date DEFAULT NULL,
-  `profid` int(2) DEFAULT NULL,
-  `profcolor` char(7) NOT NULL DEFAULT '#45b39d',
-  PRIMARY KEY (`charid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-/*Table structure for table `gwprofessions` */
 
 CREATE TABLE `gwprofessions` (
-  `profid` int(2) NOT NULL AUTO_INCREMENT,
-  `profession` varchar(12) DEFAULT NULL,
-  `profcolor` char(4) DEFAULT NULL,
-  PRIMARY KEY (`profid`)
+  `profid` INT NOT NULL AUTO_INCREMENT,
+  `profession` VARCHAR(12) NOT NULL,
+  `profcolor` CHAR(4) NOT NULL,
+  PRIMARY KEY (`profid`),
+  UNIQUE KEY `uq_gwprofessions_profession` (`profession`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-/*Table structure for table `gwstats` */
-
-CREATE TABLE `gwstats` (
-  `titlenameid` int(11) DEFAULT NULL,
-  `stnameid` int(2) DEFAULT NULL,
-  `titlepoints` int(11) DEFAULT NULL,
-  `currentstrankname` varchar(37) DEFAULT NULL,
-  `currentstrank` int(11) DEFAULT NULL,
-  `percent` int(3) DEFAULT NULL,
-  `gwamm` int(1) NOT NULL DEFAULT '0',
-  `charid` int(11) NOT NULL DEFAULT '0',
-  `accid` int(11) DEFAULT NULL,
-  `userid` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-/*Table structure for table `gwsubtitles` */
-
-CREATE TABLE `gwsubtitles` (
-  `stnameid` int(11) NOT NULL AUTO_INCREMENT,
-  `titlenameid` int(11) DEFAULT NULL COMMENT 'should be grabbed from the gwtitles table',
-  `stname` varchar(50) DEFAULT NULL,
-  `stpoints` int(11) DEFAULT NULL,
-  `strank` int(11) DEFAULT NULL,
-  PRIMARY KEY (`stnameid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-/*Table structure for table `gwtitles` */
 
 CREATE TABLE `gwtitles` (
-  `titlenameid` int(2) NOT NULL AUTO_INCREMENT,
-  `titlename` varchar(40) DEFAULT NULL,
-  `titletype` int(1) DEFAULT NULL COMMENT '0 = account, 1 = character',
-  `titlemaxrank` int(2) DEFAULT NULL,
-  `autofilled` int(1) NOT NULL DEFAULT '0' COMMENT '0 = no, 1 = yes',
-  `gwamm` int(1) NOT NULL DEFAULT '0' COMMENT '0 = no, 1 = yes',
-  PRIMARY KEY (`titlenameid`)
+  `titlenameid` INT NOT NULL AUTO_INCREMENT,
+  `titlename` VARCHAR(40) NOT NULL,
+  `titletype` TINYINT UNSIGNED NOT NULL COMMENT '0 = account, 1 = character',
+  `titlemaxrank` INT NOT NULL,
+  `autofilled` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0 = no, 1 = yes',
+  `gwamm` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0 = no, 1 = yes',
+  PRIMARY KEY (`titlenameid`),
+  UNIQUE KEY `uq_gwtitles_titlename` (`titlename`),
+  CONSTRAINT `chk_gwtitles_titletype` CHECK (`titletype` IN (0,1)),
+  CONSTRAINT `chk_gwtitles_autofilled` CHECK (`autofilled` IN (0,1)),
+  CONSTRAINT `chk_gwtitles_gwamm` CHECK (`gwamm` IN (0,1))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-/*Table structure for table `userinfo` */
+CREATE TABLE `gwaccounts` (
+  `accid` INT NOT NULL AUTO_INCREMENT,
+  `userid` INT NOT NULL,
+  `accemail` VARCHAR(50) NOT NULL,
+  PRIMARY KEY (`accid`),
+  KEY `idx_gwaccounts_userid` (`userid`),
+  CONSTRAINT `fk_gwaccounts_user`
+    FOREIGN KEY (`userid`) REFERENCES `userinfo` (`userid`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `userinfo` (
-  `userid` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(30) DEFAULT NULL,
-  `userpass` varchar(255) DEFAULT NULL,
-  `usermail` varchar(50) DEFAULT NULL,
-  `admin` int(1) NOT NULL DEFAULT '0' COMMENT 'it''s either a 0 or 1',
-  `prefaccid` int(11) NOT NULL DEFAULT '0' COMMENT 'sets which GW account to default to upon login',
-  `prefaccname` varchar(50) DEFAULT 'No default selected' COMMENT 'name or alias of account',
-  `prefcharid` int(11) NOT NULL DEFAULT '0' COMMENT 'sets which GW character you want to default to',
-  `prefcharname` char(19) DEFAULT 'No default selected',
-  PRIMARY KEY (`userid`)
+CREATE TABLE `gwchars` (
+  `charid` INT NOT NULL AUTO_INCREMENT,
+  `accid` INT NOT NULL,
+  `userid` INT NOT NULL,
+  `charname` VARCHAR(19) NOT NULL,
+  `birthdate` DATE DEFAULT NULL,
+  `profid` INT NOT NULL,
+  `profcolor` CHAR(7) NOT NULL DEFAULT '#45b39d',
+  PRIMARY KEY (`charid`),
+  KEY `idx_gwchars_userid` (`userid`),
+  KEY `idx_gwchars_accid` (`accid`),
+  KEY `idx_gwchars_profid` (`profid`),
+  CONSTRAINT `fk_gwchars_user`
+    FOREIGN KEY (`userid`) REFERENCES `userinfo` (`userid`) ON DELETE CASCADE,
+  CONSTRAINT `fk_gwchars_account`
+    FOREIGN KEY (`accid`) REFERENCES `gwaccounts` (`accid`) ON DELETE CASCADE,
+  CONSTRAINT `fk_gwchars_profession`
+    FOREIGN KEY (`profid`) REFERENCES `gwprofessions` (`profid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `gwsubtitles` (
+  `stnameid` INT NOT NULL AUTO_INCREMENT,
+  `titlenameid` INT NOT NULL,
+  `stname` VARCHAR(50) NOT NULL,
+  `stpoints` INT NOT NULL,
+  `strank` INT NOT NULL,
+  PRIMARY KEY (`stnameid`),
+  KEY `idx_gwsubtitles_titlenameid` (`titlenameid`),
+  UNIQUE KEY `uq_gwsubtitles_title_rank` (`titlenameid`, `strank`),
+  CONSTRAINT `fk_gwsubtitles_title`
+    FOREIGN KEY (`titlenameid`) REFERENCES `gwtitles` (`titlenameid`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `gwstats` (
+  `titlenameid` INT NOT NULL,
+  `stnameid` INT DEFAULT NULL,
+  `titlepoints` INT DEFAULT NULL,
+  `currentstrankname` VARCHAR(37) DEFAULT NULL,
+  `currentstrank` INT DEFAULT NULL,
+  `percent` INT DEFAULT NULL,
+  `gwamm` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  `charid` INT NOT NULL DEFAULT 0 COMMENT '0 denotes an account-wide title',
+  `accid` INT NOT NULL,
+  `userid` INT NOT NULL,
+  PRIMARY KEY (`userid`, `accid`, `charid`, `titlenameid`),
+  KEY `idx_gwstats_accid` (`accid`),
+  KEY `idx_gwstats_titlenameid` (`titlenameid`),
+  KEY `idx_gwstats_stnameid` (`stnameid`),
+  CONSTRAINT `fk_gwstats_user`
+    FOREIGN KEY (`userid`) REFERENCES `userinfo` (`userid`) ON DELETE CASCADE,
+  CONSTRAINT `fk_gwstats_account`
+    FOREIGN KEY (`accid`) REFERENCES `gwaccounts` (`accid`) ON DELETE CASCADE,
+  CONSTRAINT `fk_gwstats_title`
+    FOREIGN KEY (`titlenameid`) REFERENCES `gwtitles` (`titlenameid`) ON DELETE CASCADE,
+  CONSTRAINT `fk_gwstats_subtitle`
+    FOREIGN KEY (`stnameid`) REFERENCES `gwsubtitles` (`stnameid`) ON DELETE SET NULL,
+  CONSTRAINT `chk_gwstats_gwamm` CHECK (`gwamm` IN (0,1))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*Data for the table `gwprofessions` */
