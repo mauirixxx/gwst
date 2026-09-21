@@ -96,7 +96,7 @@ if (isset($_SESSION['userid'])) {
     while ($row2 = $res2->fetch_assoc()) {
         echo '<tr><td><input type="text" readonly size="4" name="charid[]" value="' . $row2['charid'] . '"></td>';
         echo '<td><input type="text" readonly size="4" name="accid[]" value="' . $row2['accid'] . '"></td>';
-        echo '<td  style="background-color:' . ($row2['profcolor']) . '"><form action="addaccounts.php" method="post"><input type="submit" class="submitLink" value="' . h($row2['charname']) . '"></td>';
+        echo '<td style="background-color:' . h($row2['profcolor']) . '"><a class="submitLink" href="editcharacter.php?charid=' . (int)$row2['charid'] . '">' . h($row2['charname']) . '</a></td>';
         echo '<td><div class="radio"><input type="radio" name="prefcharid" value="' . $row2['charid'] . '"';
         if ($row2['charid'] == $_SESSION['prefcharid']) {
             echo ' checked';
