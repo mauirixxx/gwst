@@ -30,14 +30,13 @@ GWST does not need to connect to the database as `root`.
 
 ## 3. Initialize the database
 
-From the GWST application directory, import both SQL files in this order:
+From the GWST application directory, import the database initialization file:
 
 ```bash
-mariadb -u gwstuser -p gwst < sql-init/db-setup.sql
-mariadb -u gwstuser -p gwst < sql-init/gw-title-profession-data.sql
+mariadb -u gwstuser -p gwst < sql-init/gwst.sql
 ```
 
-The first file creates the GWST tables. The second loads the Guild Wars professions, titles, and title ranks required by the application.
+This single file creates the GWST tables and loads the Guild Wars professions, titles, and title ranks required by the application.
 
 You can verify the tables were created with:
 
