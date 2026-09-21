@@ -1,5 +1,5 @@
 <?php
-if (isset($_SESSION['userid'])) {
+if (isset($_SESSION['userid']) && isset($_SESSION['admin']) && $_SESSION['admin'] == 1) {
 	if (isset($_POST['deltitle'])) {
 		if ($_POST['deltitle'] == "yes") {
 			// this section makes you verify that you really want to delete this title
@@ -19,10 +19,10 @@ if (isset($_SESSION['userid'])) {
 		}
 	} else {
 		if (!isset($_POST['autofill'])) {
-			$_POST['autofill'] == 0;
+			$_POST['autofill'] = 0;
 		}
 		if (!isset($_POST['gwamm'])) {
-			$_POST['gwamm'] == 0;
+			$_POST['gwamm'] = 0;
 		} else {
 			// $ggid = Get Gwamm ID from current GWAMM holder
 			$ggid = $con->prepare("SELECT titlenameid FROM gwtitles WHERE gwamm = 1");
