@@ -1,7 +1,7 @@
 <?php
 if (isset($_SESSION['userid'])) {
     echo '<table border="1"><caption>Character stats</caption>';
-    echo '<tr><th>Title</th><th>Title Rank</th><th>Title Points</th><th>Current Rank</th><th>Points Remaining</th><th>Max Title %</th><th>Next Rank</th></tr>';
+    echo '<tr><th class=\"title-name\">Title</th><th class=\"title-rank\">Title Rank</th><th class=\"title-points\">Title Points</th><th class=\"current-rank\">Current Rank</th><th class=\"points-remaining\">Points Remaining</th><th class=\"title-progress\">Max Title %</th><th class=\"next-rank\">Next Rank</th></tr>';
     // $gcs = Get Character Stats
     $gcs = $con->prepare("SELECT * FROM gwstats WHERE charid = ? AND accid = ? AND userid = ? ORDER BY percent DESC, currentstrank DESC, percent ASC");
     $gcs->bind_param("iii", $_SESSION['prefcharid'], $_SESSION['prefaccid'], $_SESSION['userid']);
