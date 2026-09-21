@@ -7,7 +7,7 @@ if (isset($_SESSION['userid'])) {
 		$tid = $row['titlenameid'];
 		$tname = $row['titlename'];
 		$tnr = $row['titlemaxrank'];
-		echo '<option value="' . $tid . '">' . $tname . ' (' . $tnr . ')</option>';
+		echo '<option value="' . $tid . '">' . h($tname) . ' (' . $tnr . ')</option>';
 	}
 	$stmtview->close();
 }
