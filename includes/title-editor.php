@@ -13,6 +13,7 @@ if (isset($_SESSION['userid']) && isset($_SESSION['admin']) && $_SESSION['admin'
 		$tmr = $row['titlemaxrank'];
 		$taf = $row['autofilled'];
 		$tg = $row['gwamm']; // $tg = Title GWAMM tracking
+		echo '<b>Editing title: ' . h($tname) . '</b><br /><br />';
 		echo '<tr><td><input readonly size="3" name="titlenameid" value="' . $tid . '"></td><td><input size="40" type="text" name="titlename" value="' . h($tname) . '"></td><td style="text-align:left">';
 		echo '<input type="radio" name="titletype" ';
 		if ($ttype == 0) {
