@@ -6,7 +6,7 @@ if (isset($_SESSION['userid'])) {
 	$cls->execute();
 	$clsres = $cls->get_result();
 	while ($clsrow = $clsres->fetch_assoc()) {
-		echo '<option class="profession-' . $clsrow['profid'] . '" value="' . $clsrow['charid'] . '">' . $clsrow['charname'] . '</option>';
+		echo '<option class="profession-' . $clsrow['profid'] . '" value="' . $clsrow['charid'] . '">' . h($clsrow['charname']) . '</option>';
 	}
 	$cls->close();
 }
