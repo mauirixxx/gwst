@@ -81,7 +81,7 @@ if (!$userid){
 	include_once ('header-list-accounts.php');
 	echo '</select>)<noscript><input type="submit" value="Preferrence"></noscript> ';
 	echo '(<select name="prefcharid" onchange="this.form.submit()">';
-	echo '<option "class="header" value="' . (int)$_SESSION['prefcharid'] . '">' . h($_SESSION['prefcharname']) . '</option>';
+	echo '<option class="header" value="' . (int)$_SESSION['prefcharid'] . '">' . h($_SESSION['prefcharname']) . '</option>';
 	echo '<option value="nopref">No default selected</option>';
 	include_once ('header-list-chars.php');
 	echo '</select>)<noscript><input type="submit" value="Preferrence"></noscript> ';
