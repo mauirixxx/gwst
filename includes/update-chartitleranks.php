@@ -23,20 +23,26 @@ if (isset($_SESSION['userid'])) {
     $gpc->fetch();
     $gpc->close();
 	$progress = ceil(($_POST['titlepoints'] / $pmr) * 100);
+    $gtn = $con->prepare("SELECT titlename FROM gwtitles WHERE titlenameid = ?");
+    $gtn->bind_param("i", $_POST['titlenameid']);
+    $gtn->execute();
+    $gtn->bind_result($updated_title_name);
+    $gtn->fetch();
+    $gtn->close();
     if ($r1 > 0) {
         // $urs = Update Rank Stats
         $urs = $con->prepare("UPDATE gwstats SET stnameid = ?, titlepoints = ?, currentstrankname = ?, currentstrank = ?, percent = ? WHERE charid = ? AND titlenameid = ? AND accid = ? AND userid = ?");
         $urs->bind_param("iisiiiiii", $stnameid, $_POST['titlepoints'], $stname, $strank, $progress, $_SESSION['prefcharid'], $_POST['titlenameid'], $_SESSION['prefaccid'], $_SESSION['userid']);
         $urs->execute();
         $urs->close();
-        echo 'Title has been updated!<br /><br />';
+        echo 'Title &quot;' . h($updated_title_name) . '&quot; has been updated to ' . number_format((float)$_POST['titlepoints']) . ' points!<br /><br />';
     } else {
         // $irs = Insert Rank Stats
         $irs = $con->prepare("INSERT INTO gwstats (titlenameid, stnameid, titlepoints, currentstrankname, currentstrank, percent, charid, accid, userid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $irs->bind_param("iiisiiiii", $_POST['titlenameid'], $stnameid, $_POST['titlepoints'], $stname, $strank, $progress, $_SESSION['prefcharid'], $_SESSION['prefaccid'], $_SESSION['userid']);
         $irs->execute();
         $irs->close();
-        echo 'Title entered!<br /></br />';
+        echo 'Title &quot;' . h($updated_title_name) . '&quot; has been entered with ' . number_format((float)$_POST['titlepoints']) . ' points!<br /><br />';
     }
     include_once ('update-gwamm.php');
 }
