@@ -87,3 +87,32 @@ select *.profession-7 { background-color: #FCE; }
 select *.profession-8 { background-color: #BFF; }
 select *.profession-9 { background-color: #FC9; }
 select *.profession-10 { background-color: #DDF; }
+
+
+/* Stats tables: keep long status text readable without forcing cramped columns. */
+.stats-table {
+	width: min(100%, 1180px);
+	border-collapse: collapse;
+	table-layout: auto;
+}
+
+.stats-table th,
+.stats-table td {
+	padding: 6px 8px;
+	line-height: 1.25;
+	vertical-align: middle;
+}
+
+.stats-table .title-name { min-width: 165px; }
+.stats-table .title-rank { min-width: 200px; }
+.stats-table .title-points { min-width: 95px; white-space: nowrap; }
+.stats-table .current-rank { min-width: 70px; white-space: nowrap; }
+.stats-table .points-remaining { min-width: 125px; }
+.stats-table .title-progress { min-width: 120px; white-space: nowrap; }
+.stats-table .next-rank { min-width: 145px; }
+
+.stats-table .percentbar {
+	width: 100%;
+	max-width: 110px;
+	margin: 0 auto 3px;
+}
