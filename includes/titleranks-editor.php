@@ -1,5 +1,5 @@
 <?php
-if (isset($_SESSION['userid'])) {
+if (isset($_SESSION['userid']) && isset($_SESSION['admin']) && $_SESSION['admin'] == 1) {
     if (isset($_POST['editstitle'])) {
         echo '<form action="titlemanager.php" method="post"><table border="1"><caption>Deleting takes precedence over edits - edits will have to be remade after submission</caption>';
         echo '<tr><th>stnameid</th><th>titlenameid</th><th>stname</th><th>stpoints</th><th>strank</th><th>Delete?</th></tr>';
