@@ -5,7 +5,18 @@ The idea behind this is to track multiple characters individual stats as well as
 
 Installation instructions are available in [INSTALL.md](INSTALL.md).
 
-Created on a CentOS 7 VM under Php v7.2, MariaDB v5.5.56, and Apache v2.4.6
+## Requirements
+
+GWST is operating-system agnostic and does not require Apache specifically. The current code requires:
+
+- **PHP 8.3 or newer** with the **MySQLi** extension enabled
+- A web server capable of serving PHP applications, such as Apache or nginx with PHP-FPM
+- **MariaDB 10.11 or newer**, or a compatible MySQL server
+- A modern web browser
+
+The current production installation runs on PHP 8.3 and MariaDB 10.11. PostgreSQL is not currently supported; database access is written for MySQL/MariaDB using MySQLi.
+
+See [INSTALL.md](INSTALL.md) for setup instructions.
 
 Currently, you can:
 1. Register an account, with a properly salted & hashed password
