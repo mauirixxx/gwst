@@ -47,9 +47,22 @@ if (isset($_SESSION['userid'])) {
     }
     $acclist->close();
     echo '</form></table><input type="submit" value="Modify selected accounts"></form><br />';
-    // add characters here
+    // Add characters only when the selected account belongs to this user.
+    $selected_account_id = (int)($_SESSION['prefaccid'] ?? 0);
+    $selected_account = null;
+    if ($selected_account_id > 0) {
+        $ownacc = $con->prepare("SELECT accid, accemail FROM gwaccounts WHERE accid = ? AND userid = ? LIMIT 1");
+        $ownacc->bind_param("ii", $selected_account_id, $_SESSION['userid']);
+        $ownacc->execute();
+        $selected_account = $ownacc->get_result()->fetch_assoc();
+        $ownacc->close();
+    }
+
+    if (!$selected_account) {
+        echo '<b>Add and select a Guild Wars account before adding characters.</b><br /><br />';
+    } else {
     echo '<form action="addaccounts.php" method="post"><table>';
-    echo '<caption style="white-space: nowrap; overflow: hidden;">Add character to account: ' . h($_SESSION['prefaccname']) . '</caption>';
+    echo '<caption style="white-space: nowrap; overflow: hidden;">Add character to account: ' . h($selected_account['accemail']) . '</caption>';
     echo '<tr><th>Character name</th><th>Birthdate</th><th>Profession</th></tr>';
     echo '<tr><td><input type="text" name="newcharname" size="19" required autofocus></td><td><input type="date" name="bdate" placeholder="2005-04-28"></td><td><select name="profid" required>';
     // $gp = Get Profession
@@ -61,10 +74,11 @@ if (isset($_SESSION['userid'])) {
     }
     echo '</td></tr>';
     echo '<tr><td colspan="3"><input type="submit" value="Add character"></td></tr></table></form><br />';
+    }
     echo '<form action="addaccounts.php" method="post"><table border="1"><caption style="white-space: nowrap; overflow: hidden;">Available characters</caption>';
     echo '<tr><td>charid</td><td>accid</td><td>charname</td><td>Preferred</td><td>Delete?</td></tr>';
-    $lc = $con->prepare("SELECT charid, accid, charname, profid, profcolor FROM gwchars WHERE accid = ?");
-    $lc->bind_param("i", $_SESSION['prefaccid']);
+    $lc = $con->prepare("SELECT charid, accid, charname, profid, profcolor FROM gwchars WHERE accid = ? AND userid = ?");
+    $lc->bind_param("ii", $_SESSION['prefaccid'], $_SESSION['userid']);
     $lc->execute();
     $res2 = $lc->get_result();
     while ($row2 = $res2->fetch_assoc()) {
