@@ -2,7 +2,7 @@
 <?php
 echo '<hr>';
 if (isset($_SESSION['prefaccname']) && ($_SESSION['prefcharname'])) {
-	echo '<center>| Currently selected game account: <b>' . $_SESSION['prefaccname'] . '</b> | Current character: <b>' . $_SESSION['prefcharname'] . '</b> |</center><br />';
+	echo '<center>| Currently selected game account: <b>' . h($_SESSION['prefaccname']) . '</b> | Current character: <b>' . h($_SESSION['prefcharname']) . '</b> |</center><br />';
 }
 // the footer just adds a logout button at the bottom of every page for the currently logged in user
 if (isset($_SESSION['userid']) && ($_SESSION['username'])) {
