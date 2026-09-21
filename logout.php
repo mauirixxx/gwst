@@ -26,6 +26,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 	exit();
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+	$token = htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8');
+	echo '<CENTER><form method="post" action="logout.php"><input type="hidden" name="action" value="logout"><input type="hidden" name="csrf_token" value="' . $token . '"><input type="submit" value="Confirm logout"></form></CENTER>';
+	exit();
+}
+
 http_response_code(400);
-echo '<CENTER>Something went wrong, you haven\'t been logged out!<BR /><BR />Please return to <A HREF="index.php" CLASS="navlink">GWST</A>.</CENTER>';
+echo '<CENTER>Invalid logout request.<BR /><BR />Please return to <A HREF="index.php" CLASS="navlink">GWST</A>.</CENTER>';
 ?>
