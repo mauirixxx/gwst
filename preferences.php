@@ -20,7 +20,7 @@ if (isset($_SESSION['userid'])){
     }
     echo '<h3>Set preferred account & character, or change e-mail or password</h3>';
     // select which GW account you want to default to
-    echo '<form action="preferences.php" method="post"><table border="1"><caption style="white-space: nowrap; overflow: hidden;">Current preferred account: <b>' .$_SESSION['prefaccname'] . '</b></caption>';
+    echo '<form action="preferences.php" method="post"><table border="1"><caption style="white-space: nowrap; overflow: hidden;">Current preferred account: <b>' . h($_SESSION['prefaccname']) . '</b></caption>';
     echo '<tr><td><select name="prefaccid">';
     echo '<option value="nopref">Prefer no default</option>';
     $prefacc = $con->prepare("SELECT accid, accemail FROM gwaccounts WHERE userid = ?");
@@ -28,11 +28,11 @@ if (isset($_SESSION['userid'])){
     $prefacc->execute();
     $resacc = $prefacc->get_result();
     while ($row = $resacc->fetch_assoc()) {
-       echo '<option value="' . $row['accid'] . '">' . $row['accemail'] . '</option>';
+       echo '<option value="' . $row['accid'] . '">' . h($row['accemail']) . '</option>';
     }
     echo '</td><td><input type="submit" value="Set account"></td></tr></select></table><input type="hidden" name="setacc" value="update"></form><br />';
     // select which character from your GW account you want to default to
-    echo '<form action="preferences.php" method="post"><table border="1"><caption style="white-space: nowrap; overflow: hidden;">Current preferred character: <b>' .$_SESSION['prefcharname'] . '</b></caption>';
+    echo '<form action="preferences.php" method="post"><table border="1"><caption style="white-space: nowrap; overflow: hidden;">Current preferred character: <b>' . h($_SESSION['prefcharname']) . '</b></caption>';
     echo '<tr><td><select name="prefcharid">';
     echo '<option value="nopref">Prefer no default</option>';
     $prefchar = $con->prepare("SELECT charid, charname FROM gwchars WHERE accid = ? AND userid = ?");
@@ -40,13 +40,13 @@ if (isset($_SESSION['userid'])){
     $prefchar->execute();
     $reschar = $prefchar->get_result();
     while ($row2 = $reschar->fetch_assoc()) {
-    	echo '<option value="' . $row2['charid'] . '">' . $row2['charname'] . '</option>';
+    	echo '<option value="' . $row2['charid'] . '">' . h($row2['charname']) . '</option>';
     }
     echo '</td><td><input type="submit" value="Set character"></td></tr></select></table><input type="hidden" name="setchar" value="updatechar"></form><br />';
     // update e-mail address form
     echo '<form action="preferences.php" method="post"><table border="1">';
     echo '<caption>Update e-mail address</caption>';
-    echo '<tr><td><input type="text" name="useremail" value="' . $_SESSION['usermail'] . '"></td><td><input type="submit" value="Update e-mail"></td></tr>';
+    echo '<tr><td><input type="text" name="useremail" value="' . h($_SESSION['usermail']) . '"></td><td><input type="submit" value="Update e-mail"></td></tr>';
     echo '</table></form><br /><br />';
     // update password form
     echo <<<UPDPASS
