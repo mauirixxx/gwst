@@ -350,3 +350,12 @@ body {
 	.stats-table caption { font-size: 19px; padding: 16px 14px 12px; }
 	.stats-table thead th, .stats-table tbody td { padding: 9px 10px; }
 }
+
+/* Guild Wars Warrior profession accent for account-name controls */
+.submitLink.warrior-yellow {
+	color: #fff2a8;
+}
+.submitLink.warrior-yellow:hover,
+.submitLink.warrior-yellow:focus {
+	color: #fff7c7;
+}
