@@ -40,12 +40,45 @@ if (empty($_POST['reguser'])){
 
     include_once ('includes/verifications.php');
     $hashedpass = password_hash($_POST['userpass1'], PASSWORD_DEFAULT);
-    $stmt = $con->prepare("INSERT INTO userinfo (username, userpass, usermail) VALUES (?, ?, ?)");
-    $stmt->bind_param("sss", $username, $hashedpass, $verifyemail);
-    $stmt->execute();
-    $stmt->close();
+    $first_user_admin = false;
 
-    echo '<center>Account created, please <a href="index.php">login</a> to continue<br /><br />';
+    // Serialize registration while deciding whether this is the first user.
+    $con->begin_transaction();
+    try {
+        $lock = $con->prepare("LOCK TABLES userinfo WRITE");
+        $lock->execute();
+        $lock->close();
+
+        $count = $con->prepare("SELECT COUNT(*) FROM userinfo");
+        $count->execute();
+        $count->bind_result($user_count);
+        $count->fetch();
+        $count->close();
+
+        $admin = ((int)$user_count === 0) ? 1 : 0;
+        $stmt = $con->prepare("INSERT INTO userinfo (username, userpass, usermail, admin) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("sssi", $username, $hashedpass, $verifyemail, $admin);
+        $stmt->execute();
+        $stmt->close();
+
+        $first_user_admin = ($admin === 1);
+
+        $unlock = $con->prepare("UNLOCK TABLES");
+        $unlock->execute();
+        $unlock->close();
+        $con->commit();
+    } catch (Throwable $e) {
+        // UNLOCK TABLES implicitly releases the table lock if one was acquired.
+        $con->query("UNLOCK TABLES");
+        $con->rollback();
+        throw $e;
+    }
+
+    echo '<center>Account created.';
+    if ($first_user_admin) {
+        echo ' As the first GWST user, this account has been granted administrator access.';
+    }
+    echo ' Please <a href="index.php">login</a> to continue<br /><br />';
     $_SESSION = array();
     session_destroy();
     exit();
