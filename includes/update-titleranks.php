@@ -44,5 +44,9 @@ if (isset($_SESSION['userid'])) {
         $irs->close();
         echo 'Title &quot;' . h($updated_title_name) . '&quot; has been entered with ' . number_format((float)$_POST['titlepoints']) . ' points!<br /><br />';
     }
+    // Account-wide maxed titles also count toward the selected character's GWAMM total.
+    if ((int)$_SESSION['prefcharid'] > 0) {
+        include ('update-gwamm.php');
+    }
 }
 ?>
