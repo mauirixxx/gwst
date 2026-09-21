@@ -4,13 +4,47 @@
 <link rel="stylesheet" type="text/css" href="style.css">
 <?php
 if (session_status() == PHP_SESSION_NONE) {
+	ini_set('session.use_strict_mode', '1');
+	ini_set('session.use_only_cookies', '1');
+	ini_set('session.cookie_httponly', '1');
+	ini_set('session.cookie_samesite', 'Lax');
+	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+		ini_set('session.cookie_secure', '1');
+	}
 	session_start();
 }
+
+$session_idle_timeout = 1800;
+$session_absolute_timeout = 28800;
+
+if (isset($_SESSION['userid'])) {
+	$now = time();
+	$session_expired = false;
+
+	if (isset($_SESSION['last_activity']) && ($now - $_SESSION['last_activity']) > $session_idle_timeout) {
+		$session_expired = true;
+	}
+	if (isset($_SESSION['login_time']) && ($now - $_SESSION['login_time']) > $session_absolute_timeout) {
+		$session_expired = true;
+	}
+
+	if ($session_expired) {
+		$_SESSION = array();
+		if (ini_get("session.use_cookies")) {
+			$params = session_get_cookie_params();
+			setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
+		}
+		session_destroy();
+	} else {
+		$_SESSION['last_activity'] = $now;
+	}
+}
+
 $userid = (isset($_SESSION['userid']) ? $_SESSION['userid'] : null);
 include_once ('connect.php');
 $con = mysqli_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS, DATABASE_NAME);
 if ($con->connect_errno){
-	die ('Unable to connect to database [' . $db->connect_errno . ']');
+	die ('Unable to connect to database [' . $con->connect_errno . ']');
 }
 if (!$userid){
 	echo '<title>Please login first</title></head><body><center>Aloha, and welcome to my Guild Wars stats tracker. Please login below.<hr>';
@@ -27,11 +61,9 @@ if (!$userid){
 	}
 	echo '</title></head><body><center>';
 	if (!empty($_POST['prefaccid'])) {
-		//this section contains code to set the users preferred game account
 		include_once ('includes/set-prefacc.php');
 	}
 	if (!empty($_POST['prefcharid'])) {
-        //this section contains code to the users preferred character
         include_once ('includes/set-prefchar.php');
     }
 	echo '<form action="' . $_SERVER['REQUEST_URI'] . '" method="post">';
