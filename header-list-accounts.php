@@ -6,7 +6,7 @@ if (isset($_SESSION['userid'])) {
     $als->execute();
     $alsres = $als->get_result();
     while ($alsrow = $alsres->fetch_assoc()) {
-        echo '<option value="' . $alsrow['accid'] . '">' . $alsrow['accemail'] . '</option>';
+        echo '<option value="' . $alsrow['accid'] . '">' . h($alsrow['accemail']) . '</option>';
     }
     $als->close();
 }
