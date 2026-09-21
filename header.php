@@ -14,6 +14,8 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
+include_once (__DIR__ . '/includes/csrf.php');
+
 $session_idle_timeout = 1800;
 $session_absolute_timeout = 28800;
 
@@ -41,6 +43,10 @@ if (isset($_SESSION['userid'])) {
 }
 
 $userid = (isset($_SESSION['userid']) ? $_SESSION['userid'] : null);
+
+if ($userid && $_SERVER['REQUEST_METHOD'] === 'POST') {
+	csrf_require_valid_post();
+}
 include_once ('connect.php');
 $con = mysqli_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS, DATABASE_NAME);
 if ($con->connect_errno){
