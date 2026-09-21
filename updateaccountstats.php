@@ -23,11 +23,20 @@ if (isset($_SESSION['userid'])) {
         $ats->execute();
         $result = $ats->get_result();
         while ($row = $result->fetch_assoc()) {
-            echo '<option value="' . $row['titlenameid'] . '">' . $row['titlename'] . '</option>';
+            echo '<option value="' . (int)$row['titlenameid'] . '">' . h($row['titlename']) . '</option>';
         }
         echo '</select><input type="submit" value="Select title"></form><br />';
         $ats->close();
     } else {
+        $selected_title = $con->prepare("SELECT titlename FROM gwtitles WHERE titlenameid = ? AND titletype = 0");
+        $selected_title->bind_param("i", $_POST['acctitle']);
+        $selected_title->execute();
+        $selected_title->bind_result($selected_title_name);
+        if (!$selected_title->fetch()) {
+            $selected_title_name = 'Unknown title';
+        }
+        $selected_title->close();
+        echo 'Updating account title: <b>' . h($selected_title_name) . '</b><br />';
         echo '<form action="updateaccountstats.php" method="post"><input type="hidden" name="titlenameid" value="' . $_POST['acctitle'] .'">';
         echo '<input type="number" name="titlepoints" required autofocus><input type="submit" value="Update points"></form>';  
     }
