@@ -49,7 +49,7 @@ if (isset($_SESSION['userid'])) {
     $acclist->execute();
     $result = $acclist->get_result();
     while ($row = $result->fetch_assoc()) {
-        echo '<tr><td><input type="text" readonly size="4" value="' . $row['accid'] . '"></td><td><form action="addaccounts.php" method="post"><input type="submit" class="submitLink" value="' . h($row['accemail']) . '">';
+        echo '<tr><td><input type="text" readonly size="4" value="' . $row['accid'] . '"></td><td><form action="addaccounts.php" method="post"><input type="submit" class="submitLink warrior-yellow" value="' . h($row['accemail']) . '">';
         echo '</td><td><div class="radio"><input type="radio" name="prefaccid" value="'. $row['accid'] . '"';
         if ($row['accid'] == $_SESSION['prefaccid']) {
             echo ' checked';
