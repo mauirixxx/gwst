@@ -1,5 +1,5 @@
 <?php
-if (isset($_SESSION['userid'])) {
+if (isset($_SESSION['userid']) && isset($_SESSION['admin']) && $_SESSION['admin'] == 1) {
 	unset($_SESSION['title']);
 	if (isset($_SESSION['tid'])) {
 		$_POST['tid'] = $_SESSION['tid'];
@@ -26,7 +26,7 @@ if (isset($_SESSION['userid'])) {
 	$stmtname->store_result();
 	$stmtname->bind_result($gwtn, $gwtmr);
 	while ($stmtname->fetch()) {
-		echo 'Adding rank to title <b>' . $gwtn . '</b><br />The maximum rank achievable in game is ' . $gwtmr . '<br />';
+		echo 'Adding rank to title <b>' . h($gwtn) . '</b><br />The maximum rank achievable in game is ' . $gwtmr . '<br />';
 		if ($tr > $gwtmr) {
 			echo '<br />No more ranks can be added!<br /><br />';
 		} else {
@@ -49,7 +49,7 @@ if (isset($_SESSION['userid'])) {
 		$stname = $row['stname'];
 		$stpoints = $row['stpoints'];
 		$strank = $row['strank'];
-		echo '<tr><td>' . $stnid . '<td>' . $tnid . '</td><td>' . $stname . '</td><td>' . number_format($stpoints) . '</td><td>' . $strank . '</td><td><input type="checkbox" name="editstitle[]" value="' . $stnid . '"></td></tr>';
+		echo '<tr><td>' . $stnid . '<td>' . $tnid . '</td><td>' . h($stname) . '</td><td>' . number_format($stpoints) . '</td><td>' . $strank . '</td><td><input type="checkbox" name="editstitle[]" value="' . $stnid . '"></td></tr>';
 	}
 	$stmtview->close();
 	$_SESSION['tid'] = $_POST['tid'];
