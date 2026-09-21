@@ -43,10 +43,10 @@ if (isset($_SESSION['userid'])) {
 		} else {
 			$ohp = $row['percent'];
 		}
-        echo '<tr><td style="width:175px;">' . $titlename . '</td><td style="width:210px;">' . $row['currentstrankname'] . '</td><td style="width:100px;">' . number_format($row['titlepoints']) . '</td><td style="width:70px;">' . $row['currentstrank'] . '</td>';
+        echo '<tr><td style="width:175px;">' . h($titlename) . '</td><td style="width:210px;">' . h($row['currentstrankname']) . '</td><td style="width:100px;">' . number_format($row['titlepoints']) . '</td><td style="width:70px;">' . $row['currentstrank'] . '</td>';
         echo '<td style="width:100px;">' . $pr . '</td><td><div class="percentbar" style="width:100px;"><div style="width:' . $ohp . 'px;"></div></div>';
 		echo $ohp;
-		echo '% completed</td><td>' . $stname . '</td></tr>';
+		echo '% completed</td><td>' . h($stname) . '</td></tr>';
     }
     $gcs->close();
     echo '</table><br />';
