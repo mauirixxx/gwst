@@ -8,46 +8,26 @@
  */
 if (isset($_SESSION['userid']) && (int)$_SESSION['prefcharid'] > 0) {
     $legendary_rules = [
-        'Legendary Cartographer' => [
-            'Cartographer (Prophecies)',
-            'Cartographer (Factions)',
-            'Cartographer (Nightfall)',
-        ],
-        'Legendary Guardian' => [
-            'Protector of Tyria',
-            'Protector of Cantha',
-            'Protector of Elona',
-            'Guardian (Prophecies)',
-            'Guardian (Factions)',
-            'Guardian (Nightfall)',
-        ],
-        'Legendary Skill Hunter' => [
-            'Skill Hunter (Prophecies)',
-            'Skill Hunter (Factions)',
-            'Skill Hunter (Nightfall)',
-        ],
-        'Legendary Vanquisher' => [
-            'Vanquisher (Prophecies)',
-            'Vanquisher (Factions)',
-            'Vanquisher (Nightfall)',
-        ],
+        // target title ID => prerequisite title IDs
+        37 => [25, 41, 42],                 // Legendary Cartographer
+        38 => [28, 47, 48, 26, 45, 46],    // Legendary Guardian
+        39 => [29, 51, 52],                 // Legendary Skill Hunter
+        40 => [31, 49, 50],                 // Legendary Vanquisher
     ];
 
     $source_maxed = $con->prepare(
         "SELECT COUNT(*)
          FROM gwstats gs
-         INNER JOIN gwtitles gt ON gt.titlenameid = gs.titlenameid
-         WHERE gt.titlename = ?
+         WHERE gs.titlenameid = ?
            AND gs.charid = ?
            AND gs.accid = ?
            AND gs.userid = ?
            AND gs.percent >= 100"
     );
     $target = $con->prepare(
-        "SELECT gt.titlenameid, gs.stnameid, gs.stname, gs.strank, gs.stpoints
-         FROM gwtitles gt
-         INNER JOIN gwsubtitles gs ON gs.titlenameid = gt.titlenameid
-         WHERE gt.titlename = ?
+        "SELECT gs.titlenameid, gs.stnameid, gs.stname, gs.strank, gs.stpoints
+         FROM gwsubtitles gs
+         WHERE gs.titlenameid = ?
          ORDER BY gs.strank DESC
          LIMIT 1"
     );
@@ -68,7 +48,7 @@ if (isset($_SESSION['userid']) && (int)$_SESSION['prefcharid'] > 0) {
         "DELETE gs
          FROM gwstats gs
          INNER JOIN gwtitles gt ON gt.titlenameid = gs.titlenameid
-         WHERE gt.titlename = ?
+         WHERE gs.titlenameid = ?
            AND gt.autofilled = 1
            AND gt.gwamm = 0
            AND gs.charid = ?
@@ -76,13 +56,13 @@ if (isset($_SESSION['userid']) && (int)$_SESSION['prefcharid'] > 0) {
            AND gs.userid = ?"
     );
 
-    foreach ($legendary_rules as $legendary_title => $requirements) {
+    foreach ($legendary_rules as $legendary_title_id => $requirements) {
         $requirements_met = true;
 
-        foreach ($requirements as $required_title) {
+        foreach ($requirements as $required_title_id) {
             $source_maxed->bind_param(
-                "siii",
-                $required_title,
+                "iiii",
+                $required_title_id,
                 $_SESSION['prefcharid'],
                 $_SESSION['prefaccid'],
                 $_SESSION['userid']
@@ -99,7 +79,7 @@ if (isset($_SESSION['userid']) && (int)$_SESSION['prefcharid'] > 0) {
         }
 
         if ($requirements_met) {
-            $target->bind_param("s", $legendary_title);
+            $target->bind_param("i", $legendary_title_id);
             $target->execute();
             $target->bind_result($target_id, $subtitle_id, $subtitle_name, $subtitle_rank, $subtitle_points);
 
@@ -122,8 +102,8 @@ if (isset($_SESSION['userid']) && (int)$_SESSION['prefcharid'] > 0) {
             }
         } else {
             $remove->bind_param(
-                "siii",
-                $legendary_title,
+                "iiii",
+                $legendary_title_id,
                 $_SESSION['prefcharid'],
                 $_SESSION['prefaccid'],
                 $_SESSION['userid']
