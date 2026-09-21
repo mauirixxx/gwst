@@ -22,7 +22,7 @@ if (isset($_SESSION['userid']) && isset($_SESSION['admin']) && $_SESSION['admin'
 	$stmtins->bind_param("siiii", $_POST['titlename'], $_POST['titletype'], $_POST['titlemaxrank'], $_POST['autofill'], $_POST['gwamm']);
 	$stmtins->execute();
 	$stmtins->close();
-	echo 'New title added!<br /><br />';
+	echo 'New title added: <b>' . h($_POST['titlename']) . '</b><br /><br />';
 	$stmtview = $con->prepare("SELECT * FROM gwtitles ORDER BY titlenameid DESC LIMIT 1");
 	$stmtview->execute();
 	$result = $stmtview->get_result();
@@ -33,7 +33,7 @@ if (isset($_SESSION['userid']) && isset($_SESSION['admin']) && $_SESSION['admin'
 		$tmr = $row['titlemaxrank'];
 		$taf = $row['autofilled'];
 		echo '<table border="1"><tr><th>titleid</th><th>titlename</th><th>titletype</th><th>titlemaxrank</th><th>autofilled</th></tr>';
-		echo '<tr><td>' . $tid . '</td><td>' . $tname . '</td><td>' . $ttype . '</td><td>' . $tmr . '</td><td>' . $taf . '</tr></table><br />';
+		echo '<tr><td>' . $tid . '</td><td>' . h($tname) . '</td><td>' . $ttype . '</td><td>' . $tmr . '</td><td>' . $taf . '</tr></table><br />';
 	}
 	$stmtview->close();
 	echo 'Return to <a href="titlemanager.php" class="navlink">title manager</a>';
