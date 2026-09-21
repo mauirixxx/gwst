@@ -10,7 +10,10 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-if (isset($_GET['action']) && $_GET['action'] === 'logout') {
+include_once (__DIR__ . '/includes/csrf.php');
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'logout') {
+	csrf_require_valid_post();
 	$_SESSION = array();
 
 	if (ini_get("session.use_cookies")) {
