@@ -1,5 +1,8 @@
 <?php
 if (isset($_SESSION['userid'])){
+    // Keep the four composite Legendary titles in sync before counting maxed titles.
+    include ('update-legendary-titles.php');
+
     // $ggid = Get Gwamm ID
     $ggid = $con->prepare("SELECT titlenameid FROM gwtitles WHERE gwamm = 1");
     $ggid->execute();
