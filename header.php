@@ -15,6 +15,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 include_once (__DIR__ . '/includes/csrf.php');
+include_once (__DIR__ . '/includes/html.php');
 
 $session_idle_timeout = 1800;
 $session_absolute_timeout = 28800;
@@ -61,7 +62,7 @@ if (!$userid){
 } else {
 	echo '<title>';
 	if (isset($pagetitle)) {
-		echo $pagetitle;
+		echo h($pagetitle);
 	} else {
 		echo 'GWST';
 	}
@@ -72,22 +73,22 @@ if (!$userid){
 	if (!empty($_POST['prefcharid'])) {
         include_once ('includes/set-prefchar.php');
     }
-	echo '<form action="' . $_SERVER['REQUEST_URI'] . '" method="post">';
+	echo '<form action="' . h($_SERVER['REQUEST_URI']) . '" method="post">';
 	echo '(<a href="index.php" class="navlink">Home</a>) (<a href="preferences.php" class="navlink">Options</a>) ';
 	echo '(<select name="prefaccid" onchange="this.form.submit()">';
-	echo '<option class="header" value="' . $_SESSION['prefaccid'] . '">' . $_SESSION['prefaccname'] . '</option>';
+	echo '<option class="header" value="' . $_SESSION['prefaccid'] . '">' . h($_SESSION['prefaccname']) . '</option>';
 	echo '<option value="nopref">No default selected</option>';
 	include_once ('header-list-accounts.php');
 	echo '</select>)<noscript><input type="submit" value="Preferrence"></noscript> ';
 	echo '(<select name="prefcharid" onchange="this.form.submit()">';
-	echo '<option "class="header" value="' . $_SESSION['prefcharid'] . '">' . $_SESSION['prefcharname'] . '</option>';
+	echo '<option "class="header" value="' . (int)$_SESSION['prefcharid'] . '">' . h($_SESSION['prefcharname']) . '</option>';
 	echo '<option value="nopref">No default selected</option>';
 	include_once ('header-list-chars.php');
 	echo '</select>)<noscript><input type="submit" value="Preferrence"></noscript> ';
 	if ($_SESSION['admin'] == 1){
 		echo'(<a href="adminlanding.php" class="navlink">Administration</a>) ';
 	}
-	echo '(<a href="logout.php?action=logout" class="navlink">Logout ' . $_SESSION['username'] . '</a>)</form><hr>';
+	echo '(<a href="logout.php?action=logout" class="navlink">Logout ' . h($_SESSION['username']) . '</a>)</form><hr>';
 	echo '(<a href="updateaccountstats.php" class="navlink">Update account titles</a>) (<a href="updatecharstats.php" class="navlink">Update character titles</a>) ';
 	echo '(<a href="addaccounts.php" class="navlink">Manage accounts & characters</a>)<br /><br />';
 }
