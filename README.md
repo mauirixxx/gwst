@@ -3,7 +3,7 @@
 Guild Wars stat tracking
 The idea behind this is to track multiple characters individual stats as well as account stats. Hopefully this will be easier then dealing with multiple spreadsheats per character, or editing a public wiki.
 
-To install, just "git clone https://git.piracyforjesus.xyz/mauirixxx/gwst.git ."
+Installation instructions are available in [INSTALL.md](INSTALL.md).
 
 Created on a CentOS 7 VM under Php v7.2, MariaDB v5.5.56, and Apache v2.4.6
 
@@ -20,7 +20,7 @@ Immediate to do:
 1. Auto track all of the "Legendary" character titles
 2. Figure out how to reset a forgotten password
 3. E-mail birthday reminders
-4. Create a default admin user
+4. ~~Create a default admin user~~
 5. Upload a picture of your character
 
 Future to do:
