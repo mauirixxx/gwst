@@ -26,9 +26,21 @@ if (isset($_SESSION['userid'])) {
         // this section contains code to insert a new character into the database
         include_once ('includes/addcharacters-submit.php');
     }
+    $account_count_stmt = $con->prepare("SELECT COUNT(*) FROM gwaccounts WHERE userid = ?");
+    $account_count_stmt->bind_param("i", $_SESSION['userid']);
+    $account_count_stmt->execute();
+    $account_count_stmt->bind_result($existing_account_count);
+    $account_count_stmt->fetch();
+    $account_count_stmt->close();
+
+    $suggested_account_name = ((int)$existing_account_count === 0) ? $_SESSION['usermail'] : '';
+
     echo '<form action="addaccounts.php" method="post"><table>';
     echo '<caption>Add a new Guild Wars account e-mail or alias</caption>';
-    echo '<tr><td><input type="text" name="accemail" size="35" required></td><td><input type="submit" value="Add account"></td></tr>';
+    if ((int)$existing_account_count === 0) {
+        echo '<tr><td colspan="2">Your signup e-mail is suggested below. Keep it, replace it with your Guild Wars login e-mail, or use an alias.</td></tr>';
+    }
+    echo '<tr><td><input type="text" name="accemail" size="35" value="' . h($suggested_account_name) . '" required></td><td><input type="submit" value="Add account"></td></tr>';
     echo '</table></form><br />';
     echo '<form action="addaccounts.php" method="post"><table border="1"><caption style="white-space: nowrap; overflow: hidden;">Current Guild Wars accounts</caption>';
     echo '<tr><th>accid</th><th>Account name</th><th>Preferred?</th><th>Delete ?</th></tr>';
