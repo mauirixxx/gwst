@@ -74,9 +74,9 @@ if (!$userid){
 	unset($_SESSION['preference_message']);
 
 	echo '<header class="site-header">';
-	echo '<div class="brand"><a href="landing.php"><span class="brand-mark">GWTTT</span><span class="brand-name">Guild Wars Titles &amp; Treasures Tracker</span></a></div>';
+	echo '<div class="brand"><a href="index.php"><span class="brand-mark">GWTTT</span><span class="brand-name">Guild Wars Titles &amp; Treasures Tracker</span></a></div>';
 	echo '<nav class="top-nav">';
-	echo '<a class="nav-item" href="landing.php">⌂ Home</a>';
+	echo '<a class="nav-item" href="index.php">⌂ Home</a>';
 	echo '<a class="nav-item" href="preferences.php">⚙ Options</a>';
 
 	echo '<form class="nav-select" action="includes/set-prefacc.php" method="post">';
