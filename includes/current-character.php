@@ -1,6 +1,6 @@
 <?php
 if (isset($_SESSION['userid'])){
-	echo '<div class="stats-card home-title-progress"><div class="stats-table-wrap"><table class="stats-table"><caption>Titles progress for <b>' . h($_SESSION['prefcharname']) . '</b></caption>';
+	echo '<div class="stats-card home-title-progress"><div class="stats-table-wrap"><table class="stats-table"><caption style="text-align: center;">Titles progress for <b>' . h($_SESSION['prefcharname']) . '</b></caption>';
     echo '<thead><tr><th class="title-name">Title</th><th class="title-rank">Title Rank</th><th class="title-points">Title Points</th><th class="current-rank">Current Rank</th><th class="points-remaining">Points Remaining</th><th class="title-progress">Progress</th><th class="next-rank">Next Rank</th></tr></thead><tbody>';
 	if ($_SESSION['prefcharid'] == "0") {
 		// $gcc = Get Current Character stats
