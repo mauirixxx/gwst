@@ -72,18 +72,18 @@ if (isset($_SESSION['userid'])){
     }
     $prefquery->close();
 
-    echo '<form action="preferences.php" method="post" class="email-preferences-form">';
-    echo '<fieldset class="email-preferences-card">';
+    echo '<form action="preferences.php" method="post">';
+    echo '<fieldset class="birthday-preferences">';
     echo '<legend>Birthday e-mail reminders</legend>';
-    echo '<label class="email-pref-toggle"><input type="checkbox" name="birthday_email_enabled" value="1"' . ($birthday_email_enabled === 1 ? ' checked' : '') . '><span>E-mail me reminders for my characters\' birthdays</span></label>';
-    echo '<div class="email-pref-row"><label for="birthday_reminder_days">Send reminder</label><select id="birthday_reminder_days" name="birthday_reminder_days">';
+    echo '<label class="birthday-toggle"><input type="checkbox" name="birthday_email_enabled" value="1"' . ($birthday_email_enabled === 1 ? ' checked' : '') . '><span>E-mail me reminders for my characters\' birthdays</span></label>';
+    echo '<div class="birthday-reminder-row"><label for="birthday_reminder_days">Send reminder</label><select id="birthday_reminder_days" name="birthday_reminder_days">';
     foreach (array(0 => 'on the birthday', 1 => '1 day before', 3 => '3 days before', 7 => '7 days before') as $days => $label) {
         echo '<option value="' . $days . '"' . ($birthday_reminder_days === $days ? ' selected' : '') . '>' . h($label) . '</option>';
     }
     echo '</select></div>';
     echo '<input type="hidden" name="save_email_preferences" value="1">';
     echo '<button type="submit">Save e-mail preferences</button>';
-    echo '<p class="email-pref-note">Birthday reminders are disabled unless you explicitly opt in.</p>';
+    echo '<p class="birthday-help">Birthday reminders are disabled unless you explicitly opt in.</p>';
     echo '</fieldset></form>';
     if ($preference_message !== '') {
         echo '<p><strong>' . h($preference_message) . '</strong></p>';
