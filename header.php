@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" type="text/css" href="style.css?v=20260921-3">
+<link rel="stylesheet" type="text/css" href="style.css?v=20260921-4">
 <?php
 if (session_status() == PHP_SESSION_NONE) {
 	ini_set('session.use_strict_mode', '1');
@@ -99,6 +99,7 @@ if (!$userid){
 	echo '<nav class="action-nav">';
 	echo '<a href="updateaccountstats.php"><strong>Update Account Titles</strong><small>Update progress for account titles</small></a>';
 	echo '<a href="updatecharstats.php"><strong>Update Character Titles</strong><small>Update progress for character titles</small></a>';
+	echo '<a href="treasures.php"><strong>Track Treasures</strong><small>Record treasure, gold, and loot drops</small></a>';
 	echo '<a href="addaccounts.php"><strong>Manage Accounts &amp; Characters</strong><small>View and manage accounts and characters</small></a>';
 	echo '</nav></header><main class="page-shell"><center>';
 }
