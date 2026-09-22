@@ -59,8 +59,8 @@ if (!$userid){
 	echo '<form action="login.php" method="post"><table border="0"><tr><td>Username:</td><td><input type="text" name="username" size="20" autofocus required></td></tr>';
 	echo '<tr><td>Password:</td><td><input type="password" name="password" size="20" required></td></tr></table>';
 	echo '<input type="submit" value="Login ..."></form><br />';
-	echo '<a href="forgot-password.php" class="navlink">Forgot your password?</a><br /><br />';
-	echo 'If you haven\'t registered an account yet,<br />please click <a href="register.php" class="navlink">here</a> to create one.<br />';
+	echo '<a href="forgot-password.php" class="navlink" style="color:#fff2a8;">Forgot your password?</a><br /><br />';
+	echo 'If you haven\'t registered an account yet,<br />please click <a href="register.php" class="navlink" style="color:#fff2a8;">here</a> to create one.<br />';
 } else {
 	echo '<title>';
 	if (isset($pagetitle)) {
