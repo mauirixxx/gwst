@@ -24,7 +24,7 @@ if ($accid > 0 && $charid > 0) {
     <div class="treasure-heading">
         <h1>Treasure Tracker</h1>
         <?php if ($characterValid): ?>
-            <p>Treasure availability for <strong><?php echo h($charname); ?></strong>.</p>
+            <p>Treasure availability for <strong><?php echo h($charname); ?></strong>. Click a location to record a collection.</p>
         <?php else: ?>
             <p>Select an account and character in the header to view treasure availability.</p>
         <?php endif; ?>
@@ -65,19 +65,15 @@ if ($accid > 0 && $charid > 0) {
             $statusClass = 'waiting';
         }
 ?>
-        <article class="treasure-location treasure-<?php echo h($statusClass); ?>">
+        <a class="treasure-location treasure-<?php echo h($statusClass); ?>" href="treasure-record.php?location=<?php echo (int) $row['location_id']; ?>">
             <div>
-                <?php if (!empty($row['wiki_url'])): ?>
-                    <a href="<?php echo h($row['wiki_url']); ?>" target="_blank" rel="noopener noreferrer"><strong><?php echo h($row['location_name']); ?></strong></a>
-                <?php else: ?>
-                    <strong><?php echo h($row['location_name']); ?></strong>
-                <?php endif; ?>
+                <strong><?php echo h($row['location_name']); ?></strong>
                 <?php if ($lastCollected !== null): ?>
                     <small>Last collected <?php echo h($lastCollected); ?></small>
                 <?php endif; ?>
             </div>
             <span class="treasure-status"><?php echo h($status); ?></span>
-        </article>
+        </a>
 <?php
     }
     $stmt->close();
