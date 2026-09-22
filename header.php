@@ -3,6 +3,7 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" type="text/css" href="style.css?v=20260921-9">
+<link rel="stylesheet" type="text/css" href="legacy-layout.css?v=20260922-1">
 <?php
 if (session_status() == PHP_SESSION_NONE) {
 	ini_set('session.use_strict_mode', '1');
@@ -126,7 +127,9 @@ if (!$userid){
 	echo '<a href="addaccounts.php"><strong>Manage Accounts &amp; Characters</strong><small>View and manage accounts and characters</small></a>';
 	echo '</div>';
 	echo '</header>';
-	echo '<main class="page-shell">';
+	$page_script = pathinfo($_SERVER['SCRIPT_NAME'] ?? '', PATHINFO_FILENAME);
+	$page_class = preg_replace('/[^a-zA-Z0-9_-]/', '', $page_script);
+	echo '<main class="page-shell page-' . h($page_class) . '">';
 	if ($prefMessage !== '') {
 		echo '<div class="preference-message">' . h($prefMessage) . '</div>';
 	}
