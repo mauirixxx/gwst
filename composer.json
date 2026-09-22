@@ -1,0 +1,8 @@
+{
+    "name": "mauirixxx/gwst",
+    "description": "Guild Wars Stats Tracker",
+    "type": "project",
+    "require": {
+        "phpmailer/phpmailer": "^7.1"
+    }
+}
