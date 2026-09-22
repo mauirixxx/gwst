@@ -102,13 +102,14 @@ if (!$userid){
 	echo '<select id="header-character" name="prefcharid" onchange="this.form.submit()">';
 	echo '<option value="0">No default selected</option>';
 	if (!empty($_SESSION['prefaccid'])) {
-		$characterList = $con->prepare('SELECT charid, charname FROM gwchars WHERE accid = ? AND userid = ? ORDER BY charname');
+		$characterList = $con->prepare('SELECT charid, charname, profid FROM gwchars WHERE accid = ? AND userid = ? ORDER BY charname');
 		$characterList->bind_param('ii', $_SESSION['prefaccid'], $_SESSION['userid']);
 		$characterList->execute();
 		$characterResult = $characterList->get_result();
 		while ($character = $characterResult->fetch_assoc()) {
 			$selected = ((int) ($_SESSION['prefcharid'] ?? 0) === (int) $character['charid']) ? ' selected' : '';
-			echo '<option value="' . (int) $character['charid'] . '"' . $selected . '>' . h($character['charname']) . '</option>';
+			$professionClass = 'profession-' . (int) $character['profid'];
+			echo '<option class="' . $professionClass . '" value="' . (int) $character['charid'] . '"' . $selected . '>' . h($character['charname']) . '</option>';
 		}
 		$characterList->close();
 	}
