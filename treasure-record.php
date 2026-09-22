@@ -133,7 +133,7 @@ function selected_value($posted, $value): string { return (string)$posted === (s
 <div class="treasure-form-row"><label for="rarity_id">Rarity</label><select id="rarity_id" name="rarity_id"><?php foreach($rarities as $x): ?><option value="<?php echo (int)$x['rarity_id']; ?>"<?php echo selected_value($_POST['rarity_id']??4,$x['rarity_id']); ?>><?php echo h($x['rarity_name']); ?></option><?php endforeach; ?></select></div>
 <div class="treasure-form-row"><label for="requirement">Requirement</label><select id="requirement" name="requirement"><?php foreach($requirements as $x): ?><option value="<?php echo (int)$x['requirement']; ?>"<?php echo selected_value($_POST['requirement']??9,$x['requirement']); ?>><?php echo (int)$x['requirement']; ?></option><?php endforeach; ?></select></div>
 <div class="treasure-form-row"><label for="weapon_type_id">Weapon type</label><select id="weapon_type_id" name="weapon_type_id"><option value="">Choose item type</option><?php foreach($weaponTypes as $x): ?><option value="<?php echo (int)$x['weapon_type_id']; ?>"<?php echo selected_value($_POST['weapon_type_id']??'',$x['weapon_type_id']); ?>><?php echo h($x['weapon_type_name']); ?></option><?php endforeach; ?></select></div>
-<div class="treasure-form-row"><label for="attribute_id">Attribute</label><select id="attribute_id" name="attribute_id"><option value="">Choose weapon type first</option></select></div>
+<div class="treasure-form-row"><label for="attribute_id">Attribute</label><select id="attribute_id" name="attribute_id"><option value="" disabled selected>Choose weapon type first</option></select></div>
 <div class="treasure-form-row"><label for="item_name">Item name</label><input id="item_name" name="item_name" type="text" maxlength="150" value="<?php echo h($_POST['item_name']??''); ?>" placeholder="Optional weapon name"></div>
 </div>
 
@@ -156,7 +156,17 @@ const attribute=document.getElementById('attribute_id');
 const attributeMap=<?php echo json_encode($weaponAttributeMap,JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT); ?>;
 const postedAttribute=<?php echo json_encode((string)($_POST['attribute_id']??'')); ?>;
 function refreshGroups(){groups.forEach(function(g){const active=g.dataset.dropFields===dropType.value;g.hidden=!active;g.querySelectorAll('select,input').forEach(function(el){el.disabled=!active;});});}
-function refreshAttributes(){const attrs=attributeMap[weaponType.value]||[];attribute.replaceChildren(new Option(attrs.length?'Choose attribute':'Choose weapon type first',''));attrs.forEach(function(a){attribute.add(new Option(a.name,String(a.id)));});if(postedAttribute&&attrs.some(a=>String(a.id)===postedAttribute))attribute.value=postedAttribute;else if(attrs.length===1)attribute.value=String(attrs[0].id);attribute.disabled=dropType.value!=='weapon'||attrs.length===0;}
+function refreshAttributes(){
+    const attrs=attributeMap[weaponType.value]||[];
+    const placeholder=new Option(attrs.length?'Choose attribute':'Choose weapon type first','');
+    placeholder.disabled=true;
+    placeholder.selected=true;
+    attribute.replaceChildren(placeholder);
+    attrs.forEach(function(a){attribute.add(new Option(a.name,String(a.id)));});
+    if(postedAttribute&&attrs.some(a=>String(a.id)===postedAttribute))attribute.value=postedAttribute;
+    else if(attrs.length===1)attribute.value=String(attrs[0].id);
+    attribute.disabled=dropType.value!=='weapon'||attrs.length===0;
+}
 dropType.addEventListener('change',function(){refreshGroups();refreshAttributes();});weaponType.addEventListener('change',refreshAttributes);refreshGroups();refreshAttributes();
 }());
 </script>
