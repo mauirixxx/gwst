@@ -56,7 +56,7 @@ if (isset($_SESSION['userid'])) {
             }
         }
 
-        echo '<section class="edit-character-panel">';
+        echo '<section class="edit-character-panel options-page">';
         echo '<h2>Edit character</h2>';
         echo '<p>Update the character name after a Guild Wars rename, or correct the character birthdate.</p>';
         echo '<form action="editcharacter.php" method="post">';
