@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" type="text/css" href="style.css?v=20260921-7">
+<link rel="stylesheet" type="text/css" href="style.css?v=20260921-8">
 <?php
 if (session_status() == PHP_SESSION_NONE) {
 	ini_set('session.use_strict_mode', '1');
@@ -69,52 +69,66 @@ if (!$userid){
 		echo 'GWTTT';
 	}
 	echo '</title></head><body>';
-	if (!empty($_POST['prefaccid'])) {
-		include_once ('includes/set-prefacc.php');
-	}
-	if (!empty($_POST['prefcharid'])) {
-        include_once ('includes/set-prefchar.php');
-    }
 
-	include ('header-list-accounts.php');
-	include ('header-list-chars.php');
+	$prefMessage = $_SESSION['preference_message'] ?? '';
+	unset($_SESSION['preference_message']);
 
 	echo '<header class="site-header">';
-	echo '<div class="brand"><a href="index.php"><span class="brand-mark">GWTTT</span><span class="brand-name">Guild Wars Titles &amp; Treasures Tracker</span></a></div>';
-	echo '<form class="top-nav" action="' . h($_SERVER['REQUEST_URI']) . '" method="post">';
+	echo '<div class="brand"><a href="landing.php"><span class="brand-mark">GWTTT</span><span class="brand-name">Guild Wars Titles &amp; Treasures Tracker</span></a></div>';
+	echo '<nav class="top-nav">';
+	echo '<a class="nav-item" href="landing.php">⌂ Home</a>';
+	echo '<a class="nav-item" href="preferences.php">⚙ Options</a>';
+
+	echo '<form class="nav-select" action="includes/set-prefacc.php" method="post">';
 	echo csrf_input();
-	echo '<a href="index.php" class="nav-item nav-active">⌂ <span>Home</span></a>';
-	echo '<a href="preferences.php" class="nav-item">⚙ <span>Options</span></a>';
-
-	echo '<label class="nav-select"><span>Account</span><select name="prefaccid" onchange="this.form.submit()">';
-	echo '<option value="nopref"' . (empty($_SESSION['prefaccid']) ? ' selected' : '') . '>No default selected</option>';
-	foreach ($header_accounts as $account) {
-		$selected = ((int)$account['accid'] === (int)$_SESSION['prefaccid']) ? ' selected' : '';
-		echo '<option value="' . (int)$account['accid'] . '"' . $selected . '>' . h($account['accemail']) . '</option>';
+	echo '<label for="header-account">Account</label>';
+	echo '<select id="header-account" name="prefaccid" onchange="this.form.submit()">';
+	echo '<option value="0">No default selected</option>';
+	$accountList = $con->prepare('SELECT accid, accemail FROM gwaccounts WHERE userid = ? ORDER BY accemail');
+	$accountList->bind_param('i', $_SESSION['userid']);
+	$accountList->execute();
+	$accountResult = $accountList->get_result();
+	while ($account = $accountResult->fetch_assoc()) {
+		$selected = ((int) ($_SESSION['prefaccid'] ?? 0) === (int) $account['accid']) ? ' selected' : '';
+		echo '<option value="' . (int) $account['accid'] . '"' . $selected . '>' . h($account['accemail']) . '</option>';
 	}
-	echo '</select></label><noscript><input type="submit" value="Select account"></noscript>';
+	$accountList->close();
+	echo '</select></form>';
 
-	echo '<label class="nav-select"><span>Character</span><select name="prefcharid" onchange="this.form.submit()">';
-	echo '<option value="nopref"' . (empty($_SESSION['prefcharid']) ? ' selected' : '') . '>No default selected</option>';
-	foreach ($header_characters as $character) {
-		$selected = ((int)$character['charid'] === (int)$_SESSION['prefcharid']) ? ' selected' : '';
-		echo '<option class="profession-' . (int)$character['profid'] . '" value="' . (int)$character['charid'] . '"' . $selected . '>' . h($character['charname']) . '</option>';
+	echo '<form class="nav-select" action="includes/set-prefchar.php" method="post">';
+	echo csrf_input();
+	echo '<label for="header-character">Character</label>';
+	echo '<select id="header-character" name="prefcharid" onchange="this.form.submit()">';
+	echo '<option value="0">No default selected</option>';
+	if (!empty($_SESSION['prefaccid'])) {
+		$characterList = $con->prepare('SELECT charid, charname FROM gwchars WHERE accid = ? AND userid = ? ORDER BY charname');
+		$characterList->bind_param('ii', $_SESSION['prefaccid'], $_SESSION['userid']);
+		$characterList->execute();
+		$characterResult = $characterList->get_result();
+		while ($character = $characterResult->fetch_assoc()) {
+			$selected = ((int) ($_SESSION['prefcharid'] ?? 0) === (int) $character['charid']) ? ' selected' : '';
+			echo '<option value="' . (int) $character['charid'] . '"' . $selected . '>' . h($character['charname']) . '</option>';
+		}
+		$characterList->close();
 	}
-	echo '</select></label><noscript><input type="submit" value="Select character"></noscript>';
+	echo '</select></form>';
 
 	if (!empty($_SESSION['admin'])) {
-		echo '<a href="adminlanding.php" class="nav-item">⚒ <span>Administration</span></a>';
+		echo '<a class="nav-item" href="adminlanding.php">⚒ Administration</a>';
 	}
-	echo '<a href="logout.php?action=logout" class="nav-item nav-logout">↪ <span>Logout <strong>' . h($_SESSION['username']) . '</strong></span></a>';
-	echo '</form>';
-	echo '<nav class="action-nav">';
+	echo '<a class="nav-item nav-logout" href="logout.php">↪ Logout ' . h($_SESSION['username']) . '</a>';
+	echo '</nav>';
+
+	echo '<div class="action-nav">';
 	echo '<a href="updateaccountstats.php"><strong>Update Account Titles</strong><small>Update progress for account titles</small></a>';
 	echo '<a href="updatecharstats.php"><strong>Update Character Titles</strong><small>Update progress for character titles</small></a>';
 	echo '<a href="treasures.php"><strong>Track Treasures</strong><small>Record treasure, gold, and loot drops</small></a>';
 	echo '<a href="addaccounts.php"><strong>Manage Accounts &amp; Characters</strong><small>View and manage accounts and characters</small></a>';
-	echo '</nav></header><main class="page-shell"><center>';
-	if (!empty($preference_message)) {
-		echo '<div class="preference-message">' . h($preference_message) . '</div>';
+	echo '</div>';
+	echo '</header>';
+	echo '<main class="page-shell">';
+	if ($prefMessage !== '') {
+		echo '<div class="preference-message">' . h($prefMessage) . '</div>';
 	}
 }
 ?>
