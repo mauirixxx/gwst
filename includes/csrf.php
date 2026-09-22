@@ -6,6 +6,12 @@ function csrf_token() {
     return $_SESSION['csrf_token'];
 }
 
+function csrf_input() {
+    return '<input type="hidden" name="csrf_token" value="'
+        . htmlspecialchars(csrf_token(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+        . '">';
+}
+
 function csrf_is_valid($token) {
     return is_string($token)
         && isset($_SESSION['csrf_token'])

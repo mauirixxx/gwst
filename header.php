@@ -58,8 +58,9 @@ if (!$userid){
 	echo '<title>Please login first</title></head><body><center>Aloha, and welcome to my Guild Wars stats tracker. Please login below.<hr>';
 	echo '<form action="login.php" method="post"><table border="0"><tr><td>Username:</td><td><input type="text" name="username" size="20" autofocus required></td></tr>';
 	echo '<tr><td>Password:</td><td><input type="password" name="password" size="20" required></td></tr></table>';
-	echo '<input type="submit" value="Login ..."></form><br /><br />';
-	echo 'If you haven\'t registered an account yet,<br />please click <a href="register.php" class="navlink">here</a> to create one.<br />';
+	echo '<input type="submit" value="Login ..."></form><br />';
+	echo '<a href="forgot-password.php" class="navlink" style="color:#fff2a8;">Forgot your password?</a><br /><br />';
+	echo 'If you haven\'t registered an account yet,<br />please click <a href="register.php" class="navlink" style="color:#fff2a8;">here</a> to create one.<br />';
 } else {
 	echo '<title>';
 	if (isset($pagetitle)) {
@@ -77,6 +78,7 @@ if (!$userid){
 	echo '<header class="site-header">';
 	echo '<div class="brand"><a href="index.php"><span class="brand-mark">GWST</span><span class="brand-name">Guild Wars Stats Tracker</span></a></div>';
 	echo '<form class="top-nav" action="' . h($_SERVER['REQUEST_URI']) . '" method="post">';
+	echo csrf_input();
 	echo '<a href="index.php" class="nav-item nav-active">⌂ <span>Home</span></a>';
 	echo '<a href="preferences.php" class="nav-item">⚙ <span>Options</span></a>';
 	echo '<label class="nav-select"><span>Account</span><select name="prefaccid" onchange="this.form.submit()">';
@@ -89,7 +91,7 @@ if (!$userid){
 	echo '<option value="nopref">No default selected</option>';
 	include_once ('header-list-chars.php');
 	echo '</select></label><noscript><input type="submit" value="Select character"></noscript>';
-	if ($_SESSION['admin'] == 1){
+	if (!empty($_SESSION['admin'])) {
 		echo '<a href="adminlanding.php" class="nav-item">⚒ <span>Administration</span></a>';
 	}
 	echo '<a href="logout.php?action=logout" class="nav-item nav-logout">↪ <span>Logout <strong>' . h($_SESSION['username']) . '</strong></span></a>';
