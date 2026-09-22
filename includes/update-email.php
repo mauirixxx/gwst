@@ -1,7 +1,5 @@
 <?php
 if (isset($_SESSION['userid'])) {
-    include_once ('verifications.php');
-
     $new_email = trim($_POST['useremail'] ?? '');
 
     if (!filter_var($new_email, FILTER_VALIDATE_EMAIL)) {
@@ -20,6 +18,7 @@ if (isset($_SESSION['userid'])) {
 
     if ($duplicate) {
         echo 'That e-mail address is already associated with another GWST account.<br />';
+        echo '<a href="preferences.php" class="navlink">Return to Options</a><br />';
         return;
     }
 
@@ -35,6 +34,7 @@ if (isset($_SESSION['userid'])) {
         // case another request claims the same address after our check.
         if ((int)$e->getCode() === 1062) {
             echo 'That e-mail address is already associated with another GWST account.<br />';
+            echo '<a href="preferences.php" class="navlink">Return to Options</a><br />';
         } else {
             error_log('GWST e-mail update failed: ' . $e->getMessage());
             echo 'Unable to update e-mail address.<br />';
