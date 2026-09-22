@@ -36,7 +36,8 @@ if ($accid > 0 && $charid > 0) {
     $stmt = $con->prepare(
         'SELECT l.location_id, l.location_name, l.wiki_url, l.reset_days, '
         . 'MAX(h.collected_on) AS last_collected, '
-        . 'DATEDIFF(CURDATE(), MAX(h.collected_on)) AS days_since '
+        . 'DATE_ADD(MAX(h.collected_on), INTERVAL l.reset_days DAY) AS ready_on, '
+        . 'DATEDIFF(DATE_ADD(MAX(h.collected_on), INTERVAL l.reset_days DAY), CURDATE()) AS days_remaining '
         . 'FROM gwtreasure_locations l '
         . 'LEFT JOIN gwtreasure_history h '
         . 'ON h.location_id = l.location_id AND h.userid = ? AND h.charid = ? '
@@ -50,18 +51,20 @@ if ($accid > 0 && $charid > 0) {
 
     while ($row = $result->fetch_assoc()) {
         $lastCollected = $row['last_collected'];
-        $resetDays = (int) $row['reset_days'];
-        $daysSince = $row['days_since'] === null ? null : (int) $row['days_since'];
+        $readyOn = $row['ready_on'];
+        $daysRemaining = $row['days_remaining'] === null ? null : (int) $row['days_remaining'];
 
         if ($lastCollected === null) {
             $status = 'Never collected';
+            $statusDetail = 'Ready whenever you are';
             $statusClass = 'never';
-        } elseif ($daysSince >= $resetDays) {
+        } elseif ($daysRemaining <= 0) {
             $status = 'Ready now';
+            $statusDetail = 'Available since ' . date('M j, Y', strtotime($readyOn));
             $statusClass = 'ready';
         } else {
-            $remaining = $resetDays - $daysSince;
-            $status = $remaining . ' day' . ($remaining === 1 ? '' : 's') . ' remaining';
+            $status = $daysRemaining . ' day' . ($daysRemaining === 1 ? '' : 's') . ' remaining';
+            $statusDetail = 'Ready ' . date('M j, Y', strtotime($readyOn));
             $statusClass = 'waiting';
         }
 ?>
@@ -69,17 +72,20 @@ if ($accid > 0 && $charid > 0) {
             <div>
                 <strong><?php echo h($row['location_name']); ?></strong>
                 <?php if ($lastCollected !== null): ?>
-                    <small>Last collected <?php echo h($lastCollected); ?></small>
+                    <small>Last collected <?php echo h(date('M j, Y', strtotime($lastCollected))); ?></small>
                 <?php endif; ?>
             </div>
-            <span class="treasure-status"><?php echo h($status); ?></span>
+            <span class="treasure-status">
+                <?php echo h($status); ?>
+                <small><?php echo h($statusDetail); ?></small>
+            </span>
         </a>
 <?php
     }
     $stmt->close();
 ?>
     </div>
-    <p class="treasure-note">A location becomes ready again 30 days after that character's most recent recorded collection.</p>
+    <p class="treasure-note">Each location becomes ready again after its configured reset period. Click any location to record another collection.</p>
 <?php endif; ?>
 </section>
 <?php include_once('footer.php'); ?>
