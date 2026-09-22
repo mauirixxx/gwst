@@ -314,12 +314,16 @@ body {
 /* Warrior-yellow account links */
 .account-name-link,
 a.account-name-link:link,
-a.account-name-link:visited {
-	color: #fff27a;
+a.account-name-link:visited,
+.submitLink.warrior-yellow,
+input.submitLink.warrior-yellow {
+	color: #fff27a !important;
 }
 a.account-name-link:hover,
-a.account-name-link:focus {
-	color: #fff7b8;
+a.account-name-link:focus,
+.submitLink.warrior-yellow:hover,
+.submitLink.warrior-yellow:focus {
+	color: #fff7b8 !important;
 }
 
 /* Birthday preference panel */
