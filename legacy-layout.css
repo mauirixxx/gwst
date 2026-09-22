@@ -68,7 +68,7 @@
 }
 
 /* Home page title-progress heading should be centered above the stats table. */
-.page-index .stats-table caption {
+.home-title-progress .stats-table caption {
     text-align: center;
 }
 
