@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" type="text/css" href="style.css?v=20260921-4">
+<link rel="stylesheet" type="text/css" href="style.css?v=20260921-5">
 <?php
 if (session_status() == PHP_SESSION_NONE) {
 	ini_set('session.use_strict_mode', '1');
@@ -55,7 +55,7 @@ if ($con->connect_errno){
 	die ('Unable to connect to database [' . $con->connect_errno . ']');
 }
 if (!$userid){
-	echo '<title>Please login first</title></head><body><center>Aloha, and welcome to my Guild Wars stats tracker. Please login below.<hr>';
+	echo '<title>Please login first</title></head><body><center>Aloha, and welcome to my Guild Wars Titles &amp; Treasures Tracker. Please login below.<hr>';
 	echo '<form action="login.php" method="post"><table border="0"><tr><td>Username:</td><td><input type="text" name="username" size="20" autofocus required></td></tr>';
 	echo '<tr><td>Password:</td><td><input type="password" name="password" size="20" required></td></tr></table>';
 	echo '<input type="submit" value="Login ..."></form><br />';
@@ -66,7 +66,7 @@ if (!$userid){
 	if (isset($pagetitle)) {
 		echo h($pagetitle);
 	} else {
-		echo 'GWST';
+		echo 'GWTTT';
 	}
 	echo '</title></head><body>';
 	if (!empty($_POST['prefaccid'])) {
@@ -75,22 +75,33 @@ if (!$userid){
 	if (!empty($_POST['prefcharid'])) {
         include_once ('includes/set-prefchar.php');
     }
+
+	include ('header-list-accounts.php');
+	include ('header-list-chars.php');
+
 	echo '<header class="site-header">';
-	echo '<div class="brand"><a href="index.php"><span class="brand-mark">GWST</span><span class="brand-name">Guild Wars Stats Tracker</span></a></div>';
+	echo '<div class="brand"><a href="index.php"><span class="brand-mark">GWTTT</span><span class="brand-name">Guild Wars Titles &amp; Treasures Tracker</span></a></div>';
 	echo '<form class="top-nav" action="' . h($_SERVER['REQUEST_URI']) . '" method="post">';
 	echo csrf_input();
 	echo '<a href="index.php" class="nav-item nav-active">⌂ <span>Home</span></a>';
 	echo '<a href="preferences.php" class="nav-item">⚙ <span>Options</span></a>';
+
 	echo '<label class="nav-select"><span>Account</span><select name="prefaccid" onchange="this.form.submit()">';
-	echo '<option class="header" value="' . (int)$_SESSION['prefaccid'] . '">' . h($_SESSION['prefaccname']) . '</option>';
-	echo '<option value="nopref">No default selected</option>';
-	include_once ('header-list-accounts.php');
+	echo '<option value="nopref"' . (empty($_SESSION['prefaccid']) ? ' selected' : '') . '>No default selected</option>';
+	foreach ($header_accounts as $account) {
+		$selected = ((int)$account['accid'] === (int)$_SESSION['prefaccid']) ? ' selected' : '';
+		echo '<option value="' . (int)$account['accid'] . '"' . $selected . '>' . h($account['accemail']) . '</option>';
+	}
 	echo '</select></label><noscript><input type="submit" value="Select account"></noscript>';
+
 	echo '<label class="nav-select"><span>Character</span><select name="prefcharid" onchange="this.form.submit()">';
-	echo '<option class="header" value="' . (int)$_SESSION['prefcharid'] . '">' . h($_SESSION['prefcharname']) . '</option>';
-	echo '<option value="nopref">No default selected</option>';
-	include_once ('header-list-chars.php');
+	echo '<option value="nopref"' . (empty($_SESSION['prefcharid']) ? ' selected' : '') . '>No default selected</option>';
+	foreach ($header_characters as $character) {
+		$selected = ((int)$character['charid'] === (int)$_SESSION['prefcharid']) ? ' selected' : '';
+		echo '<option class="profession-' . (int)$character['profid'] . '" value="' . (int)$character['charid'] . '"' . $selected . '>' . h($character['charname']) . '</option>';
+	}
 	echo '</select></label><noscript><input type="submit" value="Select character"></noscript>';
+
 	if (!empty($_SESSION['admin'])) {
 		echo '<a href="adminlanding.php" class="nav-item">⚒ <span>Administration</span></a>';
 	}
