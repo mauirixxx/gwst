@@ -9,10 +9,11 @@ if (isset($_SESSION['userid']) && isset($_POST['prefcharid'])) {
 		$_SESSION['prefcharid'] = "0";
 		$_SESSION['prefcharname'] = "No default selected";
 		$_SESSION['charprofid'] = "0";
+		$preference_message = 'Preferred character cleared.';
 	} else {
 		$prefcharid = filter_var($_POST['prefcharid'], FILTER_VALIDATE_INT);
 		if ($prefcharid === false || $prefcharid < 1) {
-			echo 'Invalid character preference.<br />';
+			$preference_message = 'Invalid character preference.';
 			return;
 		}
 		// $scp = Selected CharID Preferrence
@@ -28,8 +29,9 @@ if (isset($_SESSION['userid']) && isset($_POST['prefcharid'])) {
 			$_SESSION['prefcharid'] = $row['charid'];
 			$_SESSION['prefcharname'] = $row['charname'];
 			$_SESSION['charprofid'] = $row['profid'];
+			$preference_message = 'Preferred character switched to ' . $row['charname'] . '.';
 		} else {
-			echo 'Character preference not found.<br />';
+			$preference_message = 'Character preference not found.';
 		}
 		$scp->close();
 	}
