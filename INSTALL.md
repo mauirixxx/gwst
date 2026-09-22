@@ -13,6 +13,14 @@ cd gwst
 
 Alternatively, download and extract a release/archive into a directory of your choice.
 
+Install the PHP dependencies with Composer:
+
+```bash
+composer install --no-dev --optimize-autoloader
+```
+
+Composer installs PHPMailer and other future PHP dependencies into the local `vendor/` directory. The `vendor/` directory is intentionally not committed to Git.
+
 ## 2. Create the database and database user
 
 Open MariaDB/MySQL as an administrative user and create a database and a dedicated GWST user. Replace the example password with a strong password of your own.
@@ -44,7 +52,7 @@ You can verify the tables were created with:
 mariadb -u gwstuser -p gwst -e 'SHOW TABLES;'
 ```
 
-## 4. Configure the database connection
+## 4. Configure the database connection and local secrets
 
 Copy the sample configuration:
 
@@ -59,9 +67,13 @@ define ("DATABASE_HOST", "localhost");
 define ("DATABASE_USER", "gwstuser");
 define ("DATABASE_PASS", "your-database-password");
 define ("DATABASE_NAME", "gwst");
+
+define ("GWST_SMTP_PASSWORD", "your-smtp-password");
 ```
 
-The real `connect.php` is intentionally ignored by Git. Do not commit database credentials to the repository.
+The SMTP password is only needed if outgoing e-mail is enabled. Non-secret SMTP settings such as host, port, username, From address, and encryption are configured from the GWST Administration panel.
+
+The real `connect.php` is intentionally ignored by Git. Do not commit database or SMTP credentials to the repository.
 
 Optionally verify the PHP syntax after editing it:
 
@@ -91,6 +103,7 @@ For an installation cloned from GitHub:
 
 ```bash
 git pull --ff-only
+composer install --no-dev --optimize-autoloader
 ```
 
-Because `connect.php` is ignored, pulling application updates will not overwrite your local database credentials.
+Because `connect.php` is ignored, pulling application updates will not overwrite your local database or SMTP credentials.

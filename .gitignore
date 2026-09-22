@@ -1,3 +1,7 @@
 
-# Local database configuration
+# Local database / secret configuration
 connect.php
+connect.php-*
+
+# Composer dependencies are installed locally from composer.lock
+/vendor/
