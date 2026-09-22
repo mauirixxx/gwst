@@ -78,7 +78,7 @@ select.header  {
 
 select *.profession-0 { background-color: #FFF; }
 select *.profession-1 {	background-color: #FF8; }
-select *.profession-2 {	background-color: #CF9; }
+select *.profession-2 { background-color: #CF9; }
 select *.profession-3 { background-color: #ACF; }
 select *.profession-4 { background-color: #9FC; }
 select *.profession-5 { background-color: #DAF; }
@@ -87,7 +87,6 @@ select *.profession-7 { background-color: #FCE; }
 select *.profession-8 { background-color: #BFF; }
 select *.profession-9 { background-color: #FC9; }
 select *.profession-10 { background-color: #DDF; }
-
 
 /* Stats tables: keep long status text readable without forcing cramped columns. */
 .stats-table {
@@ -116,7 +115,6 @@ select *.profession-10 { background-color: #DDF; }
 	max-width: 110px;
 	margin: 0 auto 3px;
 }
-
 
 /* 2026 header/navigation refresh */
 * { box-sizing: border-box; }
@@ -247,7 +245,6 @@ body {
 	.action-nav { grid-template-columns: 1fr; }
 }
 
-
 /* 2026 title table refresh */
 .stats-card {
 	width: 100%;
@@ -358,4 +355,74 @@ body {
 .submitLink.warrior-yellow:hover,
 .submitLink.warrior-yellow:focus {
 	color: #fff7c7;
+}
+
+/* User e-mail preference controls */
+.email-preferences-form {
+	width: min(100%, 560px);
+	margin: 8px auto 18px;
+}
+.email-preferences-card {
+	padding: 18px 20px 16px;
+	border: 1px solid #315b6d;
+	border-radius: 7px;
+	background: #122630;
+	font: 14px/1.4 "Segoe UI", Tahoma, Arial, sans-serif;
+	text-align: left;
+}
+.email-preferences-card legend {
+	padding: 0 8px;
+	color: #69dbe1;
+	font-size: 17px;
+	font-weight: 600;
+}
+.email-preferences-card label {
+	float: none;
+	width: auto;
+	margin: 0;
+	padding: 0;
+	text-align: left;
+}
+.email-pref-toggle {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 16px !important;
+	font-weight: 600;
+}
+.email-pref-toggle input {
+	width: 18px;
+	height: 18px;
+	margin: 0;
+	accent-color: #28b8c0;
+}
+.email-pref-row {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 16px;
+}
+.email-pref-row label { font-weight: 600; }
+.email-pref-row select {
+	min-width: 170px;
+	padding: 5px 8px;
+	border: 1px solid #547080;
+	border-radius: 4px;
+	background: #edf2f5;
+	color: #17242c;
+}
+.email-preferences-card button {
+	padding: 7px 14px;
+	border: 1px solid #238d9b;
+	border-radius: 4px;
+	background: #173c49;
+	color: #e8f8fa;
+	font-weight: 600;
+	cursor: pointer;
+}
+.email-preferences-card button:hover { background: #1d4b59; }
+.email-pref-note {
+	margin: 12px 0 0;
+	color: #9fb5bf;
+	font-size: 12px;
 }
