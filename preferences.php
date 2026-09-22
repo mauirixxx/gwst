@@ -2,24 +2,37 @@
 $pagetitle = "Account options";
 include_once ('header.php');
 if (isset($_SESSION['userid'])){
+    $preference_message = '';
+
+    if (isset($_POST['save_email_preferences'])) {
+        $birthday_email_enabled = isset($_POST['birthday_email_enabled']) ? 1 : 0;
+        $birthday_reminder_days = (int)($_POST['birthday_reminder_days'] ?? 0);
+        if (!in_array($birthday_reminder_days, array(0, 1, 3, 7), true)) {
+            $birthday_reminder_days = 0;
+        }
+        $prefstmt = $con->prepare("INSERT INTO user_preferences (userid, birthday_email_enabled, birthday_reminder_days) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE birthday_email_enabled = VALUES(birthday_email_enabled), birthday_reminder_days = VALUES(birthday_reminder_days)");
+        $prefstmt->bind_param("iii", $_SESSION['userid'], $birthday_email_enabled, $birthday_reminder_days);
+        if ($prefstmt->execute()) {
+            $preference_message = 'E-mail reminder preferences updated.';
+        } else {
+            $preference_message = 'Unable to update e-mail reminder preferences.';
+        }
+        $prefstmt->close();
+    }
+
     if (!empty($_POST['useremail'])) {
-        //this section contains code to update the users e-mail address
         include_once ('includes/update-email.php');
     }
     if (!empty($_POST['oldpass'])) {
-        // this section contains code to update the users password after verifying the old password first
         include_once ('includes/update-password.php');
     }
     if (!empty($_POST['setacc'])) {
-        //this section contains code to set the users preferred game account
         include_once ('includes/set-prefacc.php');
     }
     if (!empty($_POST['setchar'])) {
-        //this section contains code to the users preferred character
         include_once ('includes/set-prefchar.php');
     }
     echo '<h3>Set preferred account & character, or change e-mail or password</h3>';
-    // select which GW account you want to default to
     echo '<form action="preferences.php" method="post"><table border="1"><caption style="white-space: nowrap; overflow: hidden;">Current preferred account: <b>' . h($_SESSION['prefaccname']) . '</b></caption>';
     echo '<tr><td><select name="prefaccid">';
     echo '<option value="nopref">Prefer no default</option>';
@@ -31,7 +44,6 @@ if (isset($_SESSION['userid'])){
        echo '<option value="' . $row['accid'] . '">' . h($row['accemail']) . '</option>';
     }
     echo '</td><td><input type="submit" value="Set account"></td></tr></select></table><input type="hidden" name="setacc" value="update"></form><br />';
-    // select which character from your GW account you want to default to
     echo '<form action="preferences.php" method="post"><table border="1"><caption style="white-space: nowrap; overflow: hidden;">Current preferred character: <b>' . h($_SESSION['prefcharname']) . '</b></caption>';
     echo '<tr><td><select name="prefcharid">';
     echo '<option value="nopref">Prefer no default</option>';
@@ -40,15 +52,42 @@ if (isset($_SESSION['userid'])){
     $prefchar->execute();
     $reschar = $prefchar->get_result();
     while ($row2 = $reschar->fetch_assoc()) {
-    	echo '<option value="' . $row2['charid'] . '">' . h($row2['charname']) . '</option>';
+        echo '<option value="' . $row2['charid'] . '">' . h($row2['charname']) . '</option>';
     }
     echo '</td><td><input type="submit" value="Set character"></td></tr></select></table><input type="hidden" name="setchar" value="updatechar"></form><br />';
-    // update e-mail address form
     echo '<form action="preferences.php" method="post"><table border="1">';
     echo '<caption>Update e-mail address</caption>';
     echo '<tr><td><input type="text" name="useremail" value="' . h($_SESSION['usermail']) . '"></td><td><input type="submit" value="Update e-mail"></td></tr>';
-    echo '</table></form><br /><br />';
-    // update password form
+    echo '</table></form><br />';
+
+    $birthday_email_enabled = 0;
+    $birthday_reminder_days = 0;
+    $prefquery = $con->prepare("SELECT birthday_email_enabled, birthday_reminder_days FROM user_preferences WHERE userid = ?");
+    $prefquery->bind_param("i", $_SESSION['userid']);
+    $prefquery->execute();
+    $prefresult = $prefquery->get_result();
+    if ($prefrow = $prefresult->fetch_assoc()) {
+        $birthday_email_enabled = (int)$prefrow['birthday_email_enabled'];
+        $birthday_reminder_days = (int)$prefrow['birthday_reminder_days'];
+    }
+    $prefquery->close();
+
+    echo '<form action="preferences.php" method="post"><table border="1">';
+    echo '<caption>Birthday e-mail reminders</caption>';
+    echo '<tr><td><label><input type="checkbox" name="birthday_email_enabled" value="1"' . ($birthday_email_enabled === 1 ? ' checked' : '') . '> E-mail me reminders for my characters\' birthdays</label></td></tr>';
+    echo '<tr><td>Send reminder <select name="birthday_reminder_days">';
+    foreach (array(0 => 'on the birthday', 1 => '1 day before', 3 => '3 days before', 7 => '7 days before') as $days => $label) {
+        echo '<option value="' . $days . '"' . ($birthday_reminder_days === $days ? ' selected' : '') . '>' . h($label) . '</option>';
+    }
+    echo '</select></td></tr>';
+    echo '<tr><td><input type="hidden" name="save_email_preferences" value="1"><input type="submit" value="Save e-mail preferences"></td></tr>';
+    echo '</table></form>';
+    echo '<p><small>Birthday reminders are disabled unless you explicitly opt in.</small></p>';
+    if ($preference_message !== '') {
+        echo '<p><strong>' . h($preference_message) . '</strong></p>';
+    }
+    echo '<br />';
+
     echo <<<UPDPASS
     <form action="preferences.php" method="post"><table border="1">
     <tr><th>Old Password</th><tr>
