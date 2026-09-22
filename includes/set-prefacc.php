@@ -8,11 +8,11 @@ if (isset($_SESSION['userid']) && isset($_POST['prefaccid'])) {
 		$nap->close();
 		$_SESSION['prefaccid'] = "0";
 		$_SESSION['prefaccname'] = "No default selected";
-		echo 'Account preference update - no preferred account selected.<br />';
+		$preference_message = 'Preferred Guild Wars account cleared.';
 	} else {
 		$prefaccid = filter_var($_POST['prefaccid'], FILTER_VALIDATE_INT);
 		if ($prefaccid === false || $prefaccid < 1) {
-			echo 'Invalid account preference.<br />';
+			$preference_message = 'Invalid account preference.';
 			return;
 		}
 		// $sap = Select AccountID Preferrence
@@ -27,8 +27,9 @@ if (isset($_SESSION['userid']) && isset($_POST['prefaccid'])) {
 			$uap->close();
 			$_SESSION['prefaccid'] = $row['accid'];
 			$_SESSION['prefaccname'] = $row['accemail'];
+			$preference_message = 'Preferred Guild Wars account switched to ' . $row['accemail'] . '.';
 		} else {
-			echo 'Account preference not found.<br />';
+			$preference_message = 'Account preference not found.';
 			$sap->close();
 			return;
 		}
@@ -41,6 +42,5 @@ if (isset($_SESSION['userid']) && isset($_POST['prefaccid'])) {
 	$_SESSION['prefcharid'] = "0";
 	$_SESSION['prefcharname'] = "No default selected";
 	$_SESSION['charprofid'] = "0";
-	echo 'Guild Wars preferred account updated! <br />';
 }
 ?>
