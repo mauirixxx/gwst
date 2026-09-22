@@ -3,10 +3,10 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" type="text/css" href="style.css?v=20260921-3">
+<link rel="stylesheet" type="text/css" href="password-reset.css?v=20260921-1">
 <title>Reset password - GWST</title>
 </head>
-<body>
-<center>
+<body class="password-reset-page">
 <?php
 if (session_status() == PHP_SESSION_NONE) {
     ini_set('session.use_strict_mode', '1');
@@ -89,28 +89,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-<div class="gwst-simple-card">
-<h1>Reset your password</h1>
-<?php if ($success): ?>
-<p><strong>Your password has been updated.</strong></p>
-<p><a class="navlink" href="index.php">Login with your new password</a></p>
-<?php elseif (!$resetRow): ?>
-<p><strong><?= h($error !== '' ? $error : 'This password reset link is invalid or has expired.') ?></strong></p>
-<p><a class="navlink" href="forgot-password.php">Request a new reset link</a></p>
-<?php else: ?>
-<?php if ($error !== ''): ?><p><strong><?= h($error) ?></strong></p><?php endif; ?>
-<form method="post" action="reset-password.php">
-<?= csrf_input() ?>
-<input type="hidden" name="token" value="<?= h($token) ?>">
-<p><label for="password1">New password</label><br>
-<input id="password1" name="password1" type="password" minlength="8" autocomplete="new-password" required></p>
-<p><label for="password2">Confirm new password</label><br>
-<input id="password2" name="password2" type="password" minlength="8" autocomplete="new-password" required></p>
-<p><button type="submit">Reset password</button></p>
-</form>
-<?php endif; ?>
-<p><a class="navlink" href="index.php">Return to login</a></p>
-</div>
-</center>
+<main class="password-reset-shell">
+    <section class="password-reset-card" aria-labelledby="reset-title">
+        <div class="password-reset-brand">
+            <span class="password-reset-mark">GWST</span>
+            <span class="password-reset-kicker">Password Recovery</span>
+        </div>
+
+        <?php if ($success): ?>
+            <div class="password-reset-status" aria-live="polite">
+                <div class="password-reset-status-icon">✓</div>
+                <h1 id="reset-title">Password updated</h1>
+                <p>Your password has been changed successfully.</p>
+                <a class="password-reset-primary-link" href="index.php">Login with your new password</a>
+            </div>
+        <?php elseif (!$resetRow): ?>
+            <div class="password-reset-status password-reset-status-error">
+                <div class="password-reset-status-icon">!</div>
+                <h1 id="reset-title">Reset link unavailable</h1>
+                <p><?= h($error !== '' ? $error : 'This password reset link is invalid or has expired.') ?></p>
+                <a class="password-reset-primary-link" href="forgot-password.php">Request a new reset link</a>
+            </div>
+        <?php else: ?>
+            <h1 id="reset-title">Choose a new password</h1>
+            <p class="password-reset-intro">Enter your new password below. It must be at least 8 characters long.</p>
+            <?php if ($error !== ''): ?><div class="password-reset-error" role="alert"><?= h($error) ?></div><?php endif; ?>
+            <form method="post" action="reset-password.php" class="password-reset-form">
+                <?= csrf_input() ?>
+                <input type="hidden" name="token" value="<?= h($token) ?>">
+                <label for="password1">New password</label>
+                <input id="password1" name="password1" type="password" minlength="8" autocomplete="new-password" required autofocus>
+                <label for="password2">Confirm new password</label>
+                <input id="password2" name="password2" type="password" minlength="8" autocomplete="new-password" required>
+                <button type="submit">Reset password</button>
+            </form>
+        <?php endif; ?>
+
+        <?php if (!$success): ?><a class="password-reset-back" href="index.php">← Return to login</a><?php endif; ?>
+    </section>
+</main>
 </body>
 </html>
