@@ -10,6 +10,7 @@ if (!isset($_SESSION['userid']) || !isset($_SESSION['admin']) || $_SESSION['admi
 }
 
 $message = '';
+$message_class = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_mail_settings'])) {
     $enabled = isset($_POST['enabled']) ? 1 : 0;
@@ -34,10 +35,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_mail_settings'])
         $stmt->bind_param("isisssss", $enabled, $smtp_host, $smtp_port, $smtp_encryption, $smtp_username, $from_address, $from_name, $reply_to_address);
         if ($stmt->execute()) {
             $message = 'E-mail server settings saved.';
+            $message_class = 'success';
         } else {
             $message = 'Unable to save e-mail server settings.';
         }
         $stmt->close();
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_test_email'])) {
+    $test_recipient = trim($_POST['test_recipient'] ?? '');
+    if (!filter_var($test_recipient, FILTER_VALIDATE_EMAIL)) {
+        $message = 'Enter a valid test recipient e-mail address.';
+    } else {
+        require_once __DIR__ . '/includes/mailer.php';
+        $subject = 'GWST SMTP test message';
+        $text_body = "Success!\n\nGuild Wars Stats Tracker successfully sent this message through the configured SMTP server.\n\nIf you received this, GWST outbound e-mail is working.";
+        $html_body = '<h2>GWST SMTP test successful</h2><p>Guild Wars Stats Tracker successfully sent this message through the configured SMTP server.</p><p>If you received this, <strong>GWST outbound e-mail is working.</strong></p>';
+        $send_result = gwst_send_mail($con, $test_recipient, $subject, $text_body, $html_body);
+        $message = $send_result['success']
+            ? 'Test e-mail sent to ' . $test_recipient . '.'
+            : 'Test e-mail failed: ' . $send_result['message'];
+        $message_class = $send_result['success'] ? 'success' : '';
     }
 }
 
@@ -55,6 +74,16 @@ $settings = array(
 $result = $con->query("SELECT enabled, smtp_host, smtp_port, smtp_encryption, smtp_username, from_address, from_name, reply_to_address FROM mail_settings WHERE settings_id = 1");
 if ($result && $row = $result->fetch_assoc()) {
     $settings = $row;
+}
+
+$admin_email = $_SESSION['usermail'] ?? '';
+if ($admin_email === '') {
+    $emailstmt = $con->prepare("SELECT usermail FROM userinfo WHERE userid = ? LIMIT 1");
+    $emailstmt->bind_param("i", $_SESSION['userid']);
+    $emailstmt->execute();
+    $emailrow = $emailstmt->get_result()->fetch_assoc();
+    $admin_email = $emailrow['usermail'] ?? '';
+    $emailstmt->close();
 }
 
 echo '<section class="content-card"><h2>E-mail server settings</h2>';
@@ -80,7 +109,15 @@ echo '</table><br />';
 echo '<input type="hidden" name="save_mail_settings" value="1">';
 echo '<input type="submit" value="Save e-mail settings">';
 echo '</form>';
-echo '<p><small>Sending mail is not enabled by this page alone. PHPMailer integration and the test-message function are the next step.</small></p>';
+
+echo '<hr><h3>Send test e-mail</h3>';
+echo '<p>This sends one message using the saved settings above. Save any SMTP changes before testing.</p>';
+echo '<form action="mailsettings.php" method="post">';
+echo '<label for="test_recipient">Recipient</label> ';
+echo '<input type="email" id="test_recipient" name="test_recipient" size="40" value="' . h($admin_email) . '" required> ';
+echo '<input type="hidden" name="send_test_email" value="1">';
+echo '<input type="submit" value="Send test e-mail">';
+echo '</form>';
 echo '</section>';
 
 include_once ('footer.php');
