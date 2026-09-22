@@ -67,6 +67,11 @@
     text-align: left;
 }
 
+/* Home page title-progress heading should be centered above the stats table. */
+.page-index .stats-table caption {
+    text-align: center;
+}
+
 @media (max-width: 620px) {
     .page-titlemanager select {
         min-width: 0;
