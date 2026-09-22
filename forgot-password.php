@@ -3,10 +3,10 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" type="text/css" href="style.css?v=20260921-3">
+<link rel="stylesheet" type="text/css" href="password-reset.css?v=20260921-1">
 <title>Forgot password - GWST</title>
 </head>
-<body>
-<center>
+<body class="password-reset-page">
 <?php
 if (session_status() == PHP_SESSION_NONE) {
     ini_set('session.use_strict_mode', '1');
@@ -50,10 +50,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $token = bin2hex(random_bytes(32));
             $tokenHash = hash('sha256', $token);
-            $expires = date('Y-m-d H:i:s', time() + 3600);
 
-            $insert = $con->prepare('INSERT INTO password_reset_tokens (userid, token_hash, expires_at) VALUES (?, ?, ?)');
-            $insert->bind_param('iss', $user['userid'], $tokenHash, $expires);
+            // Let MariaDB calculate both created_at and expiry from the same clock.
+            // This avoids PHP/MariaDB timezone differences extending token lifetime.
+            $insert = $con->prepare('INSERT INTO password_reset_tokens (userid, token_hash, expires_at) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 1 HOUR))');
+            $insert->bind_param('is', $user['userid'], $tokenHash);
             $insert->execute();
             $tokenId = $insert->insert_id;
             $insert->close();
@@ -73,13 +74,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 . '<p>If you did not request this, you can ignore this e-mail.</p>';
             $text = "A password reset was requested for {$user['username']}.\n\nReset your password:\n{$resetUrl}\n\nThis link expires in 1 hour and can be used only once.\nIf you did not request this, you can ignore this e-mail.";
 
-            $mailResult = gwst_send_mail($con, $user['usermail'], $subject, $html, $text);
+            // gwst_send_mail expects the plain-text body first, then optional HTML.
+            $mailResult = gwst_send_mail($con, $user['usermail'], $subject, $text, $html);
             if (!$mailResult['success']) {
                 $cleanup = $con->prepare('DELETE FROM password_reset_tokens WHERE token_id = ?');
                 $cleanup->bind_param('i', $tokenId);
                 $cleanup->execute();
                 $cleanup->close();
-                error_log('GWST password reset mail failed: ' . $mailResult['error']);
+                error_log('GWST password reset mail failed: ' . ($mailResult['message'] ?? 'Unknown mail error.'));
             }
         }
     }
@@ -88,21 +90,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $message = 'If that username or e-mail address matches a GWST account, a password reset link has been sent.';
 }
 ?>
-<div class="gwst-simple-card">
-<h1>Forgot your password?</h1>
-<?php if ($message !== ''): ?>
-<p><strong><?= h($message) ?></strong></p>
-<?php else: ?>
-<p>Enter your GWST username or signup e-mail address. If it matches an account, we'll e-mail you a one-time reset link.</p>
-<form method="post" action="forgot-password.php">
-<?= csrf_input() ?>
-<p><label for="identifier">Username or e-mail</label><br>
-<input id="identifier" name="identifier" type="text" maxlength="255" autocomplete="username" required></p>
-<p><button type="submit">Send password reset link</button></p>
-</form>
-<?php endif; ?>
-<p><a class="navlink" href="index.php">Return to login</a></p>
-</div>
-</center>
+<main class="password-reset-shell">
+    <section class="password-reset-card" aria-labelledby="recovery-title">
+        <div class="password-reset-brand">
+            <span class="password-reset-mark">GWST</span>
+            <span class="password-reset-kicker">Password Recovery</span>
+        </div>
+
+        <?php if ($message !== ''): ?>
+            <div class="password-reset-status" aria-live="polite">
+                <div class="password-reset-status-icon">✓</div>
+                <h1 id="recovery-title">Check your e-mail</h1>
+                <p><?= h($message) ?></p>
+            </div>
+        <?php else: ?>
+            <h1 id="recovery-title">Forgot your password?</h1>
+            <p class="password-reset-intro">Enter your GWST username or signup e-mail address and we'll send you a one-time reset link.</p>
+            <form method="post" action="forgot-password.php" class="password-reset-form">
+                <?= csrf_input() ?>
+                <label for="identifier">Username or e-mail</label>
+                <input id="identifier" name="identifier" type="text" maxlength="255" autocomplete="username" required autofocus>
+                <button type="submit">Send password reset link</button>
+            </form>
+        <?php endif; ?>
+
+        <a class="password-reset-back" href="index.php">← Return to login</a>
+    </section>
+</main>
 </body>
 </html>
