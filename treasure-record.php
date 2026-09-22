@@ -12,7 +12,6 @@ $charid = isset($_SESSION['prefcharid']) ? (int) $_SESSION['prefcharid'] : 0;
 $charname = isset($_SESSION['prefcharname']) ? (string) $_SESSION['prefcharname'] : '';
 $locationId = isset($_GET['location']) ? (int) $_GET['location'] : (int) ($_POST['location_id'] ?? 0);
 $error = '';
-$success = '';
 
 $characterValid = false;
 if ($accid > 0 && $charid > 0) {
@@ -32,46 +31,74 @@ if ($locationId > 0) {
     $stmt->close();
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $characterValid && $location) {
-    $collectedOn = trim((string) ($_POST['collected_on'] ?? ''));
-    $gold = filter_var($_POST['gold_received'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0, 'max_range' => 16777215]]);
-    $dropType = (string) ($_POST['drop_type'] ?? '');
-    $dropDescription = trim((string) ($_POST['drop_description'] ?? ''));
-    $notes = trim((string) ($_POST['notes'] ?? ''));
-    $validTypes = ['weapon', 'material', 'rune_insignia', 'nothing'];
-
-    $date = DateTime::createFromFormat('Y-m-d', $collectedOn);
-    $validDate = $date && $date->format('Y-m-d') === $collectedOn;
-
-    if (!$validDate) {
-        $error = 'Please enter a valid collection date.';
-    } elseif ($gold === false) {
-        $error = 'Gold received must be zero or a positive whole number.';
-    } elseif (!in_array($dropType, $validTypes, true)) {
-        $error = 'Please choose a valid drop type.';
-    } elseif ($dropType !== 'nothing' && $dropDescription === '') {
-        $error = 'Please describe what dropped.';
-    } elseif (mb_strlen($dropDescription) > 255 || mb_strlen($notes) > 255) {
-        $error = 'Drop description and notes are limited to 255 characters each.';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!$characterValid) {
+        $error = 'The selected character is no longer valid for this account. Please select the character again.';
+    } elseif (!$location) {
+        $error = 'That treasure location could not be found.';
     } else {
-        if ($dropType === 'nothing') {
-            $dropDescription = '';
-        }
-        $dropDescriptionDb = $dropDescription === '' ? null : $dropDescription;
-        $notesDb = $notes === '' ? null : $notes;
-        $insert = $con->prepare(
-            'INSERT INTO gwtreasure_history '
-            . '(userid, accid, charid, location_id, collected_on, gold_received, drop_type, drop_description, notes) '
-            . 'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
-        );
-        $insert->bind_param('iiiisisss', $userid, $accid, $charid, $locationId, $collectedOn, $gold, $dropType, $dropDescriptionDb, $notesDb);
-        if ($insert->execute()) {
-            $success = 'Collection recorded for ' . $location['location_name'] . '.';
+        $collectedOn = trim((string) ($_POST['collected_on'] ?? ''));
+        $gold = filter_var($_POST['gold_received'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0, 'max_range' => 16777215]]);
+        $dropType = (string) ($_POST['drop_type'] ?? '');
+        $dropDescription = trim((string) ($_POST['drop_description'] ?? ''));
+        $notes = trim((string) ($_POST['notes'] ?? ''));
+        $validTypes = ['weapon', 'material', 'rune_insignia', 'nothing'];
+
+        $date = DateTime::createFromFormat('!Y-m-d', $collectedOn);
+        $validDate = $date && $date->format('Y-m-d') === $collectedOn;
+        $today = new DateTime('today');
+
+        if (!$validDate) {
+            $error = 'Please enter a valid collection date.';
+        } elseif ($date > $today) {
+            $error = 'Collection date cannot be in the future.';
+        } elseif ($gold === false) {
+            $error = 'Gold received must be zero or a positive whole number.';
+        } elseif (!in_array($dropType, $validTypes, true)) {
+            $error = 'Please choose a valid drop type.';
+        } elseif ($dropType !== 'nothing' && $dropDescription === '') {
+            $error = 'Please describe what dropped.';
+        } elseif (mb_strlen($dropDescription) > 255 || mb_strlen($notes) > 255) {
+            $error = 'Drop description and notes are limited to 255 characters each.';
         } else {
-            error_log('GWTTT treasure insert failed: ' . $insert->error);
-            $error = 'The collection could not be saved. Please try again.';
+            if ($dropType === 'nothing') {
+                $dropDescription = '';
+            }
+            $dropDescriptionDb = $dropDescription === '' ? null : $dropDescription;
+            $notesDb = $notes === '' ? null : $notes;
+            $insert = $con->prepare(
+                'INSERT INTO gwtreasure_history '
+                . '(userid, accid, charid, location_id, collected_on, gold_received, drop_type, drop_description, notes) '
+                . 'SELECT ?, ?, ?, l.location_id, ?, ?, ?, ?, ? '
+                . 'FROM gwtreasure_locations l '
+                . 'JOIN gwchars c ON c.charid = ? AND c.accid = ? AND c.userid = ? '
+                . 'JOIN gwaccounts a ON a.accid = c.accid AND a.userid = c.userid '
+                . 'WHERE l.location_id = ? AND l.is_active = 1'
+            );
+            $insert->bind_param(
+                'iiisisssiiii',
+                $userid,
+                $accid,
+                $charid,
+                $collectedOn,
+                $gold,
+                $dropType,
+                $dropDescriptionDb,
+                $notesDb,
+                $charid,
+                $accid,
+                $userid,
+                $locationId
+            );
+            if ($insert->execute() && $insert->affected_rows === 1) {
+                $_SESSION['treasure_message'] = 'Collection recorded for ' . $location['location_name'] . ' on ' . date('M j, Y', strtotime($collectedOn)) . '.';
+                header('Location: treasures.php');
+                exit;
+            }
+            error_log('GWTTT treasure insert failed or inserted no row: ' . $insert->error);
+            $error = 'The collection could not be saved. Please verify the selected account and character and try again.';
+            $insert->close();
         }
-        $insert->close();
     }
 }
 ?>
@@ -95,17 +122,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $characterValid && $location) {
         <p class="treasure-form-message treasure-error">That treasure location could not be found.</p>
     <?php else: ?>
         <?php if ($error !== ''): ?><p class="treasure-form-message treasure-error"><?php echo h($error); ?></p><?php endif; ?>
-        <?php if ($success !== ''): ?>
-            <p class="treasure-form-message treasure-success"><?php echo h($success); ?></p>
-            <div class="treasure-form-actions"><a class="treasure-button" href="treasures.php">Back to Treasure Tracker</a></div>
-        <?php else: ?>
         <form class="treasure-record-form" method="post" action="treasure-record.php?location=<?php echo (int) $locationId; ?>">
             <?php echo csrf_input(); ?>
             <input type="hidden" name="location_id" value="<?php echo (int) $locationId; ?>">
 
             <div class="treasure-form-row">
                 <label for="collected_on">Collection date</label>
-                <input id="collected_on" name="collected_on" type="date" value="<?php echo h($_POST['collected_on'] ?? date('Y-m-d')); ?>" required>
+                <input id="collected_on" name="collected_on" type="date" max="<?php echo date('Y-m-d'); ?>" value="<?php echo h($_POST['collected_on'] ?? date('Y-m-d')); ?>" required>
             </div>
             <div class="treasure-form-row">
                 <label for="gold_received">Gold received</label>
@@ -149,7 +172,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $characterValid && $location) {
             refreshDropDescription();
         }());
         </script>
-        <?php endif; ?>
     <?php endif; ?>
 </section>
 <?php include_once('footer.php'); ?>
