@@ -10,6 +10,8 @@ $userid = (int) $_SESSION['userid'];
 $accid = isset($_SESSION['prefaccid']) ? (int) $_SESSION['prefaccid'] : 0;
 $charid = isset($_SESSION['prefcharid']) ? (int) $_SESSION['prefcharid'] : 0;
 $charname = isset($_SESSION['prefcharname']) ? (string) $_SESSION['prefcharname'] : '';
+$treasureMessage = (string) ($_SESSION['treasure_message'] ?? '');
+unset($_SESSION['treasure_message']);
 
 $characterValid = false;
 if ($accid > 0 && $charid > 0) {
@@ -29,6 +31,10 @@ if ($accid > 0 && $charid > 0) {
             <p>Select an account and character in the header to view treasure availability.</p>
         <?php endif; ?>
     </div>
+
+<?php if ($treasureMessage !== ''): ?>
+    <p class="treasure-form-message treasure-success"><?php echo h($treasureMessage); ?></p>
+<?php endif; ?>
 
 <?php if ($characterValid): ?>
     <div class="treasure-grid">
