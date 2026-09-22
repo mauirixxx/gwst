@@ -27,9 +27,13 @@ if ($accid > 0 && $charid > 0) {
         <h1>Treasure Tracker</h1>
         <?php if ($characterValid): ?>
             <p>Treasure availability for <strong><?php echo h($charname); ?></strong>. Click a location to record a collection.</p>
-            <p class="treasure-heading-actions"><a class="treasure-button treasure-button-secondary" href="treasure-history.php">View collection history</a></p>
+            <div class="treasure-heading-actions">
+                <a class="treasure-button treasure-button-secondary" href="treasure-history.php">View collection history</a>
+                <a class="treasure-button treasure-button-secondary" href="treasure-overview.php">All-character overview</a>
+            </div>
         <?php else: ?>
             <p>Select an account and character in the header to view treasure availability.</p>
+            <p class="treasure-heading-actions"><a class="treasure-button treasure-button-secondary" href="treasure-overview.php">All-character overview</a></p>
         <?php endif; ?>
     </div>
 
