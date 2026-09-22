@@ -1,0 +1,79 @@
+/* Center the older management pages without changing the newer Treasure/Options layouts. */
+.page-mailsettings,
+.page-titlemanager,
+.page-addaccounts,
+.page-updatecharstats,
+.page-updateaccountstats {
+    text-align: center;
+}
+
+/* Keep compact legacy forms and tables centered instead of stretching across the page. */
+.page-mailsettings form,
+.page-mailsettings table,
+.page-titlemanager form,
+.page-titlemanager table,
+.page-addaccounts form,
+.page-addaccounts table,
+.page-updatecharstats > form,
+.page-updateaccountstats > form {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* E-mail settings should read as one centered admin panel. */
+.page-mailsettings .content-card {
+    width: min(100%, 900px);
+    margin: 0 auto;
+}
+.page-mailsettings .content-card > p {
+    text-align: center;
+}
+.page-mailsettings label[for="test_recipient"] {
+    float: none;
+    width: auto;
+    margin-right: 8px;
+    text-align: center;
+}
+
+/* Title editor is intentionally compact. */
+.page-titlemanager {
+    width: min(100%, 760px);
+}
+.page-titlemanager select {
+    min-width: 305px;
+}
+
+/* Accounts/characters remain compact while centered in the page shell. */
+.page-addaccounts {
+    width: min(100%, 900px);
+}
+.page-addaccounts table {
+    width: fit-content;
+    max-width: 100%;
+}
+
+/* The title selector/status text is centered; the stats cards retain their full width. */
+.page-updatecharstats > form,
+.page-updateaccountstats > form {
+    width: fit-content;
+    max-width: 100%;
+}
+.page-updatecharstats .stats-card,
+.page-updateaccountstats .stats-card {
+    text-align: center;
+}
+.page-updatecharstats .stats-table caption,
+.page-updateaccountstats .stats-table caption {
+    text-align: left;
+}
+
+@media (max-width: 620px) {
+    .page-titlemanager select {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .page-mailsettings .content-card {
+        overflow-x: auto;
+    }
+}
