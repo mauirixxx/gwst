@@ -70,14 +70,10 @@ submitLink:focus {
 .percentbar { background:#CCCCCC; border:1px solid #666666; height:10px; }
 .percentbar div { background: #28B8C0; height: 10px; }
 
-select.header  { 
-	/*background: rgb(255, 255, 255);
-	background: rgba(255, 255, 255, 0.2);*/
-	color: red;
-}
+select.header  { color: red; }
 
 select *.profession-0 { background-color: #FFF; }
-select *.profession-1 {	background-color: #FF8; }
+select *.profession-1 { background-color: #FF8; }
 select *.profession-2 { background-color: #CF9; }
 select *.profession-3 { background-color: #ACF; }
 select *.profession-4 { background-color: #9FC; }
@@ -94,14 +90,12 @@ select *.profession-10 { background-color: #DDF; }
 	border-collapse: collapse;
 	table-layout: auto;
 }
-
 .stats-table th,
 .stats-table td {
 	padding: 6px 8px;
 	line-height: 1.25;
 	vertical-align: middle;
 }
-
 .stats-table .title-name { min-width: 165px; }
 .stats-table .title-rank { min-width: 200px; }
 .stats-table .title-points { min-width: 95px; white-space: nowrap; }
@@ -109,7 +103,6 @@ select *.profession-10 { background-color: #DDF; }
 .stats-table .points-remaining { min-width: 125px; }
 .stats-table .title-progress { min-width: 120px; white-space: nowrap; }
 .stats-table .next-rank { min-width: 145px; }
-
 .stats-table .percentbar {
 	width: 100%;
 	max-width: 110px;
@@ -221,6 +214,7 @@ body {
 	text-align: left;
 	box-shadow: inset 0 1px rgba(255,255,255,.03);
 }
+.action-nav a:nth-child(4) { grid-column: 2; }
 .action-nav a:hover {
 	border-color: #28b8c0;
 	background: #193847;
@@ -243,6 +237,7 @@ body {
 	.top-nav { flex-wrap: wrap; }
 	.nav-select { flex: 1 1 280px; justify-content: center; }
 	.action-nav { grid-template-columns: 1fr; }
+	.action-nav a:nth-child(4) { grid-column: auto; }
 }
 
 /* 2026 title table refresh */
@@ -258,171 +253,129 @@ body {
 .stats-table-wrap { width: 100%; overflow-x: auto; }
 .stats-table {
 	width: 100%;
-	max-width: none;
-	border: 0;
 	border-collapse: collapse;
-	background: transparent;
-	color: #dce8ee;
+	background: #11232d;
 }
 .stats-table caption {
-	caption-side: top;
-	padding: 20px 20px 16px;
-	background: #0d1a22;
-	color: #dce8ee;
-	font-size: 23px;
-	text-align: left;
+	padding: 22px 18px 16px;
+	background: #0d1c23;
 	border-bottom: 2px solid #28b8c0;
-}
-.stats-table caption b { color: #66dce2; }
-.stats-table thead th {
-	padding: 13px 14px;
-	background: linear-gradient(180deg, #203a4b, #192f3d);
-	color: #eef7fa;
-	font-size: 13px;
-	font-weight: 700;
-	letter-spacing: .02em;
-	text-transform: uppercase;
-	border: 0;
-	border-right: 1px solid #355364;
-	border-bottom: 1px solid #426174;
-}
-.stats-table thead th:last-child { border-right: 0; }
-.stats-table tbody td {
-	padding: 11px 14px;
-	font: 14px/1.25 "Segoe UI", Tahoma, Arial, sans-serif;
 	color: #dce8ee;
-	border: 0;
-	border-right: 1px solid rgba(70, 101, 117, .42);
-	border-bottom: 1px solid rgba(70, 101, 117, .42);
-	background: #12232d;
+	font-size: 20px;
+	text-align: left;
 }
-.stats-table tbody tr:nth-child(even) td { background: #152833; }
-.stats-table tbody tr:hover td { background: #1a3441; }
-.stats-table tbody td:last-child { border-right: 0; }
-.stats-table tbody tr:last-child td { border-bottom: 0; }
-.stats-table .title-name,
-.stats-table .title-rank,
-.stats-table .next-rank { text-align: left; }
-.stats-table .title-points { text-align: right; font-variant-numeric: tabular-nums; }
-.stats-table .current-rank,
-.stats-table .points-remaining,
-.stats-table .title-progress { text-align: center; }
-.stats-table .title-name { min-width: 185px; font-weight: 600; color: #f0f6f8; }
-.stats-table .title-rank { min-width: 220px; }
-.stats-table .title-points { min-width: 110px; }
-.stats-table .current-rank { min-width: 85px; }
-.stats-table .points-remaining { min-width: 135px; }
-.stats-table .title-progress { min-width: 145px; }
-.stats-table .next-rank { min-width: 170px; }
-.progress-meter {
-	position: relative;
-	width: 100%;
-	min-width: 110px;
-	height: 20px;
-	overflow: hidden;
-	border: 1px solid #486575;
+.stats-table caption b { color: #69dbe1; }
+.stats-table thead th {
+	padding: 13px 12px;
+	background: linear-gradient(180deg, #1c3b4c, #183241);
+	border-right: 1px solid #31505f;
+	border-bottom: 1px solid #416170;
+	color: #f1f5f7;
+	font-size: 13px;
+	text-transform: uppercase;
+	letter-spacing: .02em;
+}
+.stats-table tbody td {
+	padding: 12px;
+	border-right: 1px solid #294754;
+	border-bottom: 1px solid #294754;
+	color: #e1edf1;
+	font-size: 14px;
+}
+.stats-table tbody tr:nth-child(even) td { background: rgba(255,255,255,.018); }
+.stats-table tbody tr:hover td { background: rgba(40,184,192,.07); }
+.stats-table tbody td:first-child { font-weight: 600; color: #f0f5f6; }
+.stats-table th:last-child, .stats-table td:last-child { border-right: 0; }
+.stats-table .percentbar {
+	height: 21px;
+	max-width: 125px;
+	margin: 0 auto;
+	border: 1px solid #45606c;
 	border-radius: 5px;
-	background: #263944;
+	overflow: hidden;
+	background: #253a45;
 	box-shadow: inset 0 1px 3px rgba(0,0,0,.35);
 }
-.progress-fill {
-	position: absolute;
-	inset: 0 auto 0 0;
-	background: linear-gradient(180deg, #36d1d8, #1ca7b1);
+.stats-table .percentbar div {
+	height: 100%;
+	background: linear-gradient(180deg, #3ad2d9, #20a8b2);
 }
-.progress-meter span {
+.stats-table .progress-text {
+	display: block;
+	margin-top: -20px;
 	position: relative;
 	z-index: 1;
-	display: block;
-	color: #f4fcfd;
+	color: #fff;
 	font-size: 12px;
 	font-weight: 700;
-	line-height: 18px;
-	text-align: center;
-	text-shadow: 0 1px 2px #071116;
-}
-@media (max-width: 760px) {
-	.page-shell { padding: 12px; }
-	.stats-card { border-radius: 5px; }
-	.stats-table caption { font-size: 19px; padding: 16px 14px 12px; }
-	.stats-table thead th, .stats-table tbody td { padding: 9px 10px; }
+	text-shadow: 0 1px 2px #000;
 }
 
-/* Guild Wars Warrior profession accent for account-name controls */
-.submitLink.warrior-yellow {
-	color: #fff2a8;
+/* Warrior-yellow account links */
+.account-name-link,
+a.account-name-link:link,
+a.account-name-link:visited {
+	color: #fff27a;
 }
-.submitLink.warrior-yellow:hover,
-.submitLink.warrior-yellow:focus {
-	color: #fff7c7;
+a.account-name-link:hover,
+a.account-name-link:focus {
+	color: #fff7b8;
 }
 
-/* User e-mail preference controls */
-.email-preferences-form {
+/* Birthday preference panel */
+.birthday-preferences {
 	width: min(100%, 560px);
-	margin: 8px auto 18px;
-}
-.email-preferences-card {
+	margin: 28px auto 10px;
 	padding: 18px 20px 16px;
-	border: 1px solid #315b6d;
+	border: 1px solid #2d6978;
 	border-radius: 7px;
-	background: #122630;
-	font: 14px/1.4 "Segoe UI", Tahoma, Arial, sans-serif;
+	background: #122936;
 	text-align: left;
 }
-.email-preferences-card legend {
+.birthday-preferences legend {
 	padding: 0 8px;
 	color: #69dbe1;
 	font-size: 17px;
-	font-weight: 600;
 }
-.email-preferences-card label {
+.birthday-preferences label {
 	float: none;
 	width: auto;
 	margin: 0;
 	padding: 0;
 	text-align: left;
 }
-.email-pref-toggle {
+.birthday-toggle {
 	display: flex;
 	align-items: center;
 	gap: 10px;
-	margin-bottom: 16px !important;
-	font-weight: 600;
+	margin-bottom: 18px !important;
 }
-.email-pref-toggle input {
-	width: 18px;
-	height: 18px;
-	margin: 0;
-	accent-color: #28b8c0;
-}
-.email-pref-row {
+.birthday-toggle input { width: 18px; height: 18px; accent-color: #28b8c0; }
+.birthday-reminder-row {
 	display: flex;
 	align-items: center;
 	gap: 12px;
-	margin-bottom: 16px;
+	margin-bottom: 18px;
 }
-.email-pref-row label { font-weight: 600; }
-.email-pref-row select {
+.birthday-reminder-row label { min-width: 92px; }
+.birthday-reminder-row select {
 	min-width: 170px;
-	padding: 5px 8px;
-	border: 1px solid #547080;
-	border-radius: 4px;
-	background: #edf2f5;
-	color: #17242c;
+	padding: 6px 30px 6px 10px;
 }
-.email-preferences-card button {
-	padding: 7px 14px;
-	border: 1px solid #238d9b;
+.birthday-preferences button,
+.birthday-preferences input[type="submit"] {
+	padding: 8px 14px;
+	border: 1px solid #2999a5;
 	border-radius: 4px;
-	background: #173c49;
-	color: #e8f8fa;
+	background: #174454;
+	color: #fff;
 	font-weight: 600;
 	cursor: pointer;
 }
-.email-preferences-card button:hover { background: #1d4b59; }
-.email-pref-note {
-	margin: 12px 0 0;
-	color: #9fb5bf;
+.birthday-preferences button:hover,
+.birthday-preferences input[type="submit"]:hover { background: #1b5668; }
+.birthday-help {
+	margin: 14px 0 0;
+	color: #9fb9c4;
 	font-size: 12px;
 }
