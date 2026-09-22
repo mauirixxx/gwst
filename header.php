@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" type="text/css" href="style.css?v=20260921-5">
+<link rel="stylesheet" type="text/css" href="style.css?v=20260921-7">
 <?php
 if (session_status() == PHP_SESSION_NONE) {
 	ini_set('session.use_strict_mode', '1');
@@ -113,5 +113,8 @@ if (!$userid){
 	echo '<a href="treasures.php"><strong>Track Treasures</strong><small>Record treasure, gold, and loot drops</small></a>';
 	echo '<a href="addaccounts.php"><strong>Manage Accounts &amp; Characters</strong><small>View and manage accounts and characters</small></a>';
 	echo '</nav></header><main class="page-shell"><center>';
+	if (!empty($preference_message)) {
+		echo '<div class="preference-message">' . h($preference_message) . '</div>';
+	}
 }
 ?>
