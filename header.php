@@ -3,6 +3,7 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" type="text/css" href="style.css?v=20260921-9">
+<link rel="stylesheet" type="text/css" href="legacy-layout.css?v=20260922-1">
 <?php
 if (session_status() == PHP_SESSION_NONE) {
 	ini_set('session.use_strict_mode', '1');
@@ -101,13 +102,14 @@ if (!$userid){
 	echo '<select id="header-character" name="prefcharid" onchange="this.form.submit()">';
 	echo '<option value="0">No default selected</option>';
 	if (!empty($_SESSION['prefaccid'])) {
-		$characterList = $con->prepare('SELECT charid, charname FROM gwchars WHERE accid = ? AND userid = ? ORDER BY charname');
+		$characterList = $con->prepare('SELECT charid, charname, profid FROM gwchars WHERE accid = ? AND userid = ? ORDER BY charname');
 		$characterList->bind_param('ii', $_SESSION['prefaccid'], $_SESSION['userid']);
 		$characterList->execute();
 		$characterResult = $characterList->get_result();
 		while ($character = $characterResult->fetch_assoc()) {
 			$selected = ((int) ($_SESSION['prefcharid'] ?? 0) === (int) $character['charid']) ? ' selected' : '';
-			echo '<option value="' . (int) $character['charid'] . '"' . $selected . '>' . h($character['charname']) . '</option>';
+			$professionClass = 'profession-' . (int) $character['profid'];
+			echo '<option class="' . $professionClass . '" value="' . (int) $character['charid'] . '"' . $selected . '>' . h($character['charname']) . '</option>';
 		}
 		$characterList->close();
 	}
@@ -126,7 +128,9 @@ if (!$userid){
 	echo '<a href="addaccounts.php"><strong>Manage Accounts &amp; Characters</strong><small>View and manage accounts and characters</small></a>';
 	echo '</div>';
 	echo '</header>';
-	echo '<main class="page-shell">';
+	$page_script = pathinfo($_SERVER['SCRIPT_NAME'] ?? '', PATHINFO_FILENAME);
+	$page_class = preg_replace('/[^a-zA-Z0-9_-]/', '', $page_script);
+	echo '<main class="page-shell page-' . h($page_class) . '">';
 	if ($prefMessage !== '') {
 		echo '<div class="preference-message">' . h($prefMessage) . '</div>';
 	}
