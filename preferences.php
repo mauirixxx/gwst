@@ -4,6 +4,8 @@ include_once ('header.php');
 if (isset($_SESSION['userid'])){
     $preference_message = '';
 
+    echo '<section class="options-page">';
+
     if (isset($_POST['save_email_preferences'])) {
         $birthday_email_enabled = isset($_POST['birthday_email_enabled']) ? 1 : 0;
         $birthday_reminder_days = (int)($_POST['birthday_reminder_days'] ?? 0);
@@ -111,6 +113,7 @@ if (isset($_SESSION['userid'])){
     </script>
     <input type="submit" name="submission" value="Update password" onclick="return Validate()" id="btnSubmit"></form>
 UPDPASS;
+    echo '</section>';
 }
 include_once ('footer.php');
 ?>
