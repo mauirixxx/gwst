@@ -11,7 +11,7 @@ if (isset($_SESSION['userid'])) {
     }
 
     $char_stmt = $con->prepare(
-        "SELECT c.charid, c.accid, c.charname, c.birthdate, p.profession
+        "SELECT c.charid, c.accid, c.charname, c.birthdate, c.profcolor, p.profession
          FROM gwchars c
          LEFT JOIN gwprofessions p ON p.profid = c.profid
          WHERE c.charid = ? AND c.userid = ?
@@ -66,6 +66,11 @@ if (isset($_SESSION['userid'])) {
             }
         }
 
+        $professionColor = trim((string)($character['profcolor'] ?? ''));
+        if (!preg_match('/^#[0-9a-fA-F]{3,8}$/', $professionColor)) {
+            $professionColor = '#122936';
+        }
+
         echo '<section class="edit-character-page">';
         echo '<div class="edit-character-heading">';
         echo '<h1>Edit character</h1>';
@@ -76,7 +81,7 @@ if (isset($_SESSION['userid'])) {
             echo '<div class="edit-character-message ' . $message_class . '">' . $character_message . '</div>';
         }
 
-        echo '<fieldset class="edit-character-card">';
+        echo '<fieldset class="edit-character-card edit-character-profession-card" style="--profession-color:' . h($professionColor) . ';">';
         echo '<legend>Character details</legend>';
         echo '<form action="editcharacter.php" method="post" class="edit-character-form">';
         echo '<input type="hidden" name="charid" value="' . (int)$character['charid'] . '">';
