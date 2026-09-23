@@ -1,9 +1,10 @@
 <?php
 if (isset($_SESSION['userid'])) {
-    $new_email = trim($_POST['useremail'] ?? '');
+    $new_email = trim((string)($_POST['useremail'] ?? ''));
 
-    if (!filter_var($new_email, FILTER_VALIDATE_EMAIL)) {
-        echo 'Please enter a valid e-mail address.<br />';
+    if ($new_email === '' || mb_strlen($new_email) > 50 || !filter_var($new_email, FILTER_VALIDATE_EMAIL)) {
+        http_response_code(400);
+        echo 'Please enter a valid e-mail address no longer than 50 characters.<br />';
         return;
     }
 
@@ -35,6 +36,7 @@ if (isset($_SESSION['userid'])) {
             echo 'That e-mail address is already associated with another GWST account.<br />';
         } else {
             error_log('GWST e-mail update failed: ' . $e->getMessage());
+            http_response_code(500);
             echo 'Unable to update e-mail address.<br />';
         }
     } finally {
