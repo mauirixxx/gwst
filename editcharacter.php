@@ -24,12 +24,15 @@ if (isset($_SESSION['userid'])) {
 
     if (!$character) {
         http_response_code(404);
-        echo '<section class="edit-character-panel options-page">';
-        echo '<h2>Character not found</h2>';
+        echo '<section class="edit-character-page">';
+        echo '<div class="edit-character-heading"><h1>Character not found</h1></div>';
+        echo '<div class="edit-character-card">';
         echo '<p>That character does not exist or does not belong to your account.</p>';
-        echo '</section>';
+        echo '<div class="edit-character-actions"><a href="addaccounts.php" class="edit-character-button edit-character-button-secondary">Return to Manage Accounts &amp; Characters</a></div>';
+        echo '</div></section>';
     } else {
         $character_message = '';
+        $message_class = '';
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $new_name = trim($_POST['charname'] ?? '');
@@ -37,8 +40,10 @@ if (isset($_SESSION['userid'])) {
 
             if ($new_name === '' || mb_strlen($new_name) > 19) {
                 $character_message = 'Character name must be between 1 and 19 characters.';
+                $message_class = 'edit-character-error';
             } elseif ($birthdate !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $birthdate)) {
                 $character_message = 'Please enter a valid birthdate.';
+                $message_class = 'edit-character-error';
             } else {
                 $birthdate_value = ($birthdate === '') ? null : $birthdate;
                 $update = $con->prepare(
@@ -57,25 +62,30 @@ if (isset($_SESSION['userid'])) {
                 $character['charname'] = $new_name;
                 $character['birthdate'] = $birthdate_value;
                 $character_message = 'Character <strong>' . h($new_name) . '</strong> has been updated!';
+                $message_class = 'edit-character-success';
             }
         }
 
-        echo '<section class="edit-character-panel options-page">';
-        if ($character_message !== '') {
-            echo '<p>' . $character_message . '</p>';
-        }
-        echo '<h2>Edit character</h2>';
+        echo '<section class="edit-character-page">';
+        echo '<div class="edit-character-heading">';
+        echo '<h1>Edit character</h1>';
         echo '<p>Update the character name after a Guild Wars rename, or correct the character birthdate.</p>';
-        echo '<form action="editcharacter.php" method="post">';
+        echo '</div>';
+
+        if ($character_message !== '') {
+            echo '<div class="edit-character-message ' . $message_class . '">' . $character_message . '</div>';
+        }
+
+        echo '<fieldset class="edit-character-card">';
+        echo '<legend>Character details</legend>';
+        echo '<form action="editcharacter.php" method="post" class="edit-character-form">';
         echo '<input type="hidden" name="charid" value="' . (int)$character['charid'] . '">';
-        echo '<table>';
-        echo '<tr><th>Character name</th><td><input type="text" name="charname" maxlength="19" size="24" value="' . h($character['charname']) . '" required></td></tr>';
-        echo '<tr><th>Birthdate</th><td><input type="date" name="birthdate" value="' . h($character['birthdate'] ?? '') . '"></td></tr>';
-        echo '<tr><th>Profession</th><td>' . h($character['profession'] ?? 'Unknown') . '</td></tr>';
-        echo '<tr><td colspan="2"><input type="submit" value="Save character changes"></td></tr>';
-        echo '</table>';
+        echo '<div class="edit-character-row"><label for="edit-charname">Character name</label><input id="edit-charname" type="text" name="charname" maxlength="19" value="' . h($character['charname']) . '" required></div>';
+        echo '<div class="edit-character-row"><label for="edit-birthdate">Birthdate</label><input id="edit-birthdate" type="date" name="birthdate" value="' . h($character['birthdate'] ?? '') . '"></div>';
+        echo '<div class="edit-character-row"><span class="edit-character-label">Profession</span><span class="edit-character-value">' . h($character['profession'] ?? 'Unknown') . '</span></div>';
+        echo '<div class="edit-character-actions"><button type="submit" class="edit-character-button">Save character changes</button><a href="addaccounts.php" class="edit-character-button edit-character-button-secondary">Cancel</a></div>';
         echo '</form>';
-        echo '<p><a href="addaccounts.php" class="navlink">Return to Manage Accounts &amp; Characters</a></p>';
+        echo '</fieldset>';
         echo '</section>';
     }
 }
