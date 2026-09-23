@@ -24,17 +24,21 @@ if (isset($_SESSION['userid'])) {
 
     if (!$character) {
         http_response_code(404);
+        echo '<section class="edit-character-panel options-page">';
         echo '<h2>Character not found</h2>';
         echo '<p>That character does not exist or does not belong to your account.</p>';
+        echo '</section>';
     } else {
+        $character_message = '';
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $new_name = trim($_POST['charname'] ?? '');
             $birthdate = trim($_POST['birthdate'] ?? '');
 
             if ($new_name === '' || mb_strlen($new_name) > 19) {
-                echo '<p>Character name must be between 1 and 19 characters.</p>';
+                $character_message = 'Character name must be between 1 and 19 characters.';
             } elseif ($birthdate !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $birthdate)) {
-                echo '<p>Please enter a valid birthdate.</p>';
+                $character_message = 'Please enter a valid birthdate.';
             } else {
                 $birthdate_value = ($birthdate === '') ? null : $birthdate;
                 $update = $con->prepare(
@@ -52,11 +56,14 @@ if (isset($_SESSION['userid'])) {
 
                 $character['charname'] = $new_name;
                 $character['birthdate'] = $birthdate_value;
-                echo '<p>Character <strong>' . h($new_name) . '</strong> has been updated!</p>';
+                $character_message = 'Character <strong>' . h($new_name) . '</strong> has been updated!';
             }
         }
 
-        echo '<section class="edit-character-panel">';
+        echo '<section class="edit-character-panel options-page">';
+        if ($character_message !== '') {
+            echo '<p>' . $character_message . '</p>';
+        }
         echo '<h2>Edit character</h2>';
         echo '<p>Update the character name after a Guild Wars rename, or correct the character birthdate.</p>';
         echo '<form action="editcharacter.php" method="post">';

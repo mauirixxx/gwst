@@ -9,11 +9,12 @@ if (isset($_SESSION['userid'])){
     if (isset($_POST['save_email_preferences'])) {
         $birthday_email_enabled = isset($_POST['birthday_email_enabled']) ? 1 : 0;
         $birthday_reminder_days = (int)($_POST['birthday_reminder_days'] ?? 0);
+        $treasure_email_enabled = isset($_POST['treasure_email_enabled']) ? 1 : 0;
         if (!in_array($birthday_reminder_days, array(0, 1, 3, 7), true)) {
             $birthday_reminder_days = 0;
         }
-        $prefstmt = $con->prepare("INSERT INTO user_preferences (userid, birthday_email_enabled, birthday_reminder_days) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE birthday_email_enabled = VALUES(birthday_email_enabled), birthday_reminder_days = VALUES(birthday_reminder_days)");
-        $prefstmt->bind_param("iii", $_SESSION['userid'], $birthday_email_enabled, $birthday_reminder_days);
+        $prefstmt = $con->prepare("INSERT INTO user_preferences (userid, birthday_email_enabled, birthday_reminder_days, treasure_email_enabled) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE birthday_email_enabled = VALUES(birthday_email_enabled), birthday_reminder_days = VALUES(birthday_reminder_days), treasure_email_enabled = VALUES(treasure_email_enabled)");
+        $prefstmt->bind_param("iiii", $_SESSION['userid'], $birthday_email_enabled, $birthday_reminder_days, $treasure_email_enabled);
         if ($prefstmt->execute()) {
             $preference_message = 'E-mail reminder preferences updated.';
         } else {
@@ -64,28 +65,32 @@ if (isset($_SESSION['userid'])){
 
     $birthday_email_enabled = 0;
     $birthday_reminder_days = 0;
-    $prefquery = $con->prepare("SELECT birthday_email_enabled, birthday_reminder_days FROM user_preferences WHERE userid = ?");
+    $treasure_email_enabled = 0;
+    $prefquery = $con->prepare("SELECT birthday_email_enabled, birthday_reminder_days, treasure_email_enabled FROM user_preferences WHERE userid = ?");
     $prefquery->bind_param("i", $_SESSION['userid']);
     $prefquery->execute();
     $prefresult = $prefquery->get_result();
     if ($prefrow = $prefresult->fetch_assoc()) {
         $birthday_email_enabled = (int)$prefrow['birthday_email_enabled'];
         $birthday_reminder_days = (int)$prefrow['birthday_reminder_days'];
+        $treasure_email_enabled = (int)$prefrow['treasure_email_enabled'];
     }
     $prefquery->close();
 
     echo '<form action="preferences.php" method="post">';
     echo '<fieldset class="birthday-preferences">';
-    echo '<legend>Birthday e-mail reminders</legend>';
+    echo '<legend>E-mail reminders</legend>';
     echo '<label class="birthday-toggle"><input type="checkbox" name="birthday_email_enabled" value="1"' . ($birthday_email_enabled === 1 ? ' checked' : '') . '><span>E-mail me reminders for my characters\' birthdays</span></label>';
     echo '<div class="birthday-reminder-row"><label for="birthday_reminder_days">Send reminder</label><select id="birthday_reminder_days" name="birthday_reminder_days">';
     foreach (array(0 => 'on the birthday', 1 => '1 day before', 3 => '3 days before', 7 => '7 days before') as $days => $label) {
         echo '<option value="' . $days . '"' . ($birthday_reminder_days === $days ? ' selected' : '') . '>' . h($label) . '</option>';
     }
     echo '</select></div>';
+    echo '<label class="birthday-toggle"><input type="checkbox" name="treasure_email_enabled" value="1"' . ($treasure_email_enabled === 1 ? ' checked' : '') . '><span>E-mail me when my characters\' treasures are ready to collect again</span></label>';
+    echo '<p class="birthday-help">Treasure reminders use a 31-day buffer after the most recent collection.</p>';
     echo '<input type="hidden" name="save_email_preferences" value="1">';
     echo '<button type="submit">Save e-mail preferences</button>';
-    echo '<p class="birthday-help">Birthday reminders are disabled unless you explicitly opt in.</p>';
+    echo '<p class="birthday-help">Birthday and treasure reminders are disabled unless you explicitly opt in.</p>';
     echo '</fieldset></form>';
     if ($preference_message !== '') {
         echo '<p><strong>' . h($preference_message) . '</strong></p>';
