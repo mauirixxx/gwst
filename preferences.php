@@ -35,9 +35,15 @@ if (isset($_SESSION['userid'])){
     if (!empty($_POST['setchar'])) {
         include_once ('includes/set-prefchar.php');
     }
-    echo '<h3>Set preferred account & character, or change e-mail or password</h3>';
-    echo '<form action="preferences.php" method="post"><table border="1"><caption style="white-space: nowrap; overflow: hidden;">Current preferred account: <b>' . h($_SESSION['prefaccname']) . '</b></caption>';
-    echo '<tr><td><select name="prefaccid">';
+
+    echo '<h3>Set preferred account &amp; character, or change e-mail or password</h3>';
+
+    echo '<fieldset class="options-card account-options-card">';
+    echo '<legend>Account &amp; character</legend>';
+
+    echo '<form action="preferences.php" method="post" class="options-form">';
+    echo '<div class="options-current">Current preferred account: <strong>' . h($_SESSION['prefaccname']) . '</strong></div>';
+    echo '<div class="options-control-row"><select name="prefaccid">';
     echo '<option value="nopref">Prefer no default</option>';
     $prefacc = $con->prepare("SELECT accid, accemail FROM gwaccounts WHERE userid = ?");
     $prefacc->bind_param("i", $_SESSION['userid']);
@@ -46,9 +52,12 @@ if (isset($_SESSION['userid'])){
     while ($row = $resacc->fetch_assoc()) {
        echo '<option value="' . $row['accid'] . '">' . h($row['accemail']) . '</option>';
     }
-    echo '</td><td><input type="submit" value="Set account"></td></tr></select></table><input type="hidden" name="setacc" value="update"></form><br />';
-    echo '<form action="preferences.php" method="post"><table border="1"><caption style="white-space: nowrap; overflow: hidden;">Current preferred character: <b>' . h($_SESSION['prefcharname']) . '</b></caption>';
-    echo '<tr><td><select name="prefcharid">';
+    echo '</select><button type="submit">Set account</button></div>';
+    echo '<input type="hidden" name="setacc" value="update"></form>';
+
+    echo '<form action="preferences.php" method="post" class="options-form">';
+    echo '<div class="options-current">Current preferred character: <strong>' . h($_SESSION['prefcharname']) . '</strong></div>';
+    echo '<div class="options-control-row"><select name="prefcharid">';
     echo '<option value="nopref">Prefer no default</option>';
     $prefchar = $con->prepare("SELECT charid, charname FROM gwchars WHERE accid = ? AND userid = ?");
     $prefchar->bind_param("ii", $_SESSION['prefaccid'], $_SESSION['userid']);
@@ -57,11 +66,14 @@ if (isset($_SESSION['userid'])){
     while ($row2 = $reschar->fetch_assoc()) {
         echo '<option value="' . $row2['charid'] . '">' . h($row2['charname']) . '</option>';
     }
-    echo '</td><td><input type="submit" value="Set character"></td></tr></select></table><input type="hidden" name="setchar" value="updatechar"></form><br />';
-    echo '<form action="preferences.php" method="post"><table border="1">';
-    echo '<caption>Update e-mail address</caption>';
-    echo '<tr><td><input type="text" name="useremail" value="' . h($_SESSION['usermail']) . '"></td><td><input type="submit" value="Update e-mail"></td></tr>';
-    echo '</table></form><br />';
+    echo '</select><button type="submit">Set character</button></div>';
+    echo '<input type="hidden" name="setchar" value="updatechar"></form>';
+
+    echo '<form action="preferences.php" method="post" class="options-form options-email-form">';
+    echo '<label for="useremail">Update e-mail address</label>';
+    echo '<div class="options-control-row"><input id="useremail" type="email" name="useremail" value="' . h($_SESSION['usermail']) . '" required><button type="submit">Update e-mail</button></div>';
+    echo '</form>';
+    echo '</fieldset>';
 
     $birthday_email_enabled = 0;
     $birthday_reminder_days = 0;
@@ -95,29 +107,56 @@ if (isset($_SESSION['userid'])){
     if ($preference_message !== '') {
         echo '<p><strong>' . h($preference_message) . '</strong></p>';
     }
-    echo '<br />';
 
     echo <<<UPDPASS
-    <form action="preferences.php" method="post"><table border="1">
-    <tr><th>Old Password</th><tr>
-    <tr><td><input type="password" name="oldpass" required></td></tr>
-    <tr><th>New password</th></tr>
-    <tr><td><input type="password" required="required" name="userpass1" id="up1"></td></tr>
-    <tr><th>Verify password</th></tr>
-    <tr><td><input type="password" required="required" name="userpass2" id="up2"></td></tr>
-    </table><script type="text/javascript">
-        function Validate() {
+    <fieldset class="options-card password-options-card">
+    <legend>Change password</legend>
+    <form action="preferences.php" method="post" class="password-options-form">
+        <label for="oldpass">Current password</label>
+        <input type="password" name="oldpass" id="oldpass" autocomplete="current-password" required>
+        <label for="up1">New password</label>
+        <input type="password" name="userpass1" id="up1" autocomplete="new-password" required>
+        <label for="up2">Verify new password</label>
+        <input type="password" name="userpass2" id="up2" autocomplete="new-password" required>
+        <button type="submit" name="submission" id="btnSubmit">Update password</button>
+    </form>
+    </fieldset>
+    <script type="text/javascript">
+        document.getElementById("btnSubmit").addEventListener("click", function (event) {
             var userpass1 = document.getElementById("up1").value;
             var userpass2 = document.getElementById("up2").value;
-           if (userpass1 != userpass2) {
-               alert("Passwords do not match.");
-               return false;
+            if (userpass1 !== userpass2) {
+                event.preventDefault();
+                alert("Passwords do not match.");
             }
-           return true;
-        }
+        });
     </script>
-    <input type="submit" name="submission" value="Update password" onclick="return Validate()" id="btnSubmit"></form>
 UPDPASS;
+
+    echo '<style>
+    .options-page { width: min(100%, 760px); margin: 0 auto; text-align: center; }
+    .options-page > h3 { margin: 10px 0 24px; }
+    .options-card { width: min(100%, 560px); margin: 28px auto 10px; padding: 18px 20px 20px; border: 1px solid #2d6978; border-radius: 7px; background: #122936; text-align: left; }
+    .options-card legend { padding: 0 8px; color: #69dbe1; font-size: 17px; }
+    .options-card label { float: none; width: auto; margin: 0; padding: 0; text-align: left; }
+    .options-form { width: 100%; margin: 0 0 22px; }
+    .options-form:last-child { margin-bottom: 0; }
+    .options-current, .options-email-form > label { display: block; margin-bottom: 8px; color: #dce8ee; font-weight: 600; }
+    .options-current strong { color: #f3e3bd; }
+    .options-control-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; }
+    .options-control-row select, .options-control-row input, .password-options-form input { width: 100%; min-height: 38px; padding: 6px 10px; border: 1px solid #547080; border-radius: 5px; background: #edf2f5; color: #17242c; font: 15px "Segoe UI", Tahoma, Arial, sans-serif; }
+    .options-card button { min-height: 38px; padding: 7px 14px; border: 1px solid #2999a5; border-radius: 4px; background: #174454; color: #fff; font-weight: 600; cursor: pointer; }
+    .options-card button:hover { background: #1b5668; }
+    .password-options-form { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 12px 14px; align-items: center; }
+    .password-options-form label { font-weight: 600; }
+    .password-options-form button { grid-column: 2; justify-self: start; }
+    @media (max-width: 600px) {
+        .options-control-row, .password-options-form { grid-template-columns: 1fr; }
+        .password-options-form button { grid-column: 1; }
+        .options-control-row button, .password-options-form button { width: 100%; }
+    }
+    </style>';
+
     echo '</section>';
 }
 include_once ('footer.php');

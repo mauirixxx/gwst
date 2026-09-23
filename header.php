@@ -4,6 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" type="text/css" href="style.css?v=20260921-9">
 <link rel="stylesheet" type="text/css" href="legacy-layout.css?v=20260922-1">
+<link rel="stylesheet" type="text/css" href="auth.css?v=20260922-1">
 <?php
 if (session_status() == PHP_SESSION_NONE) {
 	ini_set('session.use_strict_mode', '1');
@@ -56,12 +57,20 @@ if ($con->connect_errno){
 	die ('Unable to connect to database [' . $con->connect_errno . ']');
 }
 if (!$userid){
-	echo '<title>Please login first</title></head><body><center>Aloha, and welcome to my Guild Wars Titles &amp; Treasures Tracker. Please login below.<hr>';
-	echo '<form action="login.php" method="post"><table border="0"><tr><td>Username:</td><td><input type="text" name="username" size="20" autofocus required></td></tr>';
-	echo '<tr><td>Password:</td><td><input type="password" name="password" size="20" required></td></tr></table>';
-	echo '<input type="submit" value="Login ..."></form><br />';
-	echo '<a href="forgot-password.php" class="navlink" style="color:#fff2a8;">Forgot your password?</a><br /><br />';
-	echo 'If you haven\'t registered an account yet,<br />please click <a href="register.php" class="navlink" style="color:#fff2a8;">here</a> to create one.<br />';
+	echo '<title>Please login first</title></head><body class="logged-out-body">';
+	echo '<main class="auth-shell">';
+	echo '<section class="auth-card">';
+	echo '<div class="auth-brand"><div class="auth-brand-mark">GWTTT</div><div class="auth-brand-name">Guild Wars Titles &amp; Treasures Tracker</div></div>';
+	echo '<h1>Welcome back</h1>';
+	echo '<p class="auth-intro">Sign in to manage your Guild Wars titles, characters, and treasures.</p>';
+	echo '<form class="auth-form" action="login.php" method="post">';
+	echo '<div class="auth-field"><label for="login-username">Username</label><input id="login-username" type="text" name="username" autocomplete="username" autofocus required></div>';
+	echo '<div class="auth-field"><label for="login-password">Password</label><input id="login-password" type="password" name="password" autocomplete="current-password" required></div>';
+	echo '<button class="auth-primary" type="submit">Log in</button>';
+	echo '</form>';
+	echo '<div class="auth-links"><a href="forgot-password.php">Forgot your password?</a><span>New here? <a href="register.php">Create an account</a></span></div>';
+	echo '</section>';
+	echo '</main>';
 } else {
 	echo '<title>';
 	if (isset($pagetitle)) {

@@ -85,40 +85,136 @@ if ($admin_email === '') {
     $admin_email = $emailrow['usermail'] ?? '';
     $emailstmt->close();
 }
-
-echo '<section class="content-card"><h2>E-mail server settings</h2>';
-if ($message !== '') {
-    echo '<p><strong>' . h($message) . '</strong></p>';
-}
-echo '<p>Configure GWST\'s SMTP server here. The SMTP password is intentionally not stored in the database; define <code>GWST_SMTP_PASSWORD</code> in the local <code>connect.php</code>.</p>';
-echo '<form action="mailsettings.php" method="post">';
-echo '<table border="1">';
-echo '<tr><th>Enable outgoing e-mail</th><td><input type="checkbox" name="enabled" value="1"' . ((int)$settings['enabled'] === 1 ? ' checked' : '') . '></td></tr>';
-echo '<tr><th>SMTP server</th><td><input type="text" name="smtp_host" size="40" value="' . h($settings['smtp_host']) . '" placeholder="mail.example.com"></td></tr>';
-echo '<tr><th>SMTP port</th><td><input type="number" name="smtp_port" min="1" max="65535" value="' . (int)$settings['smtp_port'] . '"></td></tr>';
-echo '<tr><th>Encryption</th><td><select name="smtp_encryption">';
-foreach (array('none' => 'None', 'tls' => 'TLS / STARTTLS', 'ssl' => 'SSL / SMTPS') as $value => $label) {
-    echo '<option value="' . h($value) . '"' . ($settings['smtp_encryption'] === $value ? ' selected' : '') . '>' . h($label) . '</option>';
-}
-echo '</select></td></tr>';
-echo '<tr><th>SMTP username</th><td><input type="text" name="smtp_username" size="40" value="' . h($settings['smtp_username']) . '"></td></tr>';
-echo '<tr><th>From address</th><td><input type="email" name="from_address" size="40" value="' . h($settings['from_address']) . '"></td></tr>';
-echo '<tr><th>From name</th><td><input type="text" name="from_name" size="40" value="' . h($settings['from_name']) . '"></td></tr>';
-echo '<tr><th>Reply-To address</th><td><input type="email" name="reply_to_address" size="40" value="' . h($settings['reply_to_address']) . '"></td></tr>';
-echo '</table><br />';
-echo '<input type="hidden" name="save_mail_settings" value="1">';
-echo '<input type="submit" value="Save e-mail settings">';
-echo '</form>';
-
-echo '<hr><h3>Send test e-mail</h3>';
-echo '<p>This sends one message using the saved settings above. Save any SMTP changes before testing.</p>';
-echo '<form action="mailsettings.php" method="post">';
-echo '<label for="test_recipient">Recipient</label> ';
-echo '<input type="email" id="test_recipient" name="test_recipient" size="40" value="' . h($admin_email) . '" required> ';
-echo '<input type="hidden" name="send_test_email" value="1">';
-echo '<input type="submit" value="Send test e-mail">';
-echo '</form>';
-echo '</section>';
-
-include_once ('footer.php');
 ?>
+<section class="mail-settings-page">
+    <div class="mail-settings-heading">
+        <h1>E-mail server settings</h1>
+        <p>Configure GWST's SMTP server. The SMTP password is intentionally not stored in the database; define <code>GWST_SMTP_PASSWORD</code> in the local <code>connect.php</code>.</p>
+    </div>
+
+    <?php if ($message !== ''): ?>
+        <p class="mail-settings-message<?php echo $message_class === 'success' ? ' success' : ''; ?>"><strong><?php echo h($message); ?></strong></p>
+    <?php endif; ?>
+
+    <fieldset class="mail-settings-card">
+        <legend>SMTP configuration</legend>
+        <form action="mailsettings.php" method="post" class="mail-settings-form">
+            <label class="mail-settings-toggle" for="enabled">
+                <input type="checkbox" id="enabled" name="enabled" value="1"<?php echo (int)$settings['enabled'] === 1 ? ' checked' : ''; ?>>
+                <span>Enable outgoing e-mail</span>
+            </label>
+
+            <div class="mail-settings-row">
+                <label for="smtp_host">SMTP server</label>
+                <input type="text" id="smtp_host" name="smtp_host" value="<?php echo h($settings['smtp_host']); ?>" placeholder="mail.example.com">
+            </div>
+
+            <div class="mail-settings-row mail-settings-port-row">
+                <label for="smtp_port">SMTP port</label>
+                <div>
+                    <input type="number" id="smtp_port" name="smtp_port" min="1" max="65535" value="<?php echo (int)$settings['smtp_port']; ?>">
+                    <span class="mail-settings-help">Suggested automatically when encryption changes; you can still enter any valid port.</span>
+                </div>
+            </div>
+
+            <div class="mail-settings-row">
+                <label for="smtp_encryption">Encryption</label>
+                <select id="smtp_encryption" name="smtp_encryption">
+                    <?php foreach (array('none' => 'None', 'tls' => 'TLS / STARTTLS', 'ssl' => 'SSL / SMTPS') as $value => $label): ?>
+                        <option value="<?php echo h($value); ?>"<?php echo $settings['smtp_encryption'] === $value ? ' selected' : ''; ?>><?php echo h($label); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <div class="mail-settings-row">
+                <label for="smtp_username">SMTP username</label>
+                <input type="text" id="smtp_username" name="smtp_username" value="<?php echo h($settings['smtp_username']); ?>" autocomplete="username">
+            </div>
+
+            <div class="mail-settings-row">
+                <label for="from_address">From address</label>
+                <input type="email" id="from_address" name="from_address" value="<?php echo h($settings['from_address']); ?>">
+            </div>
+
+            <div class="mail-settings-row">
+                <label for="from_name">From name</label>
+                <input type="text" id="from_name" name="from_name" value="<?php echo h($settings['from_name']); ?>">
+            </div>
+
+            <div class="mail-settings-row">
+                <label for="reply_to_address">Reply-To address</label>
+                <input type="email" id="reply_to_address" name="reply_to_address" value="<?php echo h($settings['reply_to_address']); ?>">
+            </div>
+
+            <input type="hidden" name="save_mail_settings" value="1">
+            <button type="submit" class="mail-settings-submit">Save e-mail settings</button>
+        </form>
+    </fieldset>
+
+    <fieldset class="mail-settings-card mail-test-card">
+        <legend>Send test e-mail</legend>
+        <p>This sends one message using the saved settings above. Save any SMTP changes before testing.</p>
+        <form action="mailsettings.php" method="post" class="mail-test-form">
+            <label for="test_recipient">Recipient</label>
+            <input type="email" id="test_recipient" name="test_recipient" value="<?php echo h($admin_email); ?>" required>
+            <input type="hidden" name="send_test_email" value="1">
+            <button type="submit">Send test e-mail</button>
+        </form>
+    </fieldset>
+</section>
+
+<style>
+.mail-settings-page { width: min(100%, 820px); margin: 0 auto; padding: 10px 12px 30px; }
+.mail-settings-heading { text-align: center; margin-bottom: 26px; }
+.mail-settings-heading h1 { margin-bottom: 10px; }
+.mail-settings-heading p { margin: 0 auto; max-width: 760px; color: #b7d7e6; }
+.mail-settings-heading code { color: #e8f3f7; }
+.mail-settings-message { text-align: center; margin: 0 auto 20px; }
+.mail-settings-message.success { color: #7fe8b0; }
+.mail-settings-card { width: 100%; box-sizing: border-box; margin: 26px auto 0; padding: 22px 26px 26px; border: 1px solid #2d6978; border-radius: 7px; background: #122936; text-align: left; }
+.mail-settings-card legend { padding: 0 10px; color: #69dbe1; font-size: 20px; }
+.mail-settings-form { display: grid; gap: 16px; }
+.mail-settings-row { display: grid; grid-template-columns: 175px minmax(0, 1fr); gap: 16px; align-items: center; }
+.mail-settings-row > label, .mail-test-form label { float: none; width: auto; margin: 0; padding: 0; text-align: left; color: #dce8ee; font-weight: 600; }
+.mail-settings-row input, .mail-settings-row select, .mail-test-form input { box-sizing: border-box; width: 100%; min-height: 40px; padding: 7px 10px; border: 1px solid #547080; border-radius: 5px; background: #edf2f5; color: #17242c; font: 15px "Segoe UI", Tahoma, Arial, sans-serif; }
+.mail-settings-port-row input { max-width: 150px; }
+.mail-settings-help { display: block; margin-top: 6px; color: #9fc6d8; font-size: 13px; line-height: 1.35; }
+.mail-settings-toggle { display: inline-flex; align-items: center; gap: 12px; width: fit-content; color: #dce8ee; font-weight: 600; cursor: pointer; }
+.mail-settings-toggle input { width: 20px; height: 20px; margin: 0; accent-color: #35c7cf; }
+.mail-settings-card button { min-height: 40px; padding: 8px 16px; border: 1px solid #2999a5; border-radius: 5px; background: #174454; color: #fff; font-weight: 600; cursor: pointer; }
+.mail-settings-card button:hover { background: #1b5668; }
+.mail-settings-submit { justify-self: start; margin-left: 191px; }
+.mail-test-card > p { margin: 0 0 18px; color: #b7d7e6; }
+.mail-test-form { display: grid; grid-template-columns: 90px minmax(0, 1fr) auto; gap: 12px; align-items: center; }
+@media (max-width: 650px) {
+    .mail-settings-card { padding: 18px 16px 20px; }
+    .mail-settings-row, .mail-test-form { grid-template-columns: 1fr; gap: 7px; }
+    .mail-settings-port-row input { max-width: none; }
+    .mail-settings-submit { justify-self: stretch; margin-left: 0; }
+    .mail-settings-card button { width: 100%; }
+}
+</style>
+
+<script type="text/javascript">
+(function () {
+    var encryption = document.getElementById('smtp_encryption');
+    var port = document.getElementById('smtp_port');
+    if (!encryption || !port) {
+        return;
+    }
+
+    var suggestedPorts = {
+        none: '25',
+        tls: '587',
+        ssl: '465'
+    };
+
+    encryption.addEventListener('change', function () {
+        if (Object.prototype.hasOwnProperty.call(suggestedPorts, encryption.value)) {
+            port.value = suggestedPorts[encryption.value];
+        }
+    });
+}());
+</script>
+
+<?php include_once ('footer.php'); ?>
