@@ -5,9 +5,9 @@ if (isset($_SESSION['userid'])) {
     $birthdate = trim((string)($_POST['bdate'] ?? ''));
     $profid = filter_var($_POST['profid'] ?? null, FILTER_VALIDATE_INT);
 
-    if ($charname === '' || mb_strlen($charname) > 255) {
+    if ($charname === '' || mb_strlen($charname) > 19) {
         http_response_code(400);
-        echo 'Character name must be between 1 and 255 characters.<br /><br />';
+        echo 'Character name must be between 1 and 19 characters.<br /><br />';
         return;
     }
 
