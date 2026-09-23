@@ -57,7 +57,9 @@ if (isset($_SESSION['userid'])) {
         return;
     }
 
-    $progress = (int)ceil(($title_points / $pmr) * 100);
+    // Never round an incomplete title up to 100%. The game only awards the
+    // title when the exact maximum threshold has actually been reached.
+    $progress = $title_points >= $pmr ? 100 : (int)floor(($title_points / $pmr) * 100);
 
     $upsert = $con->prepare(
         'INSERT INTO gwstats (titlenameid, stnameid, titlepoints, currentstrankname, currentstrank, percent, charid, accid, userid)

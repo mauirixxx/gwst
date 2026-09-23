@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<HTML>
-<HEAD>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" type="text/css" href="style.css">
-<link rel="stylesheet" type="text/css" href="auth.css?v=20260922-1">
-<TITLE>Logging in</TITLE>
-</HEAD>
-<BODY class="logged-out-body">
+<link rel="stylesheet" type="text/css" href="auth.css?v=20260923-1">
+<title>Logging in</title>
+</head>
+<body class="logged-out-body">
 <?php
 include_once ('connect.php');
 include_once (__DIR__ . '/includes/auth-security.php');
@@ -24,9 +25,20 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+function login_error_page(string $message): void
+{
+    echo '<main class="auth-shell"><section class="auth-card">';
+    echo '<div class="auth-brand"><div class="auth-brand-mark">GWTTT</div><div class="auth-brand-name">Guild Wars Titles &amp; Treasures Tracker</div></div>';
+    echo '<h1>Sign in failed</h1>';
+    echo '<div class="auth-error" role="alert">' . htmlspecialchars($message, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</div>';
+    echo '<a class="auth-primary auth-primary-link" href="index.php">Try again</a>';
+    echo '<div class="auth-links"><a href="forgot-password.php">Forgot your password?</a></div>';
+    echo '</section></main>';
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['username'], $_POST['password'])) {
     http_response_code(400);
-    echo 'Invalid login request.<br />Please <a href="index.php" class="navlink">try again</a><br />';
+    login_error_page('Invalid login request.');
     exit();
 }
 
@@ -64,10 +76,13 @@ if ($row && password_verify($password, $row['userpass'])) {
     $_SESSION['last_activity'] = time();
     header("Location: index.php");
     exit();
-} else {
-    gwst_throttle_record_failure($con, 'login-user', $loginUserKey, GWST_LOGIN_USER_LIMIT);
-    gwst_throttle_record_failure($con, 'login-ip', $loginIpKey, GWST_LOGIN_IP_LIMIT);
-    echo 'The username or password provided don\'t match!<br />Please <a href="index.php" class="navlink">try again</a><br />';
-    exit();
 }
+
+gwst_throttle_record_failure($con, 'login-user', $loginUserKey, GWST_LOGIN_USER_LIMIT);
+gwst_throttle_record_failure($con, 'login-ip', $loginIpKey, GWST_LOGIN_IP_LIMIT);
+http_response_code(401);
+login_error_page('The username or password provided does not match.');
+exit();
 ?>
+</body>
+</html>
