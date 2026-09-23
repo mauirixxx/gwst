@@ -1,20 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Create account - GWTTT</title>
+<link rel="stylesheet" type="text/css" href="style.css?v=20260921-9">
+<link rel="stylesheet" type="text/css" href="auth.css?v=20260922-1">
 <?php
-$pagetitle = 'Create account';
-include_once ('header.php');
-
-// header.php renders the normal logged-out login card, so registration uses
-// its own standalone auth shell instead of continuing that output.
-if (empty($_SESSION['userid'])) {
-    echo '</section></main>';
+if (session_status() == PHP_SESSION_NONE) {
+    ini_set('session.use_strict_mode', '1');
+    ini_set('session.use_only_cookies', '1');
+    ini_set('session.cookie_httponly', '1');
+    ini_set('session.cookie_samesite', 'Lax');
+    if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+        ini_set('session.cookie_secure', '1');
+    }
+    session_start();
 }
 
+include_once (__DIR__ . '/includes/html.php');
+include_once (__DIR__ . '/includes/csrf.php');
+include_once ('connect.php');
+
+$con = mysqli_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS, DATABASE_NAME);
+if ($con->connect_errno) {
+    die('Unable to connect to database [' . $con->connect_errno . ']');
+}
+?>
+</head>
+<body class="logged-out-body">
+<?php
 if (!empty($_SESSION['userid'])) {
-    echo '<section class="auth-shell"><div class="auth-card">';
-    echo '<h1>Create account</h1>';
-    echo '<p class="auth-intro">You are already signed in. Log out first if you want to create another GWTTT account.</p>';
+    echo '<main class="auth-shell"><section class="auth-card">';
+    echo '<div class="auth-brand"><div class="auth-brand-mark">GWTTT</div><div class="auth-brand-name">Guild Wars Titles &amp; Treasures Tracker</div></div>';
+    echo '<h1>Already signed in</h1>';
+    echo '<p class="auth-intro">Log out first if you want to create another GWTTT account.</p>';
     echo '<div class="auth-links"><a href="index.php">Return home</a></div>';
-    echo '</div></section>';
-    include_once ('footer.php');
+    echo '</section></main></body></html>';
     exit();
 }
 
@@ -38,11 +59,12 @@ if (empty($_POST['reguser'])) {
         || $_POST['userpass2'] === '') {
         http_response_code(400);
         echo '<main class="auth-shell"><section class="auth-card">';
+        echo '<div class="auth-brand"><div class="auth-brand-mark">GWTTT</div><div class="auth-brand-name">Guild Wars Titles &amp; Treasures Tracker</div></div>';
         echo '<h1>Registration incomplete</h1>';
         echo '<p class="auth-intro">All registration fields are required.</p>';
         echo '<div class="auth-links"><a href="register.php">Please try again</a></div>';
         echo '</section></main>';
-        include_once ('footer.php');
+        echo '</body></html>';
         exit();
     }
 
@@ -76,7 +98,6 @@ if (empty($_POST['reguser'])) {
         $unlock->close();
         $con->commit();
     } catch (Throwable $e) {
-        // UNLOCK TABLES implicitly releases the table lock if one was acquired.
         $con->query("UNLOCK TABLES");
         $con->rollback();
         throw $e;
@@ -92,9 +113,10 @@ if (empty($_POST['reguser'])) {
     echo '</p>';
     echo '<div class="auth-links"><a href="index.php">Log in to continue</a></div>';
     echo '</section></main>';
+
     $_SESSION = array();
     session_destroy();
 }
-
-include_once ('footer.php');
 ?>
+</body>
+</html>
