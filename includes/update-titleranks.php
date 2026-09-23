@@ -63,7 +63,7 @@ if (isset($_SESSION['userid'])) {
          VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, ?)
          ON DUPLICATE KEY UPDATE stnameid = VALUES(stnameid), titlepoints = VALUES(titlepoints), currentstrankname = VALUES(currentstrankname), currentstrank = VALUES(currentstrank), percent = VALUES(percent)'
     );
-    $upsert->bind_param('iiisiiiii', $title_id, $stnameid, $title_points, $stname, $strank, $progress, $accid, $userid);
+    $upsert->bind_param('iiisiiii', $title_id, $stnameid, $title_points, $stname, $strank, $progress, $accid, $userid);
     if (!$upsert->execute()) {
         $upsert->close();
         http_response_code(500);
