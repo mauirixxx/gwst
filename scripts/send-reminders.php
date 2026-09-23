@@ -27,10 +27,21 @@ if ($dateOverride !== null && !$dryRun) {
     exit(2);
 }
 
-$today = new DateTimeImmutable('today');
+/*
+ * Guild Wars rolls to a new in-game day at 07:00 UTC.
+ *
+ * Shifting UTC backward seven hours before taking the calendar date means:
+ *   06:59 UTC -> previous Guild Wars day
+ *   07:00 UTC -> new Guild Wars day
+ *
+ * This intentionally does not depend on the server's local timezone.
+ */
+$utc = new DateTimeZone('UTC');
+$guildWarsNow = new DateTimeImmutable('now', $utc);
+$today = $guildWarsNow->modify('-7 hours')->setTime(0, 0, 0);
 
 if ($dateOverride !== null) {
-    $parsedDate = DateTimeImmutable::createFromFormat('!Y-m-d', $dateOverride);
+    $parsedDate = DateTimeImmutable::createFromFormat('!Y-m-d', $dateOverride, $utc);
     $dateErrors = DateTimeImmutable::getLastErrors();
 
     if (
@@ -77,6 +88,7 @@ out('Mode: ' . ($dryRun ? 'DRY RUN (no mail, no ledger writes)' : 'SEND'));
 if ($dateOverride !== null) {
     out('Simulated date: ' . $today->format('Y-m-d'));
 }
+out('Guild Wars date: ' . $today->format('Y-m-d') . ' (daily reset 07:00 UTC)');
 out('Treasure e-mail threshold: 31 days after latest collection');
 out('Birthday reminders: user-selected 0, 1, 3, or 7 days before');
 out(str_repeat('-', 72));
