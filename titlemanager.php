@@ -34,16 +34,16 @@ if (isset($_SESSION['userid'])){
             unset($_SESSION['tr']);
             ?>
             <style>
-            .title-manager-page { width: min(100%, 980px); margin: 0 auto; padding: 8px 0 28px; text-align: left; }
+            .title-manager-page { width: min(100%, 1080px); margin: 0 auto; padding: 8px 0 28px; text-align: left; }
             .title-manager-heading { margin: 4px 0 24px; text-align: center; }
             .title-manager-heading h1 { margin: 0 0 7px; }
             .title-manager-heading p { margin: 0; color: #9fb9c4; }
-            .title-manager-tools { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 30px; }
+            .title-manager-tools { display: grid; grid-template-columns: minmax(210px, .75fr) minmax(0, 1.125fr) minmax(0, 1.125fr); gap: 14px; margin-bottom: 30px; }
             .title-manager-card { min-width: 0; padding: 18px; border: 1px solid #2d6978; border-radius: 7px; background: #122936; }
             .title-manager-card h2 { margin: 0 0 7px; color: #69dbe1; font-size: 18px; }
             .title-manager-card p { min-height: 38px; margin: 0 0 15px; color: #9fb9c4; font-size: 13px; }
-            .title-manager-card form { margin: 0; }
-            .title-manager-card select { width: 100%; min-height: 40px; padding: 7px 34px 7px 10px; border: 1px solid #547080; border-radius: 5px; background: #edf2f5; color: #17242c; font: 15px "Segoe UI", Tahoma, Arial, sans-serif; }
+            .title-manager-card form { width: 100%; margin: 0; }
+            .title-manager-card select { width: 100%; min-width: 0; max-width: 100%; min-height: 40px; padding: 7px 34px 7px 10px; border: 1px solid #547080; border-radius: 5px; background: #edf2f5; color: #17242c; font: 15px "Segoe UI", Tahoma, Arial, sans-serif; }
             .title-manager-button { min-height: 40px; padding: 8px 16px; border: 1px solid #2999a5; border-radius: 5px; background: #174454; color: #fff; font: 600 15px "Segoe UI", Tahoma, Arial, sans-serif; cursor: pointer; }
             .title-manager-button:hover { background: #1b5668; }
             .title-manager-recent { border: 1px solid #294b5b; border-radius: 8px; overflow: hidden; background: #101f28; box-shadow: 0 12px 30px rgba(0,0,0,.22); }
