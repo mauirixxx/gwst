@@ -72,6 +72,9 @@ if ($row && password_verify($password, $row['userpass'])) {
     $_SESSION['prefaccname'] = $row['prefaccname'];
     $_SESSION['prefcharid'] = $row['prefcharid'];
     $_SESSION['prefcharname'] = $row['prefcharname'];
+    // A one-way fingerprint lets authenticated requests detect a later password
+    // change without storing the password or requiring a schema migration.
+    $_SESSION['auth_password_fingerprint'] = hash('sha256', (string)$row['userpass']);
     $_SESSION['login_time'] = time();
     $_SESSION['last_activity'] = time();
     header("Location: index.php");
