@@ -12,12 +12,37 @@ if (PHP_SAPI !== 'cli') {
     exit("CLI only.\n");
 }
 
-$options = getopt('', array('dry-run', 'send'));
+$options = getopt('', array('dry-run', 'send', 'date:'));
 $dryRun = isset($options['dry-run']);
 $send = isset($options['send']);
+$dateOverride = $options['date'] ?? null;
+
 if ($dryRun === $send) {
-    fwrite(STDERR, "Usage: php scripts/send-reminders.php --dry-run|--send\n");
+    fwrite(STDERR, "Usage: php scripts/send-reminders.php --dry-run [--date=YYYY-MM-DD]|--send\n");
     exit(2);
+}
+
+if ($dateOverride !== null && !$dryRun) {
+    fwrite(STDERR, "--date may only be used with --dry-run.\n");
+    exit(2);
+}
+
+$today = new DateTimeImmutable('today');
+
+if ($dateOverride !== null) {
+    $parsedDate = DateTimeImmutable::createFromFormat('!Y-m-d', $dateOverride);
+    $dateErrors = DateTimeImmutable::getLastErrors();
+
+    if (
+        $parsedDate === false
+        || ($dateErrors !== false && ($dateErrors['warning_count'] > 0 || $dateErrors['error_count'] > 0))
+        || $parsedDate->format('Y-m-d') !== $dateOverride
+    ) {
+        fwrite(STDERR, "--date must be a valid date in YYYY-MM-DD format.\n");
+        exit(2);
+    }
+
+    $today = $parsedDate;
 }
 
 $root = dirname(__DIR__);
@@ -49,6 +74,9 @@ function birthdayForYear(string $birthdate, int $year): DateTimeImmutable
 out('GWTTT scheduled reminders');
 out('Database: ' . DATABASE_NAME);
 out('Mode: ' . ($dryRun ? 'DRY RUN (no mail, no ledger writes)' : 'SEND'));
+if ($dateOverride !== null) {
+    out('Simulated date: ' . $today->format('Y-m-d'));
+}
 out('Treasure e-mail threshold: 31 days after latest collection');
 out('Birthday reminders: user-selected 0, 1, 3, or 7 days before');
 out(str_repeat('-', 72));
@@ -94,16 +122,26 @@ LEFT JOIN reminder_notifications n
   ON n.userid = h.userid
  AND n.reminder_type = 'treasure'
  AND n.reference_key = CONCAT('treasure:', h.treasure_history_id)
-WHERE DATE_ADD(h.collected_on, INTERVAL 31 DAY) <= CURDATE()
+WHERE DATE_ADD(h.collected_on, INTERVAL 31 DAY) <= ?
   AND n.notification_id IS NULL
 ORDER BY h.userid, c.charname, l.display_order, l.location_name
 SQL;
 
-$result = $con->query($treasureSql);
-if (!$result) {
-    fwrite(STDERR, 'Treasure reminder query failed: ' . $con->error . PHP_EOL);
+$treasureQuery = $con->prepare($treasureSql);
+if (!$treasureQuery) {
+    fwrite(STDERR, 'Unable to prepare treasure reminder query: ' . $con->error . PHP_EOL);
     exit(1);
 }
+
+$effectiveDate = $today->format('Y-m-d');
+$treasureQuery->bind_param('s', $effectiveDate);
+
+if (!$treasureQuery->execute()) {
+    fwrite(STDERR, 'Treasure reminder query failed: ' . $treasureQuery->error . PHP_EOL);
+    exit(1);
+}
+
+$result = $treasureQuery->get_result();
 
 $treasureUsers = array();
 while ($row = $result->fetch_assoc()) {
@@ -114,6 +152,7 @@ while ($row = $result->fetch_assoc()) {
     $treasureUsers[$uid]['items'][] = $row;
 }
 $result->free();
+$treasureQuery->close();
 
 $treasureLedger = $con->prepare("INSERT IGNORE INTO reminder_notifications (userid, reminder_type, reference_key) VALUES (?, 'treasure', ?)");
 if (!$treasureLedger) {
@@ -209,7 +248,6 @@ if (!$result) {
     exit(1);
 }
 
-$today = new DateTimeImmutable('today');
 $birthdayUsers = array();
 while ($row = $result->fetch_assoc()) {
     $daysBefore = (int)$row['birthday_reminder_days'];
