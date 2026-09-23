@@ -1,4 +1,15 @@
 <?php
+function registrationError($message) {
+    echo '<main class="auth-shell"><section class="auth-card">';
+    echo '<div class="auth-brand"><div class="auth-brand-mark">GWTTT</div><div class="auth-brand-name">Guild Wars Titles &amp; Treasures Tracker</div></div>';
+    echo '<h1>Registration problem</h1>';
+    echo '<p class="auth-intro">' . h($message) . '</p>';
+    echo '<div class="auth-links"><a href="register.php">Please try again</a></div>';
+    echo '</section></main>';
+    echo '</body></html>';
+    exit();
+}
+
 function validateEmail($email) {
     return filter_var($email, FILTER_VALIDATE_EMAIL);
 }
@@ -17,13 +28,15 @@ function usedEmail($con, $usedemail, $exclude_userid = null) {
     $stmt->close();
 
     if ($exists) {
-        echo '<hr><center>This e-mail address is already registered.<br /><a href="register.php" class="navlink">Please try again!</a><hr><br />';
-        include_once (__DIR__ . '/../footer.php');
-        exit();
+        registrationError('This e-mail address is already registered.');
     }
 }
 
 function validateUsername($con, $uname) {
+    if (strlen($uname) < 1 || strlen($uname) > 30 || !preg_match('/^[A-Za-z0-9]+$/', $uname)) {
+        registrationError('Username must be 1-30 characters and contain letters and numbers only, with no spaces.');
+    }
+
     $stmt = $con->prepare("SELECT 1 FROM userinfo WHERE username = ? LIMIT 1");
     $stmt->bind_param("s", $uname);
     $stmt->execute();
@@ -32,9 +45,7 @@ function validateUsername($con, $uname) {
     $stmt->close();
 
     if ($exists) {
-        echo '<center>This username has already been taken, please choose another one<br /><a href="register.php" class="navlink">Please try again!</a><br />';
-        include_once (__DIR__ . '/../footer.php');
-        exit();
+        registrationError('This username has already been taken. Please choose another one.');
     }
 }
 
@@ -44,19 +55,29 @@ if (!empty($_POST['username'])) {
 }
 
 if (!empty($_POST['useremail'])) {
-    $verifyemail = validateEmail(trim($_POST['useremail']));
+    $email = trim($_POST['useremail']);
+    if (strlen($email) > 50) {
+        registrationError('E-mail address must be 50 characters or fewer.');
+    }
+
+    $verifyemail = validateEmail($email);
     if ($verifyemail === false) {
-        echo '<center>This address: ' . h($_POST['useremail']) . ' is not a valid e-mail address!<br />Please verify and type it again.<br />';
-        include_once (__DIR__ . '/../footer.php');
-        exit();
+        registrationError('Please enter a valid e-mail address.');
     }
     $exclude_userid = isset($_SESSION['userid']) ? (int)$_SESSION['userid'] : null;
     usedEmail($con, $verifyemail, $exclude_userid);
 }
 
-if (isset($_POST['userpass1'], $_POST['userpass2']) && $_POST['userpass1'] !== $_POST['userpass2']) {
-    echo '<center>The passwords don\'t match!<br />Please try again!';
-    include_once (__DIR__ . '/../footer.php');
-    exit();
+if (isset($_POST['userpass1'], $_POST['userpass2'])) {
+    $passwordLength = strlen($_POST['userpass1']);
+    if ($passwordLength < 8) {
+        registrationError('Password must be at least 8 characters long.');
+    }
+    if ($passwordLength > 255) {
+        registrationError('Password must be 255 characters or fewer.');
+    }
+    if ($_POST['userpass1'] !== $_POST['userpass2']) {
+        registrationError('Passwords do not match.');
+    }
 }
 ?>

@@ -19,12 +19,17 @@ if (session_status() == PHP_SESSION_NONE) {
 
 include_once (__DIR__ . '/includes/html.php');
 include_once (__DIR__ . '/includes/csrf.php');
+include_once (__DIR__ . '/includes/auth-security.php');
 include_once ('connect.php');
 
 $con = mysqli_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS, DATABASE_NAME);
 if ($con->connect_errno) {
     die('Unable to connect to database [' . $con->connect_errno . ']');
 }
+
+$clientIp = gwst_client_ip();
+$registerIpKey = gwst_throttle_key('register-ip', $clientIp);
+gwst_throttle_cleanup($con);
 ?>
 </head>
 <body class="logged-out-body">
@@ -51,6 +56,11 @@ if (empty($_POST['reguser'])) {
     echo '</main>';
 } else {
     csrf_require_valid_post();
+
+    if (gwst_throttle_is_blocked($con, 'register-ip', $registerIpKey)) {
+        gwst_rate_limited_response('register.php');
+    }
+    gwst_throttle_record_failure($con, 'register-ip', $registerIpKey, GWST_REGISTER_IP_LIMIT);
 
     if (!isset($_POST['username'], $_POST['useremail'], $_POST['userpass1'], $_POST['userpass2'])
         || trim($_POST['username']) === ''
