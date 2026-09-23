@@ -59,34 +59,42 @@ if (isset($_SESSION['userid'])) {
         $message_class = '';
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $new_name = trim($_POST['charname'] ?? '');
-            $birthdate = trim($_POST['birthdate'] ?? '');
+            $new_name = trim((string)($_POST['charname'] ?? ''));
+            $birthdate = trim((string)($_POST['birthdate'] ?? ''));
 
             if ($new_name === '' || mb_strlen($new_name) > 19) {
                 $character_message = 'Character name must be between 1 and 19 characters.';
                 $message_class = 'edit-character-error';
-            } elseif ($birthdate !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $birthdate)) {
-                $character_message = 'Please enter a valid birthdate.';
-                $message_class = 'edit-character-error';
             } else {
-                $birthdate_value = ($birthdate === '') ? null : $birthdate;
-                $update = $con->prepare(
-                    "UPDATE gwchars
-                     SET charname = ?, birthdate = ?
-                     WHERE charid = ? AND userid = ?"
-                );
-                $update->bind_param("ssii", $new_name, $birthdate_value, $charid, $_SESSION['userid']);
-                $update->execute();
-                $update->close();
-
-                if ((int)($_SESSION['prefcharid'] ?? 0) === $charid) {
-                    $_SESSION['prefcharname'] = $new_name;
+                $birthdate_value = null;
+                if ($birthdate !== '') {
+                    $parsed_date = DateTimeImmutable::createFromFormat('!Y-m-d', $birthdate);
+                    $date_errors = DateTimeImmutable::getLastErrors();
+                    if (!$parsed_date || ($date_errors !== false && ($date_errors['warning_count'] > 0 || $date_errors['error_count'] > 0)) || $parsed_date->format('Y-m-d') !== $birthdate) {
+                        $character_message = 'Please enter a valid birthdate.';
+                        $message_class = 'edit-character-error';
+                    } else {
+                        $birthdate_value = $birthdate;
+                    }
                 }
 
-                $character['charname'] = $new_name;
-                $character['birthdate'] = $birthdate_value;
-                $character_message = 'Character <strong>' . h($new_name) . '</strong> has been updated!';
-                $message_class = 'edit-character-success';
+                if ($message_class === '') {
+                    $update = $con->prepare(
+                        "UPDATE gwchars SET charname = ?, birthdate = ? WHERE charid = ? AND userid = ?"
+                    );
+                    $update->bind_param("ssii", $new_name, $birthdate_value, $charid, $_SESSION['userid']);
+                    $update->execute();
+                    $update->close();
+
+                    if ((int)($_SESSION['prefcharid'] ?? 0) === $charid) {
+                        $_SESSION['prefcharname'] = $new_name;
+                    }
+
+                    $character['charname'] = $new_name;
+                    $character['birthdate'] = $birthdate_value;
+                    $character_message = 'Character <strong>' . h($new_name) . '</strong> has been updated!';
+                    $message_class = 'edit-character-success';
+                }
             }
         }
 
@@ -108,6 +116,7 @@ if (isset($_SESSION['userid'])) {
         echo '<h2 class="edit-character-card-heading">Character details</h2>';
         echo '<div class="edit-character-card edit-character-profession-card" style="--profession-color:' . h($professionColor) . ';">';
         echo '<form action="editcharacter.php" method="post" class="edit-character-form">';
+        echo csrf_input();
         echo '<input type="hidden" name="charid" value="' . (int)$character['charid'] . '">';
         echo '<div class="edit-character-row"><label for="edit-charname">Character name</label><input id="edit-charname" type="text" name="charname" maxlength="19" value="' . h($character['charname']) . '" required></div>';
         echo '<div class="edit-character-row"><label for="edit-birthdate">Birthdate</label><input id="edit-birthdate" type="date" name="birthdate" value="' . h($character['birthdate'] ?? '') . '"></div>';
