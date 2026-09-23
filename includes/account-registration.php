@@ -1,24 +1,46 @@
-<form action="register.php" method="post">
-<table border="1">
-<tr><th colspan="2">Username desired</th></tr>
-<tr><td colspan="2"><input type="text" size="45" required="required" name="username"></td></tr>
-<tr><th colspan="2">E-Mail address</th></tr>
-<tr><td colspan="2"><input type="email" size="45" required="required" name="useremail"></td></tr>
-<tr><th>Password</th><th>Verify password</th></tr>
-<tr><td><input type="password" required="required" name="userpass1" id="up1"></td><td><input type="password" required="required" name="userpass2" id="up2"></td></tr>
-</table>
-<script type="text/javascript">
-    function Validate() {
-        var userpass1 = document.getElementById("up1").value;
-        var userpass2 = document.getElementById("up2").value;
-        if (userpass1 != userpass2) {
-            alert("Passwords do not match.");
-            return false;
-        }
-        return true;
-    }
-</script>
-<input type="hidden" name="csrf_token" value="<?php echo h(csrf_token()); ?>">
-<input type="hidden" name="reguser" value="1">
-<input type="submit" name="submission" value="Go! Go! Go!" onclick="return Validate()" id="btnSubmit">
+<form action="register.php" method="post" class="auth-form" id="registration-form">
+    <div class="auth-field">
+        <label for="register-username">Username</label>
+        <input id="register-username" type="text" name="username" autocomplete="username" maxlength="50" required autofocus>
+    </div>
+
+    <div class="auth-field">
+        <label for="register-email">E-mail address</label>
+        <input id="register-email" type="email" name="useremail" autocomplete="email" required>
+    </div>
+
+    <div class="auth-field">
+        <label for="up1">Password</label>
+        <input id="up1" type="password" name="userpass1" autocomplete="new-password" required>
+    </div>
+
+    <div class="auth-field">
+        <label for="up2">Verify password</label>
+        <input id="up2" type="password" name="userpass2" autocomplete="new-password" required>
+    </div>
+
+    <input type="hidden" name="csrf_token" value="<?php echo h(csrf_token()); ?>">
+    <input type="hidden" name="reguser" value="1">
+    <button type="submit" name="submission" class="auth-primary">Create account</button>
 </form>
+
+<script>
+document.getElementById('registration-form').addEventListener('submit', function (event) {
+    const password = document.getElementById('up1');
+    const verify = document.getElementById('up2');
+
+    if (password.value !== verify.value) {
+        event.preventDefault();
+        verify.setCustomValidity('Passwords do not match.');
+        verify.reportValidity();
+        verify.focus();
+        return;
+    }
+
+    verify.setCustomValidity('');
+});
+
+document.getElementById('up2').addEventListener('input', function () {
+    this.setCustomValidity('');
+});
+</script>
