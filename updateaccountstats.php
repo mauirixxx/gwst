@@ -11,7 +11,6 @@ if (isset($_SESSION['userid'])) {
         exit();
     }
     if (isset($_POST['titlepoints'])) {
-        // include file just updates the database
         include_once ('includes/update-titleranks.php');
     }
 
@@ -19,9 +18,9 @@ if (isset($_SESSION['userid'])) {
 
     if ($_POST['acctitle'] == "notselected") {
         echo '<form action="updateaccountstats.php" method="post" class="stats-title-picker">';
+        echo csrf_input();
         echo '<label for="acctitle">Select account title to update</label>';
         echo '<div class="stats-title-picker-row"><select id="acctitle" name="acctitle" onchange="this.form.submit()">';
-        // $ats = Account Title Select
         $ats = $con->prepare("SELECT titlenameid, titlename FROM gwtitles WHERE titletype = 0 ORDER BY titlename");
         $ats->execute();
         $result = $ats->get_result();
@@ -41,8 +40,8 @@ if (isset($_SESSION['userid'])) {
         $selected_title->close();
         echo '<div class="stats-title-editor">';
         echo '<p>Updating account title: <strong>' . h($selected_title_name) . '</strong></p>';
-        echo '<form action="updateaccountstats.php" method="post"><input type="hidden" name="titlenameid" value="' . (int)$_POST['acctitle'] .'">';
-        echo '<input type="number" name="titlepoints" required autofocus><button type="submit">Update points</button></form>';
+        echo '<form action="updateaccountstats.php" method="post">' . csrf_input() . '<input type="hidden" name="titlenameid" value="' . (int)$_POST['acctitle'] .'">';
+        echo '<input type="number" min="0" step="1" name="titlepoints" required autofocus><button type="submit">Update points</button></form>';
         echo '</div>';
     }
     echo '<div class="stats-current">Current account stats for: <strong>' . h($_SESSION['prefaccname']) . '</strong></div>';
