@@ -7,11 +7,10 @@ include_once ('header.php');
 .edit-character-heading { margin-bottom: 26px; text-align: center; }
 .edit-character-heading h1 { margin: 0 0 10px; color: #eef5f7; font-size: 34px; }
 .edit-character-heading p { margin: 0; color: #a9c5d1; font-size: 18px; }
+.edit-character-card-heading { margin: 0 0 12px; color: #eef5f7; font-size: 25px; font-weight: 400; text-align: center; text-shadow: 0 1px 3px rgba(0,0,0,.9); }
 .edit-character-card { margin: 0 auto; padding: 26px 30px 30px; border: 1px solid #2d6978; border-radius: 9px; background: #122936; }
-.edit-character-card legend { padding: 0 12px; color: #69dbe1; font-size: 25px; }
 .edit-character-profession-card { position: relative; overflow: hidden; background: var(--profession-color, #122936); border-color: #5f7b86; box-shadow: 0 14px 34px rgba(0,0,0,.24); color: #10202a; }
 .edit-character-profession-card::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.02)); }
-.edit-character-profession-card legend { position: relative; z-index: 1; margin: 0 auto; padding: 0 12px; color: #eef5f7; text-align: center; text-shadow: 0 1px 3px rgba(0,0,0,.9); }
 .edit-character-form { position: relative; z-index: 1; width: min(100%, 620px); margin: 0 auto; padding: 4px 0; }
 .edit-character-row { display: grid; grid-template-columns: 180px 1fr; gap: 16px; align-items: center; margin-bottom: 16px; }
 .edit-character-row label, .edit-character-label { float: none; width: auto; margin: 0; padding: 0; color: #10202a; font-size: 17px; font-weight: 700; text-align: right; text-shadow: 0 1px rgba(255,255,255,.35); }
@@ -106,8 +105,8 @@ if (isset($_SESSION['userid'])) {
             echo '<div class="edit-character-message ' . $message_class . '">' . $character_message . '</div>';
         }
 
-        echo '<fieldset class="edit-character-card edit-character-profession-card" style="--profession-color:' . h($professionColor) . ';">';
-        echo '<legend>Character details</legend>';
+        echo '<h2 class="edit-character-card-heading">Character details</h2>';
+        echo '<div class="edit-character-card edit-character-profession-card" style="--profession-color:' . h($professionColor) . ';">';
         echo '<form action="editcharacter.php" method="post" class="edit-character-form">';
         echo '<input type="hidden" name="charid" value="' . (int)$character['charid'] . '">';
         echo '<div class="edit-character-row"><label for="edit-charname">Character name</label><input id="edit-charname" type="text" name="charname" maxlength="19" value="' . h($character['charname']) . '" required></div>';
@@ -115,7 +114,7 @@ if (isset($_SESSION['userid'])) {
         echo '<div class="edit-character-row"><span class="edit-character-label">Profession</span><span class="edit-character-value">' . h($character['profession'] ?? 'Unknown') . '</span></div>';
         echo '<div class="edit-character-actions"><button type="submit" class="edit-character-button">Save character changes</button><a href="addaccounts.php" class="edit-character-button edit-character-button-secondary">Cancel</a></div>';
         echo '</form>';
-        echo '</fieldset>';
+        echo '</div>';
         echo '</section>';
     }
 }
