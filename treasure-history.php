@@ -114,9 +114,11 @@ function treasure_drop_description(array $row):string{
 </div>
 <?php endif; ?>
 
+<?php if($history): ?>
 <div class="treasure-history-actions">
 <a class="treasure-button treasure-button-secondary" href="treasures.php">Back to Treasure Tracker</a>
 </div>
+<?php endif; ?>
 <?php endif; ?>
 </section>
 <?php include_once('footer.php'); ?>
