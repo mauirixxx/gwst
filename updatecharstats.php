@@ -11,7 +11,6 @@ if (isset($_SESSION['userid'])) {
         exit();
     }
     if (isset($_POST['titlepoints'])) {
-        // include file just updates the database
         include_once ('includes/update-chartitleranks.php');
     }
 
@@ -19,9 +18,9 @@ if (isset($_SESSION['userid'])) {
 
     if ($_POST['chartitle'] == "notselected") {
         echo '<form action="updatecharstats.php" method="post" class="stats-title-picker">';
+        echo csrf_input();
         echo '<label for="chartitle">Select character title to update</label>';
         echo '<div class="stats-title-picker-row"><select id="chartitle" name="chartitle" onchange="this.form.submit()">';
-        // $cts = Character Title Select
         $cts = $con->prepare("SELECT titlenameid, titlename FROM gwtitles WHERE titletype = 1 AND autofilled = 0 ORDER BY titlename");
         $cts->execute();
         $result = $cts->get_result();
@@ -41,8 +40,8 @@ if (isset($_SESSION['userid'])) {
         $selected_title->close();
         echo '<div class="stats-title-editor">';
         echo '<p>Updating character title: <strong>' . h($selected_title_name) . '</strong></p>';
-        echo '<form action="updatecharstats.php" method="post"><input type="hidden" name="titlenameid" value="' . (int)$_POST['chartitle'] .'">';
-        echo '<input type="number" step="0.1" name="titlepoints" required autofocus><noscript><button type="submit">Update points</button></noscript></form>';
+        echo '<form action="updatecharstats.php" method="post">' . csrf_input() . '<input type="hidden" name="titlenameid" value="' . (int)$_POST['chartitle'] .'">';
+        echo '<input type="number" min="0" step="1" name="titlepoints" required autofocus><button type="submit">Update points</button></form>';
         echo '</div>';
     }
     echo '<div class="stats-current">Current character stats for: <strong>' . h($_SESSION['prefcharname']) . '</strong></div>';
