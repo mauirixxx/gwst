@@ -2,9 +2,9 @@
 if (isset($_SESSION['userid'])) {
     $accemail = trim((string)($_POST['accemail'] ?? ''));
 
-    if ($accemail === '' || mb_strlen($accemail) > 255) {
+    if ($accemail === '' || mb_strlen($accemail) > 50) {
         http_response_code(400);
-        echo 'Account e-mail or alias must be between 1 and 255 characters.<br /><br />';
+        echo 'Account e-mail or alias must be between 1 and 50 characters.<br /><br />';
         return;
     }
 
