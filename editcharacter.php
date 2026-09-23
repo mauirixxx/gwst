@@ -1,7 +1,32 @@
 <?php
 $pagetitle = "Edit Guild Wars character";
 include_once ('header.php');
-
+?>
+<style>
+.edit-character-page { width: min(100%, 900px); margin: 0 auto; padding: 8px 0 30px; }
+.edit-character-heading { margin-bottom: 26px; text-align: center; }
+.edit-character-heading h1 { margin: 0 0 10px; color: #eef5f7; font-size: 34px; }
+.edit-character-heading p { margin: 0; color: #a9c5d1; font-size: 18px; }
+.edit-character-card { margin: 0 auto; padding: 26px 30px 30px; border: 1px solid #2d6978; border-radius: 9px; background: #122936; }
+.edit-character-card legend { padding: 0 12px; color: #69dbe1; font-size: 25px; }
+.edit-character-profession-card { position: relative; overflow: hidden; background: var(--profession-color, #122936); border-color: #5f7b86; box-shadow: 0 14px 34px rgba(0,0,0,.24); color: #10202a; }
+.edit-character-profession-card::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.02)); }
+.edit-character-profession-card legend { position: relative; z-index: 1; padding: 0 12px; color: #eef5f7; text-shadow: 0 1px 3px rgba(0,0,0,.9); }
+.edit-character-form { position: relative; z-index: 1; width: min(100%, 620px); margin: 0 auto; padding: 4px 0; }
+.edit-character-row { display: grid; grid-template-columns: 180px 1fr; gap: 16px; align-items: center; margin-bottom: 16px; }
+.edit-character-row label, .edit-character-label { float: none; width: auto; margin: 0; padding: 0; color: #10202a; font-size: 17px; font-weight: 700; text-align: right; text-shadow: 0 1px rgba(255,255,255,.35); }
+.edit-character-row input { width: 100%; min-height: 48px; padding: 8px 12px; border: 1px solid rgba(16,32,42,.55); border-radius: 5px; background: rgba(247,250,252,.94); color: #17242c; font: 18px "Segoe UI", Tahoma, Arial, sans-serif; box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+.edit-character-value { min-height: 48px; padding: 12px; border: 1px solid rgba(16,32,42,.38); border-radius: 5px; background: rgba(255,255,255,.28); color: #10202a; font-size: 18px; font-weight: 700; text-align: left; }
+.edit-character-actions { display: flex; justify-content: center; gap: 12px; margin-top: 24px; }
+.edit-character-button { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 9px 20px; border: 1px solid #2999a5; border-radius: 5px; background: #174454; color: #fff !important; font: 600 17px "Segoe UI", Tahoma, Arial, sans-serif; text-decoration: none !important; cursor: pointer; }
+.edit-character-button:hover { background: #1b5668; }
+.edit-character-button-secondary { border-color: #526b77; background: #243943; }
+.edit-character-message { width: min(100%, 620px); margin: 0 auto 20px; padding: 11px 14px; border-radius: 6px; text-align: center; }
+.edit-character-success { border: 1px solid #3e7d59; background: #173526; color: #a9efc2; }
+.edit-character-error { border: 1px solid #8d5050; background: #3b2020; color: #ffd0d0; }
+@media (max-width: 650px) { .edit-character-card { padding: 20px 16px 22px; } .edit-character-row { grid-template-columns: 1fr; gap: 6px; } .edit-character-row label, .edit-character-label { text-align: left; } .edit-character-actions { flex-direction: column; } .edit-character-button { width: 100%; } }
+</style>
+<?php
 if (isset($_SESSION['userid'])) {
     $charid = 0;
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
