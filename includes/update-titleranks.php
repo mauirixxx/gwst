@@ -62,7 +62,7 @@ if (isset($_SESSION['userid'])) {
 
     $upsert = $con->prepare(
         'INSERT INTO gwstats (titlenameid, stnameid, titlepoints, currentstrankname, currentstrank, percent, charid, accid, userid)
-         VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, ?)
+         VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?)
          ON DUPLICATE KEY UPDATE stnameid = VALUES(stnameid), titlepoints = VALUES(titlepoints), currentstrankname = VALUES(currentstrankname), currentstrank = VALUES(currentstrank), percent = VALUES(percent)'
     );
     $upsert->bind_param('iiisiiii', $title_id, $stnameid, $title_points, $stname, $strank, $progress, $accid, $userid);
