@@ -11,7 +11,7 @@ include_once ('header.php');
 .edit-character-card legend { padding: 0 12px; color: #69dbe1; font-size: 25px; }
 .edit-character-profession-card { position: relative; overflow: hidden; background: var(--profession-color, #122936); border-color: #5f7b86; box-shadow: 0 14px 34px rgba(0,0,0,.24); color: #10202a; }
 .edit-character-profession-card::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.02)); }
-.edit-character-profession-card legend { position: relative; z-index: 1; padding: 0 12px; color: #eef5f7; text-shadow: 0 1px 3px rgba(0,0,0,.9); }
+.edit-character-profession-card legend { position: relative; z-index: 1; margin: 0 auto; padding: 0 12px; color: #eef5f7; text-align: center; text-shadow: 0 1px 3px rgba(0,0,0,.9); }
 .edit-character-form { position: relative; z-index: 1; width: min(100%, 620px); margin: 0 auto; padding: 4px 0; }
 .edit-character-row { display: grid; grid-template-columns: 180px 1fr; gap: 16px; align-items: center; margin-bottom: 16px; }
 .edit-character-row label, .edit-character-label { float: none; width: auto; margin: 0; padding: 0; color: #10202a; font-size: 17px; font-weight: 700; text-align: right; text-shadow: 0 1px rgba(255,255,255,.35); }
