@@ -6,10 +6,10 @@ All hostnames and paths below are examples. Adapt them to your environment.
 
 ## 1. Apache application-directory hardening
 
-The following example assumes GWTTT is installed at `/var/www/example.com/gwst` and served over HTTPS.
+The following example assumes GWTTT is installed at `/var/www/example.com/gwttt` and served over HTTPS.
 
 ```apache
-<Directory /var/www/example.com/gwst>
+<Directory /var/www/example.com/gwttt>
     # Harden PHP sessions.
     php_value session.cookie_secure 1
     php_value session.cookie_httponly 1
@@ -42,22 +42,22 @@ The following example assumes GWTTT is installed at `/var/www/example.com/gwst` 
 </Directory>
 
 # Never expose the Git repository.
-<Directory /var/www/example.com/gwst/.git>
+<Directory /var/www/example.com/gwttt/.git>
     Require all denied
 </Directory>
 
 # SQL schemas and migrations are deployment files, not web content.
-<Directory /var/www/example.com/gwst/sql-init>
+<Directory /var/www/example.com/gwttt/sql-init>
     Require all denied
 </Directory>
 
 # Scheduled/maintenance scripts are intended for CLI execution only.
-<Directory /var/www/example.com/gwst/scripts>
+<Directory /var/www/example.com/gwttt/scripts>
     Require all denied
 </Directory>
 
 # Composer dependencies are server-side application code.
-<Directory /var/www/example.com/gwst/vendor>
+<Directory /var/www/example.com/gwttt/vendor>
     Require all denied
 </Directory>
 ```
@@ -136,7 +136,7 @@ LICENSE
 composer.json
 composer.lock
 .git/config
-sql-init/gwst.sql
+sql-init/gwttt.sql
 scripts/send-reminders.php
 vendor/autoload.php
 ```
@@ -146,7 +146,7 @@ Normal public pages and assets should remain available. Some handler endpoints m
 For HTTPS responses, verify the configured browser-security headers, for example:
 
 ```bash
-curl -sSI https://example.com/gwst/register.php | \
+curl -sSI https://example.com/gwttt/register.php | \
   grep -Ei '^(HTTP/|x-content-type-options:|x-frame-options:|referrer-policy:|strict-transport-security:)'
 ```
 
