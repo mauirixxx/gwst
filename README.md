@@ -29,14 +29,14 @@ Currently, you can:
 
 Immediate to do:
 1. ~~Auto track all of the "Legendary" character titles~~
-2. Figure out how to reset a forgotten password
-3. E-mail birthday reminders
+2. ~~Figure out how to reset a forgotten password~~
+3. ~~E-mail birthday reminders~~
 4. ~~Create a default admin user~~
 5. Upload a picture of your character
 
 Future to do:
-1. Track what was collected via the free treasure scattered around Elona (Nightfall)
-2. Send out a reminder 31 days later to go collect the free treasure again
-3. ???
-4. Profit!!
-5. Use said profits to find someone that can make this go from functional but fugly to functional but pretty.
+1. ~~Track what was collected via the free treasure scattered around Elona (Nightfall)~~
+2. ~~Send out a reminder 31 days later to go collect the free treasure again~~
+3. ~~???~~
+4. ~~Profit!!~~
+5. ~~Use said profits to find someone that can make this go from functional but fugly to functional but pretty.~~
