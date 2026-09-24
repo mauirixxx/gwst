@@ -23,7 +23,7 @@ The following example assumes GWTTT is installed at `/var/www/example.com/gwttt`
     </FilesMatch>
 
     # Repository/documentation files are not part of the public application.
-    <FilesMatch "^(README(?:\..*)?|INSTALL(?:\..*)?|LICENSE|composer\.(?:json|lock)|\.gitattributes|\.gitignore)$">
+    <FilesMatch "^(README(?:\..*)?|LICENSE|composer\.(?:json|lock)|\.gitattributes|\.gitignore)$">
         Require all denied
     </FilesMatch>
 
@@ -46,7 +46,12 @@ The following example assumes GWTTT is installed at `/var/www/example.com/gwttt`
     Require all denied
 </Directory>
 
-# SQL schemas and migrations are deployment files, not web content.
+# Documentation is repository content, not part of the public application.
+<Directory /var/www/example.com/gwttt/docs>
+    Require all denied
+</Directory>
+
+# SQL initialization files are deployment files, not web content.
 <Directory /var/www/example.com/gwttt/sql-init>
     Require all denied
 </Directory>
@@ -131,12 +136,13 @@ connect.php
 connect.php-sample
 connect.php-testing
 README.md
-INSTALL.md
 LICENSE
 composer.json
 composer.lock
 .git/config
-sql-init/gwttt.sql
+docs/INSTALL.md
+docs/OPTIONAL-WEB-HARDENING.md
+sql-init/gwttt-initialization.sql
 scripts/send-reminders.php
 vendor/autoload.php
 ```
