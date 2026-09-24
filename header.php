@@ -93,7 +93,14 @@ if (!$userid){
 	echo '<form class="nav-select" action="includes/set-prefchar.php" method="post">' . csrf_input() . '<label for="header-character">Character</label><select id="header-character" name="prefcharid" onchange="this.form.submit()"><option value="0">No default selected</option>';
 	if(!empty($_SESSION['prefaccid'])){ $characterList=$con->prepare('SELECT charid,charname,profid FROM gwchars WHERE accid=? AND userid=? ORDER BY charname'); $characterList->bind_param('ii',$_SESSION['prefaccid'],$_SESSION['userid']); $characterList->execute(); $characterResult=$characterList->get_result(); while($character=$characterResult->fetch_assoc()){ $selected=((int)($_SESSION['prefcharid']??0)===(int)$character['charid'])?' selected':''; echo '<option class="profession-'.(int)$character['profid'].'" value="'.(int)$character['charid'].'"'.$selected.'>'.h($character['charname']).'</option>'; } $characterList->close(); }
 	echo '</select></form>'; if(!empty($_SESSION['admin'])) echo '<a class="nav-item" href="adminlanding.php">⚒ Administration</a>'; echo '<a class="nav-item nav-logout" href="logout.php">↪ Logout '.h($_SESSION['username']).'</a></nav>';
-	echo '<div class="action-nav"><a href="updateaccountstats.php"><strong>Update Account Titles</strong><small>Update progress for account titles</small></a><a href="updatecharstats.php"><strong>Update Character Titles</strong><small>Update progress for character titles</small></a><a href="treasures.php"><strong>Track Treasures</strong><small>Record treasure, gold, and loot drops</small></a><a href="addaccounts.php"><strong>Manage Accounts &amp; Characters</strong><small>View and manage accounts and characters</small></a></div></header>';
+	echo '<div class="action-nav">';
+	echo '<a href="updateaccountstats.php"><strong>Update Account Titles</strong><small>Update progress for account titles</small></a>';
+	echo '<a href="updatecharstats.php"><strong>Update Character Titles</strong><small>Update progress for character titles</small></a>';
+	echo '<a href="treasures.php"><strong>Track Treasures</strong><small>Record treasure, gold, and loot drops</small></a>';
+	echo '<span aria-disabled="true" style="display:flex;flex-direction:column;gap:3px;padding:14px 18px;border:1px solid #285367;border-radius:6px;background:linear-gradient(180deg,#173243,#122733);color:#dbe9ee;text-align:left;box-shadow:inset 0 1px rgba(255,255,255,.03);"><strong>This Space for Rent 😁</strong><small style="color:#9fb5bf;font-size:12px;">Prime GWTTT real estate</small></span>';
+	echo '<a href="addaccounts.php"><strong>Manage Accounts &amp; Characters</strong><small>View and manage accounts and characters</small></a>';
+	echo '<a href="miniatures.php"><strong>Track Miniatures</strong><small>Hall of Monuments dedication &amp; collection</small></a>';
+	echo '</div></header>';
 	$page_script=pathinfo($_SERVER['SCRIPT_NAME']??'',PATHINFO_FILENAME); $page_class=preg_replace('/[^a-zA-Z0-9_-]/','',$page_script); echo '<main class="page-shell page-'.h($page_class).'">'; if($prefMessage!=='') echo '<div class="preference-message">'.h($prefMessage).'</div>';
 }
 ?>
