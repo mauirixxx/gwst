@@ -103,7 +103,12 @@ include_once ('footer.php');
             const button = form.querySelector('button[type="submit"]');
             if (button) button.disabled = true;
             try {
-                const response = await fetch(form.action, {
+                // The form contains a hidden input named "action". Named form controls
+                // become properties on the form object, so form.action resolves to that
+                // HTMLInputElement instead of the form's action URL. Read the attribute
+                // explicitly to avoid fetch() requesting "[object HTMLInputElement]".
+                const endpoint = form.getAttribute('action');
+                const response = await fetch(endpoint, {
                     method: 'POST',
                     body: new FormData(form),
                     headers: {'Accept': 'application/json'},
