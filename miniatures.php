@@ -3,7 +3,7 @@ $pagetitle = 'Track Miniatures';
 include_once ('header.php');
 ?>
 <style>
-.mini-page{max-width:980px;margin:0 auto;padding:4px 0 32px}.mini-heading{text-align:center;margin-bottom:22px}.mini-heading h1{margin:0 0 8px}.mini-heading p{margin:5px 0;color:#a9c5d1}.mini-summary{display:grid;grid-template-columns:repeat(2,minmax(0,220px));justify-content:center;gap:14px;margin:0 auto 24px}.mini-summary-card{padding:15px 18px;border:1px solid #2d6978;border-radius:7px;background:#122936;text-align:center}.mini-summary-card strong{display:block;color:#69dbe1;font-size:24px}.mini-summary-card span{color:#a9c5d1;font-size:13px}.mini-group{margin:0 0 12px;border:1px solid #2d596b;border-radius:8px;background:#10232d;overflow:hidden}.mini-group summary{padding:15px 18px;cursor:pointer;list-style:none;color:#69dbe1;font-size:18px;font-weight:700;background:#142e3b}.mini-group summary::-webkit-details-marker{display:none}.mini-group summary::before{content:'▶';display:inline-block;width:22px;font-size:12px;transition:transform .12s ease}.mini-group[open] summary::before{transform:rotate(90deg)}.mini-group-note{margin:0;padding:13px 18px;color:#a9c5d1;border-top:1px solid #294754}.mini-table-wrap{overflow-x:auto}.mini-table{width:100%;border-collapse:collapse}.mini-table th{padding:11px 14px;background:#1a3a4a;color:#eef5f7;text-align:left;font-size:13px;text-transform:uppercase}.mini-table th:nth-child(2),.mini-table th:nth-child(3),.mini-table td:nth-child(2),.mini-table td:nth-child(3){text-align:center}.mini-table td{padding:10px 14px;border-top:1px solid #294754;color:#e1edf1}.mini-table tr:hover td{background:rgba(40,184,192,.06)}.mini-inline-form{margin:0}.mini-dedicated{min-width:68px;padding:7px 12px;border-radius:5px;font-weight:700;cursor:pointer}.mini-yes{border:1px solid #3e9a62;background:#194d31;color:#b9f3cc}.mini-no{border:1px solid #65747c;background:#273740;color:#d7e0e4}.mini-quantity{width:88px;min-height:36px;padding:5px 8px;border:1px solid #607987;border-radius:5px;background:#edf2f5;color:#17242c;font-size:16px}.mini-save-quantity{margin-left:6px;padding:7px 9px;border:1px solid #2999a5;border-radius:4px;background:#174454;color:#fff;cursor:pointer}.mini-no-account{padding:24px;border:1px solid #6e5c31;border-radius:8px;background:#302817;text-align:center;color:#f3e3bd}.mini-account-name{color:#fff27a;font-weight:700}@media(max-width:650px){.mini-summary{grid-template-columns:1fr}.mini-table th,.mini-table td{padding:9px 8px}.mini-save-quantity{display:none}}
+.mini-page{max-width:980px;margin:0 auto;padding:4px 0 32px}.mini-heading{text-align:center;margin-bottom:22px}.mini-heading h1{margin:0 0 8px}.mini-heading p{margin:5px 0;color:#a9c5d1}.mini-summary{display:grid;grid-template-columns:repeat(2,minmax(0,220px));justify-content:center;gap:14px;margin:0 auto 24px}.mini-summary-card{padding:15px 18px;border:1px solid #2d6978;border-radius:7px;background:#122936;text-align:center}.mini-summary-card strong{display:block;color:#69dbe1;font-size:24px}.mini-summary-card span{color:#a9c5d1;font-size:13px}.mini-group{margin:0 0 12px;border:1px solid #2d596b;border-radius:8px;background:#10232d;overflow:hidden}.mini-group summary{padding:15px 18px;cursor:pointer;list-style:none;color:#69dbe1;font-size:18px;font-weight:700;background:#142e3b}.mini-group summary::-webkit-details-marker{display:none}.mini-group summary::before{content:'▶';display:inline-block;width:22px;font-size:12px;transition:transform .12s ease}.mini-group[open] summary::before{transform:rotate(90deg)}.mini-group-note{margin:0;padding:13px 18px;color:#a9c5d1;border-top:1px solid #294754}.mini-table-wrap{overflow-x:auto}.mini-table{width:100%;border-collapse:collapse}.mini-table th{padding:11px 14px;background:#1a3a4a;color:#eef5f7;text-align:left;font-size:13px;text-transform:uppercase}.mini-table th:nth-child(2),.mini-table th:nth-child(3),.mini-table td:nth-child(2),.mini-table td:nth-child(3){text-align:center}.mini-table td{padding:10px 14px;border-top:1px solid #294754;color:#e1edf1}.mini-table tr:hover td{background:rgba(40,184,192,.06)}.mini-inline-form{margin:0}.mini-dedicated{min-width:68px;padding:7px 12px;border-radius:5px;font-weight:700;cursor:pointer}.mini-dedicated:disabled,.mini-save-quantity:disabled{opacity:.6;cursor:wait}.mini-yes{border:1px solid #3e9a62;background:#194d31;color:#b9f3cc}.mini-no{border:1px solid #65747c;background:#273740;color:#d7e0e4}.mini-quantity{width:88px;min-height:36px;padding:5px 8px;border:1px solid #607987;border-radius:5px;background:#edf2f5;color:#17242c;font-size:16px}.mini-save-quantity{margin-left:6px;padding:7px 9px;border:1px solid #2999a5;border-radius:4px;background:#174454;color:#fff;cursor:pointer}.mini-save-quantity.mini-saved{border-color:#3e9a62;background:#194d31}.mini-no-account{padding:24px;border:1px solid #6e5c31;border-radius:8px;background:#302817;text-align:center;color:#f3e3bd}.mini-account-name{color:#fff27a;font-weight:700}.mini-ajax-message{display:none;margin:0 auto 18px;max-width:620px;padding:10px 14px;border-radius:6px;text-align:center}.mini-ajax-message.is-error{display:block;border:1px solid #8d5050;background:#3b2020;color:#ffd0d0}@media(max-width:650px){.mini-summary{grid-template-columns:1fr}.mini-table th,.mini-table td{padding:9px 8px}.mini-save-quantity{display:none}}
 </style>
 <?php
 if (isset($_SESSION['userid'])) {
@@ -38,7 +38,8 @@ if (isset($_SESSION['userid'])) {
     $summary->execute();
     $summaryRow = $summary->get_result()->fetch_assoc();
     $summary->close();
-    echo '<div class="mini-summary"><div class="mini-summary-card"><strong>' . (int)$summaryRow['dedicated_count'] . '</strong><span>distinct miniatures marked dedicated</span></div><div class="mini-summary-card"><strong>' . (int)$summaryRow['quantity_total'] . '</strong><span>miniatures currently on hand</span></div></div>';
+    echo '<div id="mini-ajax-message" class="mini-ajax-message" role="status" aria-live="polite"></div>';
+    echo '<div class="mini-summary"><div class="mini-summary-card"><strong id="mini-dedicated-count">' . (int)$summaryRow['dedicated_count'] . '</strong><span>distinct miniatures marked dedicated</span></div><div class="mini-summary-card"><strong id="mini-quantity-total">' . (int)$summaryRow['quantity_total'] . '</strong><span>miniatures currently on hand</span></div></div>';
 
     $groups = $con->query('SELECT groupid, groupname, group_note FROM gwminiature_groups ORDER BY display_order, groupname');
     $miniStmt = $con->prepare(
@@ -61,11 +62,11 @@ if (isset($_SESSION['userid'])) {
             echo '<div class="mini-table-wrap"><table class="mini-table"><thead><tr><th>Miniature</th><th>HoM Dedicated</th><th>On Hand</th></tr></thead><tbody>';
             while ($mini = $miniResult->fetch_assoc()) {
                 $dedicated = (int)$mini['dedicated'] === 1;
-                echo '<tr><td>' . h($mini['mininame']) . '</td><td>';
-                echo '<form class="mini-inline-form" action="includes/update-miniature.php" method="post">' . csrf_input();
+                echo '<tr data-miniid="' . (int)$mini['miniid'] . '"><td>' . h($mini['mininame']) . '</td><td>';
+                echo '<form class="mini-inline-form mini-ajax-form" action="includes/update-miniature.php" method="post">' . csrf_input();
                 echo '<input type="hidden" name="miniid" value="' . (int)$mini['miniid'] . '"><input type="hidden" name="action" value="toggle_dedicated">';
                 echo '<button class="mini-dedicated ' . ($dedicated ? 'mini-yes' : 'mini-no') . '" type="submit" title="Click to toggle Hall of Monuments dedication">' . ($dedicated ? 'Yes' : 'No') . '</button></form></td><td>';
-                echo '<form class="mini-inline-form" action="includes/update-miniature.php" method="post">' . csrf_input();
+                echo '<form class="mini-inline-form mini-ajax-form" action="includes/update-miniature.php" method="post">' . csrf_input();
                 echo '<input type="hidden" name="miniid" value="' . (int)$mini['miniid'] . '"><input type="hidden" name="action" value="set_quantity">';
                 echo '<input class="mini-quantity" type="number" name="quantity" min="0" max="999999" step="1" inputmode="numeric" value="' . (int)$mini['quantity'] . '" aria-label="On-hand quantity for ' . h($mini['mininame']) . '">';
                 echo '<button class="mini-save-quantity" type="submit">Save</button></form></td></tr>';
@@ -79,3 +80,68 @@ if (isset($_SESSION['userid'])) {
 }
 include_once ('footer.php');
 ?>
+<script>
+(() => {
+    const message = document.getElementById('mini-ajax-message');
+    const dedicatedCount = document.getElementById('mini-dedicated-count');
+    const quantityTotal = document.getElementById('mini-quantity-total');
+    if (!message || !dedicatedCount || !quantityTotal || !window.fetch) return;
+
+    const showError = (text) => {
+        message.textContent = text || 'Unable to update miniature.';
+        message.classList.add('is-error');
+    };
+    const clearError = () => {
+        message.textContent = '';
+        message.classList.remove('is-error');
+    };
+
+    document.querySelectorAll('.mini-ajax-form').forEach((form) => {
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            clearError();
+            const button = form.querySelector('button[type="submit"]');
+            if (button) button.disabled = true;
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: {'Accept': 'application/json'},
+                    credentials: 'same-origin'
+                });
+                let data;
+                try { data = await response.json(); }
+                catch (_) { throw new Error('The server returned an unexpected response.'); }
+                if (!response.ok || !data.ok) throw new Error(data.message || 'Unable to update miniature.');
+
+                dedicatedCount.textContent = data.dedicated_count;
+                quantityTotal.textContent = data.quantity_total;
+                document.querySelectorAll('tr[data-miniid="' + data.miniid + '"]').forEach((row) => {
+                    const dedicatedButton = row.querySelector('.mini-dedicated');
+                    if (dedicatedButton) {
+                        dedicatedButton.textContent = data.dedicated ? 'Yes' : 'No';
+                        dedicatedButton.classList.toggle('mini-yes', !!data.dedicated);
+                        dedicatedButton.classList.toggle('mini-no', !data.dedicated);
+                    }
+                    const quantity = row.querySelector('.mini-quantity');
+                    if (quantity) quantity.value = data.quantity;
+                });
+
+                if (button && button.classList.contains('mini-save-quantity')) {
+                    const oldText = button.textContent;
+                    button.textContent = 'Saved';
+                    button.classList.add('mini-saved');
+                    window.setTimeout(() => {
+                        button.textContent = oldText;
+                        button.classList.remove('mini-saved');
+                    }, 900);
+                }
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                if (button) button.disabled = false;
+            }
+        });
+    });
+})();
+</script>
