@@ -1,20 +1,49 @@
 <?php
-$pagetitle = 'Update miniature';
-include_once (__DIR__ . '/../header.php');
+if (session_status() === PHP_SESSION_NONE) {
+    ini_set('session.use_strict_mode', '1');
+    ini_set('session.use_only_cookies', '1');
+    ini_set('session.cookie_httponly', '1');
+    ini_set('session.cookie_samesite', 'Lax');
+    if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+        ini_set('session.cookie_secure', '1');
+    }
+    session_start();
+}
 
-if (!isset($_SESSION['userid'])) {
+require_once __DIR__ . '/csrf.php';
+require_once dirname(__DIR__) . '/connect.php';
+
+if (empty($_SESSION['userid'])) {
+    header('Location: ../index.php');
     exit;
 }
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: ../miniatures.php');
+    exit;
+}
+csrf_require_valid_post();
+
+$con = mysqli_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS, DATABASE_NAME);
+if (!$con || $con->connect_errno) {
+    http_response_code(500);
+    exit('Unable to connect to database.');
+}
+$con->set_charset('utf8mb4');
 
 $userid = (int)$_SESSION['userid'];
 $accid = (int)($_SESSION['prefaccid'] ?? 0);
 $miniid = (int)($_POST['miniid'] ?? 0);
 $action = (string)($_POST['action'] ?? '');
 
-if ($accid <= 0 || $miniid <= 0) {
-    $_SESSION['preference_message'] = 'Select a Guild Wars account before updating miniatures.';
+function miniature_return(string $message): never
+{
+    $_SESSION['preference_message'] = $message;
     header('Location: ../miniatures.php');
     exit;
+}
+
+if ($accid <= 0 || $miniid <= 0) {
+    miniature_return('Select a Guild Wars account before updating miniatures.');
 }
 
 // Never trust the session account id or submitted miniature id without proving
@@ -32,9 +61,7 @@ $validMini = (bool)$miniCheck->get_result()->fetch_row();
 $miniCheck->close();
 
 if (!$ownsAccount || !$validMini) {
-    $_SESSION['preference_message'] = 'Unable to update that miniature.';
-    header('Location: ../miniatures.php');
-    exit;
+    miniature_return('Unable to update that miniature.');
 }
 
 $currentDedicated = 0;
@@ -54,20 +81,14 @@ if ($action === 'toggle_dedicated') {
 } elseif ($action === 'set_quantity') {
     $rawQuantity = trim((string)($_POST['quantity'] ?? ''));
     if ($rawQuantity === '' || !ctype_digit($rawQuantity)) {
-        $_SESSION['preference_message'] = 'On-hand quantity must be a whole number of 0 or greater.';
-        header('Location: ../miniatures.php');
-        exit;
+        miniature_return('On-hand quantity must be a whole number of 0 or greater.');
     }
     $currentQuantity = (int)$rawQuantity;
     if ($currentQuantity > 999999) {
-        $_SESSION['preference_message'] = 'On-hand quantity is too large.';
-        header('Location: ../miniatures.php');
-        exit;
+        miniature_return('On-hand quantity is too large.');
     }
 } else {
-    $_SESSION['preference_message'] = 'Unknown miniature update.';
-    header('Location: ../miniatures.php');
-    exit;
+    miniature_return('Unknown miniature update.');
 }
 
 if ($currentDedicated === 0 && $currentQuantity === 0) {
@@ -85,5 +106,5 @@ if ($currentDedicated === 0 && $currentQuantity === 0) {
     $save->close();
 }
 
-header('Location: ../miniatures.php');
-exit;
+$con->close();
+miniature_return('Miniature updated.');
