@@ -83,9 +83,11 @@ if (empty($_POST['reguser'])) {
     $first_user_admin = false;
 
     // Serialize registration while deciding whether this is the first user.
+    // gwaccounts is locked too because registration now creates the user's
+    // initial Guild Wars account in the same protected operation.
     $con->begin_transaction();
     try {
-        $lock = $con->prepare("LOCK TABLES userinfo WRITE");
+        $lock = $con->prepare("LOCK TABLES userinfo WRITE, gwaccounts WRITE");
         $lock->execute();
         $lock->close();
 
@@ -99,7 +101,19 @@ if (empty($_POST['reguser'])) {
         $stmt = $con->prepare("INSERT INTO userinfo (username, userpass, usermail, admin) VALUES (?, ?, ?, ?)");
         $stmt->bind_param("sssi", $username, $hashedpass, $verifyemail, $admin);
         $stmt->execute();
+        $new_userid = (int)$con->insert_id;
         $stmt->close();
+
+        $addacc = $con->prepare("INSERT INTO gwaccounts (userid, accemail) VALUES (?, ?)");
+        $addacc->bind_param("is", $new_userid, $verifyemail);
+        $addacc->execute();
+        $new_accid = (int)$con->insert_id;
+        $addacc->close();
+
+        $setpref = $con->prepare("UPDATE userinfo SET prefaccid = ?, prefaccname = ? WHERE userid = ?");
+        $setpref->bind_param("isi", $new_accid, $verifyemail, $new_userid);
+        $setpref->execute();
+        $setpref->close();
 
         $first_user_admin = ($admin === 1);
 
@@ -116,11 +130,12 @@ if (empty($_POST['reguser'])) {
     echo '<main class="auth-shell"><section class="auth-card">';
     echo '<div class="auth-brand"><div class="auth-brand-mark">GWTTT</div><div class="auth-brand-name">Guild Wars Titles &amp; Treasures Tracker</div></div>';
     echo '<h1>Account created!</h1>';
-    echo '<p class="auth-intro">Your GWTTT account is ready.';
+    echo '<p class="auth-intro">Your GWTTT account is ready, and <strong>' . h($verifyemail) . '</strong> has been added as your initial Guild Wars account.';
     if ($first_user_admin) {
         echo ' As the first GWTTT user, this account has been granted administrator access.';
     }
     echo '</p>';
+    echo '<p class="auth-intro">If your Guild Wars login uses a different e-mail address, you can correct the tracked account after signing in before adding characters.</p>';
     echo '<div class="auth-links"><a href="index.php">Log in to continue</a></div>';
     echo '</section></main>';
 
