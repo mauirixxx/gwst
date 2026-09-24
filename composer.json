@@ -1,6 +1,6 @@
 {
-    "name": "mauirixxx/gwst",
-    "description": "Guild Wars Stats Tracker",
+    "name": "mauirixxx/gwttt",
+    "description": "Guild Wars Titles & Treasures Tracker",
     "type": "project",
     "require": {
         "phpmailer/phpmailer": "^7.1"
