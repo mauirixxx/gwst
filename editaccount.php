@@ -14,6 +14,8 @@ include_once ('header.php');
 .edit-account-actions { display:flex; gap:12px; margin-top:22px; }
 .edit-account-button { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:8px 18px; border:1px solid #2999a5; border-radius:5px; background:#174454; color:#fff !important; font-weight:700; text-decoration:none !important; cursor:pointer; }
 .edit-account-secondary { border-color:#526b77; background:#243943; }
+.edit-account-return { margin-top:18px; text-align:center; }
+.edit-account-return .edit-account-button { min-width:190px; }
 .edit-account-message { margin:0 0 18px; padding:11px 14px; border-radius:6px; text-align:center; }
 .edit-account-success { border:1px solid #3e7d59; background:#173526; color:#a9efc2; }
 .edit-account-error { border:1px solid #8d5050; background:#3b2020; color:#ffd0d0; }
@@ -71,7 +73,8 @@ if (isset($_SESSION['userid'])) {
         echo '<div class="edit-account-card"><form action="editaccount.php" method="post">' . csrf_input();
         echo '<input type="hidden" name="accid" value="' . (int)$account['accid'] . '">';
         echo '<div class="edit-account-field"><label for="accemail">Account e-mail or alias</label><input id="accemail" type="text" name="accemail" maxlength="50" value="' . h($account['accemail']) . '" required autofocus><p class="edit-account-help">This is the Guild Wars account identifier used by GWTTT. Changing it does not change your GWTTT login e-mail.</p></div>';
-        echo '<div class="edit-account-actions"><button class="edit-account-button" type="submit">Save account</button><a class="edit-account-button edit-account-secondary" href="addaccounts.php">Cancel</a></div></form></div></section>';
+        echo '<div class="edit-account-actions"><button class="edit-account-button" type="submit">Save account</button><a class="edit-account-button edit-account-secondary" href="addaccounts.php">Cancel</a></div></form></div>';
+        echo '<div class="edit-account-return"><a class="edit-account-button edit-account-secondary" href="addaccounts.php">Back to Accounts</a></div></section>';
     }
 }
 include_once ('footer.php');
