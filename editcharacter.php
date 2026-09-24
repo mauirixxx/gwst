@@ -47,7 +47,10 @@ if (isset($_SESSION['userid'])) {
     $char_stmt->close();
 
     if (!$character) {
-        http_response_code(404);
+        // header.php has already rendered the page shell, so changing the HTTP
+        // status here would trigger a headers-already-sent warning. The global
+        // authenticated POST/CSRF guard still handles request rejection before
+        // output; this branch renders the in-page ownership/not-found result.
         echo '<section class="edit-character-page">';
         echo '<div class="edit-character-heading"><h1>Character not found</h1></div>';
         echo '<div class="edit-character-card">';
