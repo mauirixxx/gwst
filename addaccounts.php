@@ -54,7 +54,7 @@ if (isset($_SESSION['userid'])) {
 <p class="manage-intro">Add, select, and maintain the Guild Wars accounts and characters tracked by GWTTT.</p>
 <fieldset class="manage-panel"><legend>Guild Wars accounts</legend>
 <h2 class="manage-subheading">Add a new account e-mail or alias</h2>
-<?php if ((int)$existing_account_count === 0): ?><p class="manage-help">Your signup e-mail is suggested below. Keep it, replace it with your Guild Wars login e-mail, or use an alias.</p><?php endif; ?>
+<?php if ((int)$existing_account_count === 0): ?><p class="manage-help">Your signup e-mail is suggested below. Keep it, replace it with your Guild Wars login e-mail, or use an alias.</p><?php else: ?><p class="manage-help">Click an existing account name below to correct its Guild Wars login e-mail or change its alias.</p><?php endif; ?>
 <form action="addaccounts.php" method="post" class="manage-add-row"><?php echo csrf_input(); ?>
 <div class="manage-field"><label for="accemail">Account e-mail or alias</label><input id="accemail" type="text" name="accemail" maxlength="50" value="<?php echo h($suggested_account_name); ?>" required></div>
 <input class="manage-button" type="submit" value="Add account"></form>
@@ -65,7 +65,7 @@ if (isset($_SESSION['userid'])) {
     $acclist = $con->prepare("SELECT accid, accemail FROM gwaccounts WHERE userid = ?");
     $acclist->bind_param("i", $_SESSION['userid']); $acclist->execute(); $result = $acclist->get_result();
     while ($row = $result->fetch_assoc()) {
-        echo '<tr><td class="manage-id">' . (int)$row['accid'] . '</td><td><span class="manage-account-link">' . h($row['accemail']) . '</span></td>';
+        echo '<tr><td class="manage-id">' . (int)$row['accid'] . '</td><td><a class="manage-account-link" href="editaccount.php?accid=' . (int)$row['accid'] . '">' . h($row['accemail']) . '</a></td>';
         echo '<td class="manage-choice"><input type="radio" name="prefaccid" value="' . (int)$row['accid'] . '" aria-label="Make ' . h($row['accemail']) . ' preferred"' . ($row['accid'] == $_SESSION['prefaccid'] ? ' checked' : '') . '></td>';
         echo '<td class="manage-choice"><input type="checkbox" name="delaccid[]" value="' . (int)$row['accid'] . '" aria-label="Delete ' . h($row['accemail']) . '"></td></tr>';
     }
