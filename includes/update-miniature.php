@@ -1,4 +1,11 @@
 <?php
+// Keep AJAX responses pristine even if a local configuration include emits
+// whitespace or other harmless output. Normal form posts retain legacy output.
+$wantsJson = isset($_SERVER['HTTP_ACCEPT']) && str_contains($_SERVER['HTTP_ACCEPT'], 'application/json');
+if ($wantsJson) {
+    ob_start();
+}
+
 if (session_status() === PHP_SESSION_NONE) {
     ini_set('session.use_strict_mode', '1');
     ini_set('session.use_only_cookies', '1');
@@ -13,12 +20,14 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once __DIR__ . '/csrf.php';
 require_once dirname(__DIR__) . '/connect.php';
 
-$wantsJson = isset($_SERVER['HTTP_ACCEPT']) && str_contains($_SERVER['HTTP_ACCEPT'], 'application/json');
-
 function miniature_respond(bool $ok, string $message, array $data = [], int $status = 200): never
 {
     global $wantsJson;
     if ($wantsJson) {
+        // Discard anything accidentally emitted before the API payload.
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
         http_response_code($status);
         header('Content-Type: application/json; charset=UTF-8');
         header('Cache-Control: no-store');
@@ -38,7 +47,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: ../miniatures.php');
     exit;
 }
-csrf_require_valid_post();
+
+// Validate CSRF here so asynchronous callers receive JSON rather than the
+// HTML error page used by the site's generic form helper.
+if (!csrf_is_valid($_POST['csrf_token'] ?? null)) {
+    miniature_respond(false, 'Invalid or expired request. Refresh the page and try again.', [], 403);
+}
 
 $con = mysqli_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS, DATABASE_NAME);
 if (!$con || $con->connect_errno) {
