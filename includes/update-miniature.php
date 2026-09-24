@@ -13,11 +13,28 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once __DIR__ . '/csrf.php';
 require_once dirname(__DIR__) . '/connect.php';
 
-if (empty($_SESSION['userid'])) {
-    header('Location: ../index.php');
+$wantsJson = isset($_SERVER['HTTP_ACCEPT']) && str_contains($_SERVER['HTTP_ACCEPT'], 'application/json');
+
+function miniature_respond(bool $ok, string $message, array $data = [], int $status = 200): never
+{
+    global $wantsJson;
+    if ($wantsJson) {
+        http_response_code($status);
+        header('Content-Type: application/json; charset=UTF-8');
+        header('Cache-Control: no-store');
+        echo json_encode(array_merge(['ok' => $ok, 'message' => $message], $data), JSON_UNESCAPED_SLASHES);
+        exit;
+    }
+    $_SESSION['preference_message'] = $message;
+    header('Location: ../miniatures.php');
     exit;
 }
+
+if (empty($_SESSION['userid'])) {
+    miniature_respond(false, 'Your session has expired. Please sign in again.', [], 401);
+}
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    if ($wantsJson) miniature_respond(false, 'POST required.', [], 405);
     header('Location: ../miniatures.php');
     exit;
 }
@@ -25,8 +42,7 @@ csrf_require_valid_post();
 
 $con = mysqli_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS, DATABASE_NAME);
 if (!$con || $con->connect_errno) {
-    http_response_code(500);
-    exit('Unable to connect to database.');
+    miniature_respond(false, 'Unable to connect to database.', [], 500);
 }
 $con->set_charset('utf8mb4');
 
@@ -35,15 +51,8 @@ $accid = (int)($_SESSION['prefaccid'] ?? 0);
 $miniid = (int)($_POST['miniid'] ?? 0);
 $action = (string)($_POST['action'] ?? '');
 
-function miniature_return(string $message): never
-{
-    $_SESSION['preference_message'] = $message;
-    header('Location: ../miniatures.php');
-    exit;
-}
-
 if ($accid <= 0 || $miniid <= 0) {
-    miniature_return('Select a Guild Wars account before updating miniatures.');
+    miniature_respond(false, 'Select a Guild Wars account before updating miniatures.', [], 400);
 }
 
 // Never trust the session account id or submitted miniature id without proving
@@ -61,7 +70,7 @@ $validMini = (bool)$miniCheck->get_result()->fetch_row();
 $miniCheck->close();
 
 if (!$ownsAccount || !$validMini) {
-    miniature_return('Unable to update that miniature.');
+    miniature_respond(false, 'Unable to update that miniature.', [], 403);
 }
 
 $currentDedicated = 0;
@@ -81,14 +90,14 @@ if ($action === 'toggle_dedicated') {
 } elseif ($action === 'set_quantity') {
     $rawQuantity = trim((string)($_POST['quantity'] ?? ''));
     if ($rawQuantity === '' || !ctype_digit($rawQuantity)) {
-        miniature_return('On-hand quantity must be a whole number of 0 or greater.');
+        miniature_respond(false, 'On-hand quantity must be a whole number of 0 or greater.', [], 422);
     }
     $currentQuantity = (int)$rawQuantity;
     if ($currentQuantity > 999999) {
-        miniature_return('On-hand quantity is too large.');
+        miniature_respond(false, 'On-hand quantity is too large.', [], 422);
     }
 } else {
-    miniature_return('Unknown miniature update.');
+    miniature_respond(false, 'Unknown miniature update.', [], 400);
 }
 
 if ($currentDedicated === 0 && $currentQuantity === 0) {
@@ -106,5 +115,18 @@ if ($currentDedicated === 0 && $currentQuantity === 0) {
     $save->close();
 }
 
+$summary = $con->prepare('SELECT COALESCE(SUM(dedicated),0), COALESCE(SUM(quantity),0) FROM gwminiature_inventory WHERE userid = ? AND accid = ?');
+$summary->bind_param('ii', $userid, $accid);
+$summary->execute();
+$summary->bind_result($dedicatedCount, $quantityTotal);
+$summary->fetch();
+$summary->close();
 $con->close();
-miniature_return('Miniature updated.');
+
+miniature_respond(true, 'Miniature updated.', [
+    'miniid' => $miniid,
+    'dedicated' => $currentDedicated,
+    'quantity' => $currentQuantity,
+    'dedicated_count' => (int)$dedicatedCount,
+    'quantity_total' => (int)$quantityTotal,
+]);
