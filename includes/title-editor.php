@@ -54,9 +54,11 @@ if (isset($_SESSION['userid']) && isset($_SESSION['admin']) && (int)$_SESSION['a
 .title-edit-back { color: #69dbe1; font-weight: 600; }
 .title-edit-danger { margin-top: 24px; padding: 18px; border: 1px solid #8a4545; border-radius: 7px; background: #321d1d; }
 .title-edit-danger h3 { margin: 0 0 6px; color: #ffb3b3; }
-.title-edit-danger p { margin: 0 0 12px; color: #e7c4c4; font-size: 13px; }
-.title-edit-danger label { display: flex; align-items: center; gap: 8px; color: #fff; font-weight: 600; }
-@media (max-width: 600px) { .title-edit-card { padding: 16px; } .title-edit-option { width: 100%; } }
+.title-edit-danger p { margin: 0 0 14px; color: #e7c4c4; font-size: 13px; }
+.title-edit-delete-option { display: inline-flex !important; align-items: center; gap: 10px; margin: 0 !important; padding: 10px 12px; border: 1px solid #8a4545; border-radius: 6px; background: #261717; color: #fff !important; font-weight: 600; line-height: 1.2; cursor: pointer; }
+.title-edit-delete-option input[type="checkbox"] { flex: 0 0 auto; width: 18px !important; height: 18px !important; margin: 0 !important; padding: 0 !important; }
+.title-edit-delete-option span { display: inline; margin: 0; padding: 0; }
+@media (max-width: 600px) { .title-edit-card { padding: 16px; } .title-edit-option { width: 100%; } .title-edit-delete-option { display: flex !important; width: auto; } }
 </style>
 <section class="title-edit-page">
     <div class="title-edit-heading">
@@ -107,7 +109,7 @@ if (isset($_SESSION['userid']) && isset($_SESSION['admin']) && (int)$_SESSION['a
             <section class="title-edit-danger">
                 <h3>Delete title</h3>
                 <p>This removes the title when you save these changes. Only select this when you really intend to delete it.</p>
-                <label><input type="checkbox" name="deltitle" value="yes"> Yes, delete this title</label>
+                <label class="title-edit-delete-option"><input type="checkbox" name="deltitle" value="yes"><span>Yes, delete this title</span></label>
             </section>
         </section>
     </form>
